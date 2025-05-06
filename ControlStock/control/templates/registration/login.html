@@ -1,0 +1,124 @@
+<style>
+    /* Estilos generales para el cuerpo */
+    body {
+        background-color: #f4f7fb;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        color: #333;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        padding: 0 15px;
+    }
+
+    /* Contenedor principal del formulario */
+    .login-container {
+        background-color: white;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .login-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Título del formulario */
+    .login-container h2 {
+        text-align: center;
+        font-size: 2rem;
+        color: #4CAF50;
+        margin-bottom: 20px;
+    }
+
+    /* Estilo para los campos del formulario */
+    .login-container form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .login-container form input {
+        padding: 12px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.3s;
+    }
+
+    .login-container form input:focus {
+        border-color: #4CAF50;
+    }
+
+    .login-container form button {
+        padding: 12px;
+        border: none;
+        background-color: #4CAF50;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .login-container form button:hover {
+        background-color: #45a049;
+    }
+
+    .login-container form button:active {
+        transform: scale(0.98);
+    }
+
+    /* Estilos para el enlace de recuperar contraseña (si lo tienes) */
+    .login-container .password-reset {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .login-container .password-reset a {
+        color: #2196F3;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .login-container .password-reset a:hover {
+        color: #0b7dda;
+    }
+
+    /* Mejora para dispositivos pequeños */
+    @media (max-width: 480px) {
+        body {
+            padding: 0;
+        }
+
+        .login-container h2 {
+            font-size: 1.8rem;
+        }
+
+        .login-container form input {
+            font-size: 0.95rem;
+        }
+
+        .login-container form button {
+            font-size: 1rem;
+        }
+    }
+</style>
+{% block content %}
+  <div class="login-container">
+    <h2>Iniciar sesión</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
+{% endblock %}

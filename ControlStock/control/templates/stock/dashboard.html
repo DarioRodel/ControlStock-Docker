@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard de Inventario</title>
+
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="{% static 'dark/js/darkmode.js' %}" defer></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* :root define variables de CSS para los colores y estilos de tu tema principal. */
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --accent-color: #FF9800;
+            --danger-color: #f44336;
+            --background-color: #f4f7fb;
+            --card-radius: 20px;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --card-bg: #fff;
+            --text-color: #333;
+            --card-hover: rgba(0, 0, 0, 0.1);
+            --badge-success: #28a745;
+            --badge-warning: #ffc107;
+            --badge-danger: #dc3545;
+        }
+
+        /* body[data-theme="dark"] redefine las variables para el modo oscuro. */
+        body[data-theme="dark"] {
+            --background-color: #0d1117;
+            --card-bg: #161b22;
+            --text-color: #c9d1d9;
+            --shadow-color: rgba(255, 255, 255, 0.05);
+            --card-hover: rgba(255, 255, 255, 0.05);
+            --primary-color: #58a6ff;
+            --secondary-color: #6e7681;
+            --accent-color: #f78166;
+            --danger-color: #ff7b72;
+        }
+
+        /* Estilos generales del body para el fondo, la fuente y la transición del tema. */
+        body {
+            background-color: var(--background-color);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Estilos para las tarjetas que contienen la información. */
+        .card-custom {
+            border: none;
+            border-radius: var(--card-radius);
+            box-shadow: 0 6px 15px -5px var(--shadow-color);
+            background-color: var(--card-bg);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            overflow: hidden;
+        }
+
+        .card-custom:hover {
+            transform: translateY(-10px);
+            background-color: var(--card-hover);
+        }
+
+        /* Estilos para el cuerpo dentro de las tarjetas. Reduje el padding para que ocupe menos espacio. */
+        .card-body-custom {
+            padding: 20px;
+        }
+
+        /* Estilos para los iconos dentro de las tarjetas de métricas. */
+        .card-icon {
+            font-size: 3rem;
+            opacity: 0.8;
+        }
+
+        /* Estilos para los títulos de las métricas (ej: Total Productos). */
+        .metric-title {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        /* Estilos para los valores de las métricas (ej: el número total de productos). */
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* Estilos para los botones de navegación. Reduje el padding y el tamaño de la fuente. */
+        .btn-dashboard {
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 30px;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-dashboard:hover {
+            opacity: 0.85;
+            transform: translateY(-2px);
+        }
+
+        /* Estilos específicos para los contenedores de los gráficos. Reduje la altura para que sean más pequeños. */
+        #stockChart {
+            width: 100% !important;
+            height: 200px !important;
+        }
+
+        #estadoChart {
+            width: 100% !important;
+            height: 200px !important;
+        }
+
+        /* Estilo para resaltar las filas de la tabla al pasar el ratón. */
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Estilos para las celdas de la tabla (header y datos). Reduje el padding y el tamaño de la fuente. */
+        .table th, .table td {
+            padding: 0.6rem;
+            font-size: 0.85rem;
+        }
+
+        /* Media queries para hacer el diseño responsive en diferentes tamaños de pantalla.
+           Estos ajustan los tamaños de la fuente, los paddings y los márgenes para que se vea bien en móviles, tablets, etc. */
+        @media (max-width: 1399.98px) {
+            .metric-value {
+                font-size: 1.8rem;
+            }
+            .btn-dashboard {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 1199.98px) {
+            .card-icon {
+                font-size: 2.5rem;
+            }
+            .metric-value {
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .container {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+            .card-custom {
+                margin-bottom: 1rem;
+            }
+            .d-flex.gap-3 {
+                flex-wrap: wrap;
+                gap: 0.75rem !important;
+            }
+            .btn-dashboard {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            h1 {
+                font-size: 1.4rem;
+            }
+            .metric-title {
+                font-size: 0.9rem;
+            }
+            .metric-value {
+                font-size: 1.4rem;
+            }
+            .card-icon {
+                font-size: 2rem;
+            }
+            .table th, .table td {
+                padding: 0.5rem;
+                font-size: 0.8rem;
+            }
+            .badge {
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .container {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            h1 {
+                font-size: 1.2rem;
+            }
+            .metric-title {
+                font-size: 0.8rem;
+            }
+            .metric-value {
+                font-size: 1.2rem;
+            }
+            .card-icon {
+                font-size: 1.8rem;
+            }
+            .card-body-custom canvas {
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .card-body-custom {
+                padding: 15px;
+            }
+            .table th, .table td {
+                padding: 0.4rem;
+                font-size: 0.75rem;
+            }
+            .form-check-label {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .d-flex.justify-content-between.align-items-center.mb-3 {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            .form-check.form-switch {
+                margin-left: 0;
+                margin-right: auto;
+            }
+            .btn-dashboard i {
+                margin-right: 3px;
+            }
+        }
+
+        /* Estilos para hacer las tablas scrollables horizontalmente en pantallas pequeñas. */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table {
+            min-width: 500px;
+        }
+
+        /* Estilos para los botones en pantallas pequeñas. */
+        @media (max-width: 767.98px) {
+            .btn-dashboard {
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+            .btn-dashboard i {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Evita el efecto hover en dispositivos táctiles. */
+        @media (hover: none) {
+            .card-custom:hover {
+                transform: none;
+            }
+            .btn-dashboard:hover {
+                opacity: 1;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+{% load humanize %}
+<div class="container py-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <form method="POST" action="{% url 'logout' %}" class="me-3">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+        </form>
+        <h1 class="fw-bold text-whithe mb-0">
+            <i class="fas fa-warehouse me-2"></i>Control de Stock
+        </h1>
+        <div></div>
+    </div>
+
+    <div class="form-check form-switch ms-auto mb-2">
+        <input class="form-check-input" type="checkbox" id="darkModeToggle">
+        <label class="form-check-label" for="darkModeToggle">Modo oscuro</label>
+    </div>
+
+    <div class="row g-3 mb-3">
+        <div class="col-lg-3 col-md-6">
+            <div class="card-custom" style="background-color: #4CAF50;">
+                <div class="card-body-custom d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="metric-title text-white">Total Productos</h5>
+                        <p class="metric-value text-white">{{ total_productos }}</p>
+                    </div>
+                    <i class="fas fa-boxes card-icon text-white"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card-custom" style="background-color: #2196F3;">
+                <div class="card-body-custom d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="metric-title text-white">Categorías</h5>
+                        <p class="metric-value text-white">{{ total_categorias }}</p>
+                    </div>
+                    <i class="fas fa-tags card-icon text-white"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card-custom" style="background-color: #FF9800;">
+                <div class="card-body-custom d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="metric-title text-dark">Stock Crítico</h5>
+                        <p class="metric-value text-dark">{{ productos_bajo_stock.count }}</p>
+                    </div>
+                    <i class="fas fa-exclamation-triangle card-icon text-dark"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card-custom" style="background-color: #f44336;">
+                <div class="card-body-custom d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="metric-title text-white">Valor Inventario</h5>
+                        <p class="metric-value text-white">{{ valor_inventario|floatformat:2|intcomma }}€</p>
+                    </div>
+                    <i class="fas fa-coins card-icon text-white"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-lg-6 col-md-12">
+            <div class="card-custom">
+                <h4 class="px-3 pt-3">Últimos Movimientos</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Tipo</th>
+                            <th>Cantidad</th>
+                            <th>Fecha</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for movimiento in movimientos %}
+                            <tr>
+                                <td>{{ movimiento.producto.nombre|truncatechars:15 }}</td>
+                                <td>
+                                            <span class="badge bg-{{ movimiento.tipo|lower }} text-black">
+                                                {{ movimiento.get_tipo_display }}
+                                            </span>
+                                </td>
+                                <td>{{ movimiento.cantidad }}</td>
+                                <td>{{ movimiento.fecha|date:"d/m H:i" }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-2 text-muted">
+                                    No hay movimientos recientes
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-12">
+            <div class="card-custom">
+                <h4 class="px-3 pt-3">Alertas de Stock Bajo</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Stock Actual</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for producto in productos_bajo_stock %}
+                            <tr>
+                                <td>{{ producto.nombre }}</td>
+                                <td>
+                                            <span class="badge bg-danger">{{ producto.stock_actual }} unidades</span>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center py-2 text-muted">
+                                    No hay productos con stock bajo en este momento.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mt-3">
+        <div class="col-md-6">
+            <div class="card-custom h-100">
+                <h4 class="px-3 pt-3">Stock por Categoría</h4>
+                <div class="card-body-custom">
+                    <canvas id="stockChart" style="width: 100% !important; height: 200px !important;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card-custom h-100">
+                <h4 class="px-3 pt-3">Estado del Stock</h4>
+                <div class="card-body-custom">
+                    <canvas id="estadoChart" style="width: 100% !important; height: 200px !important;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-nav" class="d-flex gap-2 mt-3">
+        <a id="product-list" href="{% url 'stock:producto_list' %}" class="btn btn-outline-secondary btn-dashboard">
+            <i class="fas fa-box me-1"></i>Ver Productos
+        </a>
+        <a href="{% url 'stock:producto_create' %}" class="btn btn-success btn-dashboard">
+            <i class="fas fa-plus-circle me-1"></i>Nuevo Producto
+        </a>
+        <a href="{% url 'stock:categoria_list' %}" class="btn btn-info btn-dashboard">
+            <i class="fas fa-tags me-1"></i>Ver Categorías
+        </a>
+        <a href="{% url 'stock:categoria_create' %}" class="btn btn-warning btn-dashboard">
+            <i class="fas fa-tags me-1"></i>Añadir Categorías
+        </a>
+        <a href="{% url 'stock:reportar_error' %}" class="btn btn-danger btn-dashboard">
+            <i class="fas fa-file-export me-1"></i>Reporte
+        </a>
+    </div>
+</div>
+
+<script>
+    // Script para el gráfico de Stock por Categoría usando Chart.js.
+    const stockChartCtx = document.getElementById('stockChart').getContext('2d');
+    new Chart(stockChartCtx, {
+        type: 'bar', // Tipo de gráfico de barras.
+        data: {
+            labels: {{ categorias_nombres|safe }}, // Etiquetas para el eje X (nombres de las categorías).
+            datasets: [{
+                label: 'Stock por Categoría',
+                data: {{ categorias_stock|safe }}, // Datos para las barras (cantidades de stock por categoría).
+                backgroundColor: {{ categorias_colores|safe }}, // Colores de las barras.
+            }]
+        },
+        options: {
+            responsive: true, // Hace el gráfico responsive.
+            maintainAspectRatio: false, // Permite ajustar la altura manualmente con CSS.
+            plugins: {
+                legend: {display: false} // Oculta la leyenda del gráfico.
+            },
+            scales: {
+                y: {
+                    beginAtZero: true, // El eje Y empieza en cero.
+                    ticks: {
+                        font: {
+                            size: 10 // Tamaño de la fuente de las etiquetas del eje Y.
+                        }
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: {
+                            size: 10 // Tamaño de la fuente de las etiquetas del eje X.
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Script para el gráfico de Estado del Stock (doughnut chart).
+    const estadoChartCtx = document.getElementById('estadoChart').getContext('2d');
+    new Chart(estadoChartCtx, {
+        type: 'doughnut', // Tipo de gráfico de dona.
+        data: {
+            labels: {{ stock_estados_labels|safe }}, // Etiquetas para las secciones de la dona (ej: 'Normal', 'Bajo', 'Agotado').
+            datasets: [{
+                label: 'Estado del Stock',
+                data: {{ stock_estados_data|safe }}, // Datos para el tamaño de cada sección.
+                backgroundColor: {{ stock_estados_colors|safe }}, // Colores de las secciones.
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom', // Posición de la leyenda.
+                    labels: {
+                        font: {
+                            size: 10 // Tamaño de la fuente de la leyenda.
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Script para el modo oscuro.
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    darkModeToggle.addEventListener('change', function () {
+        if (darkModeToggle.checked) {
+            // Si el checkbox está marcado, añade el atributo 'data-theme' con el valor 'dark' al body.
+            document.body.setAttribute('data-theme', 'dark');
+        } else {
+            // Si no está marcado, remueve el atributo 'data-theme' del body, volviendo al tema por defecto.
+            document.body.removeAttribute('data-theme');
+        }
+    });
+</script>
+</body>
+</html>

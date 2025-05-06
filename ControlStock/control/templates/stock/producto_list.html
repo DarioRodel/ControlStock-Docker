@@ -1,0 +1,444 @@
+{% load static %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="{% static 'dark/js/darkmode.js' %}" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
+<div class="container py-4">
+    <div class="form-check form-switch ms-auto mb-3">
+        <input class="form-check-input" type="checkbox" id="darkModeToggle">
+        <label class="form-check-label" for="darkModeToggle">Modo oscuro</label>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary d-flex align-items-center">
+            <i class="fas fa-boxes me-2 fs-3"></i> Productos
+        </h2>
+        <div class="d-flex gap-2">
+            <a href="{% url 'stock:dashboard' %}" class="btn btn-light border shadow-sm d-flex align-items-center">
+                <i class="fas fa-arrow-left me-2"></i> Volver al Inicio
+            </a>
+            <a href="{% url 'stock:producto_create' %}" class="btn btn-success shadow-sm">
+                <i class="fas fa-plus-circle me-2"></i> Nuevo Producto
+            </a>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Buscar</label>
+                    <input type="text" name="search" class="form-control form-control-lg"
+                           placeholder="Nombre o código..." value="{{ request.GET.search }}">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Categoría</label>
+                    <select name="categoria" class="form-select form-select-lg">
+                        <option value="">Todas</option>
+                        {% for cat in categorias %}
+                            <option value="{{ cat.id }}"
+                                    {% if request.GET.categoria == cat.id|stringformat:"s" %}selected{% endif %}>
+                                {{ cat.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Estado</label>
+                    <select name="estado" class="form-select form-select-lg">
+                        <option value="">Todos</option>
+                        {% for valor, nombre in estados %}
+                            <option value="{{ valor }}" {% if request.GET.estado == valor %}selected{% endif %}>
+                                {{ nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-2 d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-filter me-2"></i> Filtrar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-uppercase small text-muted">
+                <tr>
+                    <th class="text-center">Imagen</th>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th class="text-center">Stock</th>
+                    <th class="text-center">Estado</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for producto in productos %}
+                    <tr class="hover-highlight">
+                        <td class="text-center">
+                            {% if producto.imagen %}
+                                <img src="{{ producto.imagen.url }}" class="img-thumbnail rounded-circle shadow-sm"
+                                     style="width: 50px; height: 50px; object-fit: cover;">
+                            {% else %}
+                                <div class="no-image-placeholder rounded-circle d-flex align-items-center justify-content-center text-muted"
+                                     style="width: 50px; height: 50px;">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ producto.codigo_barras }}
+
+                        </td>
+
+                        <td>{{ producto.nombre }}</td>
+                        <td>
+                                <span class="badge bg-secondary-subtle text-dark px-3 py-2 rounded-pill">
+                                    {{ producto.categoria.nombre|default:"-" }}
+                                </span>
+                        </td>
+                        <td class="text-center">
+                                <span class="badge bg-light text-dark fs-6 dark-mode-badge">
+                                    {{ producto.stock_actual }}
+                                </span>
+                        </td>
+                        <td class="text-center">
+                                <span class="badge py-2 px-3 rounded-pill
+                                    {% if producto.estado == 'NORMAL' %} bg-success-subtle text-success
+                                    {% elif producto.estado == 'BAJO' %} bg-warning-subtle text-warning
+                                    {% else %} bg-danger-subtle text-danger {% endif %}">
+                                    <i class="fas
+                                        {% if producto.estado == 'OK' %} fa-check-circle
+                                        {% elif producto.estado == 'BAJO' %} fa-exclamation-triangle
+                                        {% else %} fa-times-circle {% endif %} me-2"></i>
+                                    {{ producto.get_estado_display }}
+                                </span>
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="{% url 'stock:producto_delete' producto.pk %}"
+                                   class="btn btn-sm btn-outline-danger rounded-circle p-2">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                                <a href="{% url 'stock:producto_edit' producto.pk %}"
+                                   class="btn btn-sm btn-outline-secondary rounded-circle"
+                                   data-bs-toggle="tooltip" title="Editar Producto">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5 bg-light text-muted">
+                            <div class="mb-4">
+                                <i class="fas fa-box-open fa-3x mb-3 text-primary"></i>
+                            </div>
+                            <p class="h5 mb-3">¡Aún no tienes productos!</p>
+                            <p class="mb-4">Puedes agregar productos desde el botón de abajo.</p>
+                            <a href="{% url 'stock:producto_create' %}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-plus-circle me-2"></i> Agregar Nuevo Producto
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if is_paginated %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?page={{ page_obj.previous_page_number }}&search={{ request.GET.search }}&categoria={{ request.GET.categoria }}&estado={{ request.GET.estado }}">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link"
+                           href="?page={{ num }}&search={{ request.GET.search }}&categoria={{ request.GET.categoria }}&estado={{ request.GET.estado }}">{{ num }}</a>
+                    </li>
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?page={{ page_obj.next_page_number }}&search={{ request.GET.search }}&categoria={{ request.GET.categoria }}&estado={{ request.GET.estado }}">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+</div>
+
+<style>
+    /* Definición de variables CSS para el tema claro (por defecto) */
+    :root {
+        --primary-color: #4CAF50; /* Verde */
+        --secondary-color: #2196F3; /* Azul */
+        --accent-color: #FF9800; /* Naranja */
+        --danger-color: #f44336; /* Rojo */
+        --background-color: #f4f7fb; /* Gris claro */
+        --card-radius: 8px;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+        --card-bg: #ffffff;
+        --text-color: #2d3748; /* Gris oscuro */
+        --card-hover: rgba(0, 0, 0, 0.03);
+        --light-bg: #f8f9fa; /* Gris muy claro */
+        --success-bg: #d1e7dd; /* Verde muy claro */
+        --warning-bg: #fff3cd; /* Amarillo muy claro */
+        --danger-bg: #f8d7da; /* Rojo muy claro */
+        --input-bg: #ffffff;
+        --input-border: #e2e8f0; /* Gris claro */
+        --placeholder-color: #94a3b8; /* Gris medio */
+        --table-border: #e9ecef; /* Gris claro para bordes de tabla */
+        --table-header-bg: #f8f9fa; /* Gris muy claro para encabezado de tabla */
+    }
+
+    /* Estilos para el tema oscuro */
+    body[data-theme="dark"] {
+        --background-color: #121212; /* Gris muy oscuro */
+        --card-bg: #1e1e2f; /* Gris oscuro */
+        --text-color: #e0e0e0; /* Gris claro */
+        --shadow-color: rgba(255, 255, 255, 0.05);
+        --card-hover: rgba(255, 255, 255, 0.08);
+        --light-bg: #2d2d2d; /* Gris más oscuro */
+        --success-bg: #1a3a2e;
+        --warning-bg: #4d3d17;
+        --danger-bg: #4a2527;
+        --input-bg: #2d2d2d;
+        --input-border: #3d3d3d; /* Gris oscuro */
+        --placeholder-color: #a0aec0; /* Gris medio claro */
+        --table-border: #404040; /* Gris oscuro para bordes de tabla */
+        --table-header-bg: #2d2d2d; /* Gris más oscuro para encabezado de tabla */
+    }
+
+    /* Estilos generales del body */
+    body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Estilos para la tarjeta contenedora */
+    .card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--shadow-color);
+        box-shadow: 0 4px 6px -1px var(--shadow-color);
+        transition: background-color 0.3s;
+    }
+
+    /* Estilos para fondos ligeros y de estado */
+    .bg-light {
+        background-color: var(--light-bg) !important;
+    }
+
+    .bg-success-subtle {
+        background-color: var(--success-bg) !important;
+    }
+
+    .bg-warning-subtle {
+        background-color: var(--warning-bg) !important;
+    }
+
+    .bg-danger-subtle {
+        background-color: var(--danger-bg) !important;
+    }
+
+    .bg-secondary-subtle {
+        background-color: #e2e8f0 !important;
+        color: #495057 !important; /* Un gris claro para secundario */
+    }
+
+    body[data-theme="dark"] .bg-secondary-subtle {
+        background-color: #495057 !important;
+        color: #e2e8f0 !important;
+    }
+
+    body[data-theme="dark"] .dark-mode-badge {
+        background-color: #343a40 !important;
+        color: #f8f9fa !important;
+    }
+
+
+    /* Estilos para los elementos de formulario */
+    .form-control, .form-select {
+        background-color: var(--input-bg) !important;
+        color: var(--text-color) !important;
+        border: 2px solid var(--input-border) !important;
+        transition: all 0.3s ease;
+    }
+
+    .form-control::placeholder {
+        color: var(--placeholder-color) !important;
+        opacity: 0.8;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color) !important;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2) !important;
+    }
+
+    /* Estilos para las etiquetas de formulario */
+    .form-label {
+        color: var(--text-color);
+    }
+
+    /* Estilos para el botón primario (Filtrar, Nuevo Producto) */
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .btn-primary:hover {
+        background-color: #45a049;
+        border-color: #45a049;
+    }
+
+    /* Estilos para la paginación */
+    .pagination .page-link {
+        background-color: var(--card-bg);
+        border-color: var(--shadow-color);
+        color: var(--text-color);
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    /* Estilos para el placeholder de imagen cuando no hay imagen */
+    .no-image-placeholder {
+        background-color: var(--light-bg);
+        color: var(--text-color);
+    }
+
+    /* Estilos para botones de contorno (Volver, Editar) */
+    .btn-outline-secondary {
+        border-color: var(--shadow-color);
+        color: var(--text-color);
+    }
+
+    /* Estilos para el botón de eliminar */
+    .btn-outline-danger {
+        border-color: var(--danger-color);
+        color: var(--danger-color);
+    }
+
+    /* Estilo al pasar el ratón sobre las filas de la tabla */
+    .hover-highlight:hover {
+        background-color: var(--card-hover);
+    }
+
+    /* Estilos base para la tabla */
+    .table {
+        --bs-table-color: var(--text-color);
+        --bs-table-bg: transparent;
+        --bs-table-border-color: var(--table-border);
+        margin-bottom: 0;
+    }
+
+    /* Estilo al pasar el ratón sobre las filas de la tabla */
+    .table-hover tbody tr:hover {
+        --bs-table-accent-bg: var(--card-hover);
+        color: var(--text-color);
+    }
+
+    /* Estilos para la cabecera de la tabla */
+    .table-light {
+        --bs-table-bg: var(--table-header-bg);
+        --bs-table-color: var(--text-color);
+        border-bottom: 2px solid var(--table-border) !important;
+    }
+
+    /* Estilos para la cabecera de tablas sin bordes */
+    .table-borderless thead th {
+        border-bottom: 2px solid var(--table-border) !important;
+    }
+
+    /* Estilos para las celdas de la tabla */
+    .table td, .table th {
+        vertical-align: middle;
+        padding: 1rem;
+        background-color: var(--card-bg);
+    }
+
+    /* Estilos específicos para el botón de eliminar */
+    .btn-outline-danger {
+        --bs-btn-color: var(--danger-color);
+        --bs-btn-border-color: var(--danger-color);
+        --bs-btn-hover-bg: var(--danger-color);
+        --bs-btn-hover-border-color: var(--danger-color);
+        --bs-btn-active-bg: var(--danger-color);
+    }
+
+    /* Estilos para texto atenuado (cuando no hay productos) */
+    .text-muted {
+        color: var(--text-color) !important;
+        opacity: 0.7;
+    }
+
+    /* Ajustes para dispositivos móviles */
+    @media (max-width: 768px) {
+        .table-responsive {
+            border-radius: var(--card-radius);
+            border: 1px solid var(--input-border);
+        }
+
+        .table td, .table th {
+            padding: 0.75rem;
+        }
+    }
+</style>
+
+<script>
+    // Dark Mode Toggle - Código Javascript para controlar el modo oscuro
+    const toggle = document.getElementById('darkModeToggle'); // Obtiene el elemento checkbox con el ID 'darkModeToggle'
+    const currentTheme = localStorage.getItem('theme'); // Intenta obtener el tema guardado previamente en el almacenamiento local del navegador
+
+    // Si se encontró un tema guardado y es 'dark', aplica el modo oscuro al cargar la página
+    if (currentTheme === 'dark') {
+        document.body.setAttribute('data-theme', 'dark'); // Establece el atributo 'data-theme' en el elemento 'body' para activar los estilos del tema oscuro definidos en CSS
+        toggle.checked = true; // Marca el checkbox del modo oscuro como activado
+    }
+
+    // Agrega un 'listener' para el evento 'change' en el checkbox del modo oscuro
+    toggle.addEventListener('change', () => {
+        if (toggle.checked) {
+            // Si el checkbox se activa (el usuario quiere modo oscuro)
+            document.body.setAttribute('data-theme', 'dark'); // Establece el atributo 'data-theme'
+            localStorage.setItem('theme', 'dark'); // Guarda la preferencia 'dark' en el almacenamiento local
+        } else {
+            // Si el checkbox no está marcado (el usuario quiere modo claro)
+            document.body.removeAttribute('data-theme'); // Remueve el atributo 'data-theme'
+            localStorage.setItem('theme', 'light'); // Guarda 'light' en el almacenamiento local
+        }
+    });
+
+    // Inicializar tooltips de Bootstrap
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+    // Generar los códigos de barras después de que se cargue el contenido
+    window.addEventListener('DOMContentLoaded', () => {
+        JsBarcode(".barcode").init();
+    });
+
+</script>

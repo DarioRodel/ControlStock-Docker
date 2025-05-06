@@ -1,0 +1,580 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if form.instance.pk %}Editar Producto{% else %}Nuevo Producto{% endif %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/quagga/dist/quagga.min.js"></script>
+
+    <script src="{% static 'dark/js/darkmode.js' %}"></script>
+
+
+    <style>
+        /* Definición de variables CSS para el tema claro (por defecto) */
+        :root {
+            --primary-color: #4CAF50; /* Verde */
+            --secondary-color: #2196F3; /* Azul */
+            --accent-color: #FF9800; /* Naranja */
+            --danger-color: #f44336; /* Rojo */
+            --background-color: #f4f7fb; /* Gris claro */
+            --card-radius: 8px;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --card-bg: #ffffff;
+            --text-color: #2d3748; /* Gris oscuro */
+            --card-hover: rgba(0, 0, 0, 0.03);
+            --light-bg: #f8f9fa; /* Gris muy claro */
+            --success-bg: #d1e7dd; /* Verde muy claro */
+            --warning-bg: #fff3cd; /* Amarillo muy claro */
+            --danger-bg: #f8d7da; /* Rojo muy claro */
+            --input-bg: #ffffff;
+            --input-border: #e2e8f0; /* Gris claro */
+            --placeholder-color: #94a3b8; /* Gris medio */
+            --table-border: #e9ecef; /* Gris claro para bordes de tabla */
+            --table-header-bg: #f8f9fa; /* Gris muy claro para encabezado de tabla */
+        }
+
+        /* Estilos para el tema oscuro */
+        body[data-theme="dark"] {
+            --background-color: #121212; /* Gris muy oscuro */
+            --card-bg: #1e1e2f; /* Gris oscuro */
+            --text-color: #e0e0e0; /* Gris claro */
+            --shadow-color: rgba(255, 255, 255, 0.05);
+            --card-hover: rgba(255, 255, 255, 0.08);
+            --light-bg: #2d2d2d; /* Gris más oscuro */
+            --success-bg: #1a3a2e;
+            --warning-bg: #4d3d17;
+            --danger-bg: #4a2527;
+            --input-bg: #2d2d2d;
+            --input-border: #3d3d3d; /* Gris oscuro */
+            --placeholder-color: #a0aec0; /* Gris medio claro */
+            --table-border: #404040; /* Gris oscuro para bordes de tabla */
+            --table-header-bg: #2d2d2d; /* Gris más oscuro para encabezado de tabla */
+            font-size: 1.05rem; /* Aumenta el tamaño de la fuente en modo oscuro */
+        }
+
+        /* Estilos generales del body */
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Estilos para la tarjeta contenedora */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--shadow-color);
+            box-shadow: 0 4px 6px -1px var(--shadow-color);
+            transition: background-color 0.3s;
+        }
+
+        body[data-theme="dark"] .bg-secondary-subtle {
+            background-color: #495057 !important;
+            color: #e2e8f0 !important;
+        }
+
+        body[data-theme="dark"] .dark-mode-badge {
+            background-color: #343a40 !important;
+            color: #f8f9fa !important;
+        }
+
+        /* Estilos para las etiquetas de formulario */
+        .form-label {
+            color: var(--text-color);
+        }
+
+        /* Estilos para el botón primario (Filtrar, Nuevo Producto) */
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #45a049;
+            border-color: #45a049;
+        }
+
+        /* Estilos para la paginación */
+        .pagination .page-link {
+            background-color: var(--card-bg);
+            border-color: var(--shadow-color);
+            color: var(--text-color);
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* Estilos para botones de contorno (Volver, Editar) */
+        .btn-outline-secondary {
+            border-color: var(--shadow-color);
+            color: var(--text-color);
+        }
+
+
+        /* Estilo al pasar el ratón sobre las filas de la tabla */
+        .table-hover tbody tr:hover {
+            --bs-table-accent-bg: var(--card-hover);
+            color: var(--text-color);
+        }
+
+
+        /* Estilos para la cabecera de tablas sin bordes */
+        .table-borderless thead th {
+            border-bottom: 2px solid var(--table-border) !important;
+        }
+
+        /* Estilos para las celdas de la tabla */
+        .table td, .table th {
+            vertical-align: middle;
+            padding: 1rem;
+            background-color: var(--card-bg);
+        }
+
+
+        /* Ajustes para dispositivos móviles */
+        @media (max-width: 768px) {
+            .table-responsive {
+                border-radius: var(--card-radius);
+                border: 1px solid var(--input-border);
+            }
+
+            .table td, .table th {
+                padding: 0.75rem;
+            }
+        }
+
+        /* Estilos generales del body */
+        body {
+            background-color: var(--background-color); /* Usa la variable CSS para el color de fondo */
+            font-family: 'Segoe UI', sans-serif; /* Fuente de letra */
+            transition: background-color 0.3s, color 0.3s; /* Transición suave para los cambios de color */
+        }
+
+        /* Estilos para la tarjeta contenedora del formulario */
+        .card {
+            border: none; /* Elimina el borde */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            border-radius: 1rem; /* Bordes redondeados */
+            transition: background-color 0.3s; /* Transición suave para el color de fondo */
+        }
+
+        /* Estilos para el encabezado de la tarjeta */
+        .card-header {
+            border-top-left-radius: 1rem; /* Borde superior izquierdo redondeado */
+            border-top-right-radius: 1rem; /* Borde superior derecho redondeado */
+            background: linear-gradient(90deg, #0d6efd, #3b82f6); /* Degradado lineal de azul */
+        }
+
+        /* Estilos para el título del encabezado de la tarjeta */
+        .card-header h3 {
+            font-weight: 600; /* Texto en negrita */
+            color: white; /* Color del texto blanco */
+        }
+
+        /* Estilos para las etiquetas de los formularios */
+        .form-label {
+            font-weight: 500; /* Texto semi-negrita */
+            color: var(--text-color); /* Usa la variable CSS para el color del texto */
+        }
+
+        /* Ajuste para los checkboxes */
+        .form-check-input {
+            margin-top: 0.4rem; /* Ajuste del margen superior */
+        }
+
+        /* Estilos para el botón primario (Guardar) */
+        .btn-primary {
+            font-weight: 600; /* Texto en negrita */
+            padding: 0.7rem 1.5rem; /* Espaciado interno */
+            border-radius: 0.5rem; /* Bordes ligeramente redondeados */
+        }
+
+        /* Estilos para las alertas de mensajes */
+        .alert {
+            font-size: 0.95rem; /* Tamaño de la letra */
+        }
+
+        /* Espaciado inferior */
+        .mb-3 {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Estilos para el cuerpo de la tarjeta */
+        .card-body {
+            padding: 2rem; /* Espaciado interno */
+        }
+
+        /* Estilos para los botones en la parte inferior */
+        .d-flex button {
+            padding: 0.7rem 1.5rem; /* Espaciado interno */
+            border-radius: 0.5rem; /* Bordes ligeramente redondeados */
+        }
+
+        /* Estilos para la carga de imágenes */
+        .image-upload-container {
+            border: 2px dashed var(--input-border);
+            border-radius: var(--card-radius);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .image-upload-container:hover {
+            border-color: var(--primary-color);
+            background-color: var(--card-hover);
+        }
+
+        .current-image-preview {
+            position: relative;
+            border: 1px solid var(--input-border);
+            border-radius: var(--card-radius);
+            padding: 0.5rem;
+            background: var(--input-bg);
+        }
+
+        .image-wrapper img {
+            object-fit: contain;
+            width: 100%;
+            background: var(--light-bg);
+        }
+
+
+
+        .custom-file-upload input[type="file"] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label label {
+            cursor: pointer;
+            margin: 0;
+        }
+
+
+
+        /* Definición de variables CSS para el tema claro (por defecto) */
+        :root {
+            --primary-color: #0d6efd; /* Azul primario */
+            --secondary-color: #3b82f6; /* Azul secundario */
+            --background-color: #f8f9fa; /* Gris claro de fondo */
+            --text-color: #343a40; /* Gris oscuro para el texto */
+            --input-bg: #ffffff; /* Blanco para el fondo de los inputs */
+            --input-border: #ddd; /* Borde gris claro para los inputs */
+            --input-focus-border: #0d6efd; /* Borde azul al enfocar los inputs */
+            --card-bg: #ffffff; /* Blanco para el fondo de las tarjetas */
+            --card-hover: rgba(0, 0, 0, 0.03); /* Gris muy claro al pasar el ratón sobre las tarjetas */
+        }
+
+        /* Definición de variables CSS para el tema oscuro */
+        body[data-theme="dark"] {
+            --background-color: #121212; /* Gris oscuro de fondo */
+            --text-color: #e0e0e0; /* Gris claro para el texto */
+            --card-bg: #1e1e2f; /* Gris más oscuro para el fondo de las tarjetas */
+            --input-bg: #2d2d2d; /* Gris más oscuro para el fondo de los inputs */
+            --input-border: #444; /* Borde gris oscuro para los inputs */
+            --input-focus-border: #3b82f6; /* Azul al enfocar los inputs */
+            --card-hover: rgba(255, 255, 255, 0.08); /* Blanco muy claro al pasar el ratón sobre las tarjetas */
+            font-size: 1.05rem; /* Aumenta el tamaño de la fuente en modo oscuro */
+        }
+
+        /* Estilo específico para las tarjetas en modo oscuro */
+        body[data-theme="dark"] .card {
+            background-color: var(--card-bg); /* Usa la variable para el color de fondo de la tarjeta */
+        }
+
+        /* Estilos para el botón secundario (Volver) */
+        .btn-outline-secondary {
+            border-color: var(--input-border); /* Usa la variable para el color del borde del input */
+            color: var(--text-color); /* Usa la variable para el color del texto */
+        }
+
+        /* Estilo al pasar el ratón sobre el botón secundario */
+        .btn-outline-secondary:hover {
+            background-color: var(--card-hover); /* Usa la variable para el color de fondo al pasar el ratón */
+        }
+
+        /* Aumenta el tamaño del checkbox y mueve el checkbox y el texto más a la derecha */
+        .form-check-input.estado-stock-checkbox {
+            transform: scale(1); /* Aumenta el tamaño del checkbox */
+            margin-top: 0.3rem; /* Ajuste del margen superior */
+            width: 110px; /* Aumenta el tamaño del checkbox */
+            height: 25px; /* Aumenta el tamaño del checkbox */
+            border-radius: 0.25rem; /* Bordes redondeados para el checkbox */
+            margin-right: 10px; /* Espacio a la derecha para separar del texto */
+        }
+
+        /* Aumenta el tamaño del texto y mueve todo el conjunto más a la derecha */
+        .form-check-label {
+            font-size: 1rem; /* Aumenta el tamaño del texto */
+            font-weight: 400; /* Mantén el texto en semi-negrita */
+            margin-left: 20px; /* Aumenta el margen a la izquierda para moverlo más a la derecha */
+        }
+
+        .d-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .d-flex .btn {
+            padding: 0.7rem 1.5rem; /* Asegura que los botones tengan el mismo tamaño */
+            font-weight: 600;
+            border-radius: 0.5rem; /* Bordes redondeados para los botones */
+            font-size: 1rem; /* Asegura que el texto de los botones también sea más grande en modo oscuro */
+        }
+
+        .d-flex .btn-outline-secondary {
+            border-color: var(--input-border);
+            color: var(--text-color);
+            font-size: 1rem; /* Asegura que el texto del botón secundario también sea más grande en modo oscuro */
+        }
+
+        .d-flex .btn-outline-secondary:hover {
+            background-color: var(--card-hover);
+            border-color: var(--shadow-color);
+        }
+
+        .d-flex .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            font-size: 1rem; /* Asegura que el texto del botón primario también sea más grande en modo oscuro */
+        }
+
+        .d-flex .btn-primary:hover {
+            background-color: #45a049;
+            border-color: #45a049;
+        }
+
+        /* Asegurarse de que los iconos estén alineados correctamente con el texto */
+        .d-flex .btn i {
+            margin-right: 8px; /* Espacio entre el icono y el texto */
+        }
+
+        /* Asegura que los botones y el enlace estén centrados y con el mismo tamaño de fuente */
+        .d-flex .btn, .d-flex .btn-outline-secondary {
+            font-size: 1rem;
+        }
+
+
+
+        .image-upload-container {
+            border: 2px dashed var(--input-border);
+            border-radius: var(--card-radius);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .image-upload-container:hover {
+            border-color: var(--primary-color);
+            background-color: var(--card-hover);
+        }
+
+
+        .image-upload-text {
+            color: var(--placeholder-color);
+            font-size: 0.9rem;
+        }
+
+        .current-image-preview {
+            position: relative;
+            border: 1px solid var(--input-border);
+            border-radius: var(--card-radius);
+            padding: 0.5rem;
+            background: var(--input-bg);
+            margin-bottom: 1rem;
+        }
+
+        .image-wrapper img {
+            object-fit: contain;
+            width: 100%;
+            background: var(--light-bg);
+            max-height: 200px;
+        }
+
+
+
+        .custom-file-upload input[type="file"] {
+            position: absolute;
+            left: -9999px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="form-check form-switch ms-auto mb-3">
+        <input class="form-check-input" type="checkbox" id="darkModeToggle">
+        <label class="form-check-label" for="darkModeToggle">Modo oscuro</label>
+    </div>
+
+    <div class="card mx-auto" style="max-width: 900px;">
+        <div class="card-header">
+            <h3 class="mb-0">
+                {% if form.instance.pk %}
+                    <i class="fas fa-edit me-2"></i> Editar Producto
+                {% else %}
+                    <i class="fas fa-plus-circle me-2"></i> Crear Nuevo Producto
+                {% endif %}
+            </h3>
+        </div>
+        <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                        {% if message.tags == 'success' %}
+                            <i class="fas fa-check-circle me-2 text-success"></i>
+                        {% elif message.tags == 'error' or message.tags == 'danger' %}
+                            <i class="fas fa-exclamation-circle me-2 text-danger"></i>
+                        {% elif message.tags == 'warning' %}
+                            <i class="fas fa-exclamation-triangle me-2 text-warning"></i>
+                        {% else %}
+                            <i class="fas fa-info-circle me-2 text-info"></i>
+                        {% endif %}
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" novalidate enctype="multipart/form-data">
+                {% csrf_token %}
+                <p>{{ form.non_field_errors }}</p>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="{{ form.codigo_barras.id_for_label }}" class="form-label">Código de
+                                Barras</label>
+                            <div class="input-group">
+                                {{ form.codigo_barras|attr:"placeholder:Leer o ingresar código"|add_class:"form-control" }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.nombre.id_for_label }}" class="form-label">Nombre<span
+                                    class="text-danger">*</span></label>
+                            {{ form.nombre|attr:"placeholder:Nombre del producto"|add_class:"form-control" }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.categoria.id_for_label }}" class="form-label">Categoría</label>
+                            {{ form.categoria|add_class:"form-select" }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.descripcion.id_for_label }}" class="form-label">Descripción</label>
+                            {{ form.descripcion|attr:"placeholder:Descripción detallada"|add_class:"form-control" }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.estado.id_for_label }}" class="form-label">Estado de Stock</label>
+                            <div class="form-check">
+                                {{ form.estado|add_class:"form-check-input estado-stock-checkbox" }}
+                                <label class="form-check-label" for="{{ form.estado.id_for_label }}"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="{{ form.precio_compra.id_for_label }}" class="form-label">Precio compra</label>
+                            {{ form.precio_compra|attr:"placeholder:0.00"|add_class:"form-control" }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.precio_venta.id_for_label }}" class="form-label">Precio venta</label>
+                            {{ form.precio_venta|attr:"placeholder:0.00"|add_class:"form-control" }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.stock_actual.id_for_label }}" class="form-label">Stock actual</label>
+                            {{ form.stock_actual|attr:"placeholder:Cantidad actual"|add_class:"form-control" }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.stock_minimo.id_for_label }}" class="form-label">Stock mínimo</label>
+                            {{ form.stock_minimo|attr:"placeholder:Cantidad mínima"|add_class:"form-control" }}
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="{{ form.imagen.id_for_label }}" class="form-label">Imagen del Producto</label>
+                            <div class="image-upload-container">
+                                <!-- Botón de carga de imagen -->
+                                <label for="{{ form.imagen.id_for_label }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-upload me-2"></i> Agregar Imagen
+                                </label>
+                                <input type="file" name="{{ form.imagen.name }}" id="{{ form.imagen.id_for_label }}"
+                                       class="form-control-file" accept="image/*" style="display:none;"
+                                       onchange="previewImage(event)">
+
+                                <p class="image-upload-text mt-2">Arrastra y suelta la imagen aquí o haz clic para
+                                    seleccionar</p>
+
+                                {% if form.imagen.errors %}
+                                    <div class="text-danger small">{{ form.imagen.errors }}</div>
+                                {% endif %}
+
+                                <div id="imagePreview" class="mt-3" style="display:none;">
+                                    <p class="text-muted small mb-2">Vista previa de la imagen:</p>
+                                    <div class="image-wrapper position-relative">
+                                        <img id="previewImg" class="img-fluid rounded-3 shadow-sm border"
+                                             style="max-height: 200px;">
+                                    </div>
+                                </div>
+
+                                {% if form.instance.imagen %}
+                                    <div class="current-image-preview mt-3">
+                                        <p class="text-muted small mb-2">Imagen actual:</p>
+                                        <div class="image-wrapper position-relative">
+                                            <img src="{{ form.instance.imagen.url }}" alt="Imagen actual del producto"
+                                                 class="img-fluid rounded-3 shadow-sm border"
+                                                 style="max-height: 200px;">
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{% url 'stock:producto_list' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> Volver a la lista de productos
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i> Guardar Producto
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function previewImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const preview = document.getElementById('imagePreview');
+                const previewImg = document.getElementById('previewImg');
+                previewImg.src = e.target.result;
+                preview.style.display = 'block'; // Show the preview div
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+
+</body>
+</html>

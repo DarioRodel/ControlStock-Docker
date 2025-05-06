@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: controlstock_web
+    volumes:
+      - .:/ControlStock
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DJANGO_DB_HOST=db
+      - DJANGO_DB_NAME=control_stock
+      - DJANGO_DB_USER=admin
+      - DJANGO_DB_PASSWORD=Homer2708
+
+  db:
+    image: mysql:8.0
+    container_name: controlstock_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: Homer2708
+      MYSQL_DATABASE: control_stock
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+volumes:
+  db_data:
