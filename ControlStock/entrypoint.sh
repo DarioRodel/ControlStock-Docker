@@ -10,4 +10,4 @@ python manage.py migrate
 python manage.py shell < init_django.py
 
 # Arranca el servidor
-python manage.py runserver 0.0.0.0:8001
+python manage.py runserver 0.0.0.0:9000
