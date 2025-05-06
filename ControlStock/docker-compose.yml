@@ -7,7 +7,7 @@ services:
     volumes:
       - .:/ControlStock
     ports:
-      - "8001:8000"
+      - "9000:8000"
     depends_on:
       - db
     environment:
@@ -18,7 +18,7 @@ services:
     healthcheck:
       test:
         - CMD
-        - 'http://127.0.0.1:8001'
+        - 'http://127.0.0.1:9000'
   db:
     image: mysql:8.0
     container_name: controlstock_db
