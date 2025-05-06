@@ -79,9 +79,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'control_stock',
         'USER': 'admin',
-        'PASSWORD': 'Homer2708',
+        'PASSWORD': 'Homer2708**',
         'HOST': 'db',
-        'PORT': '3306',
+        'PORT': '3307',
     }
 }
 WSGI_APPLICATION = 'ControlStock.wsgi.application'
