@@ -15,7 +15,10 @@ services:
       - DJANGO_DB_NAME=control_stock
       - DJANGO_DB_USER=admin
       - DJANGO_DB_PASSWORD=Homer2708**
-
+    healthcheck:
+      test:
+        - CMD
+        - 'http://127.0.0.1:8001'
   db:
     image: mysql:8.0
     container_name: controlstock_db
@@ -29,6 +32,8 @@ services:
       - db_data:/var/lib/mysql
     ports:
       - "3307:3306"
-
+    healthcheck:
+      test:
+        - CMD
 volumes:
   db_data:
