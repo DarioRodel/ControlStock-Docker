@@ -14,7 +14,7 @@ services:
       - DJANGO_DB_HOST=db
       - DJANGO_DB_NAME=control_stock
       - DJANGO_DB_USER=admin
-      - DJANGO_DB_PASSWORD=Homer2708
+      - DJANGO_DB_PASSWORD=Homer2708**
 
   db:
     image: mysql:8.0
@@ -23,7 +23,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: admin
-      MYSQL_PASSWORD: Homer2708
+      MYSQL_PASSWORD: Homer2708**
       MYSQL_DATABASE: control_stock
     volumes:
       - db_data:/var/lib/mysql
