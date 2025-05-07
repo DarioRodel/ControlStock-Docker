@@ -19,7 +19,7 @@ ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.s
 RUN chmod +x /wait-for-it.sh
 
 # Exponer el puerto de Django
-EXPOSE 9000
+EXPOSE 8000
 
 # Comando de arranque: esperar a que MySQL esté disponible y luego iniciar Django
 CMD ["/entrypoint.sh"]
