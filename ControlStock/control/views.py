@@ -119,28 +119,23 @@ class ProductoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        """
-        Obtiene el conjunto de productos a mostrar, aplicando filtros si es necesario.
-        """
         queryset = super().get_queryset()
-        # Filtros basados en los parámetros GET de la request.
         search = self.request.GET.get('search')
         categoria = self.request.GET.get('categoria')
         estado = self.request.GET.get('estado')
 
         if search:
             queryset = queryset.filter(
-                Q(nombre__icontains=search_query) | Q(codigo_barras__icontains=search_query) |  # Busca por código (insensible a mayúsculas/minúsculas).
-                Q(descripcion__icontains=search)  # Busca por descripción.
+                Q(codigo_barras__icontains=search) |
+                Q(nombre__icontains=search) |
+                Q(descripcion__icontains=search)
             )
-
         if categoria:
-            queryset = queryset.filter(categoria__id=categoria)  # Filtra por ID de categoría.
-
+            queryset = queryset.filter(categoria__id=categoria)
         if estado:
-            queryset = queryset.filter(estado=estado)  # Filtra por estado del stock.
+            queryset = queryset.filter(estado=estado)
 
-        return queryset.select_related('categoria', 'ubicacion')  # Mejora el rendimiento al obtener datos relacionados.
+        return queryset.select_related('categoria', 'ubicacion')
 
     def get_context_data(self, **kwargs):
         """
