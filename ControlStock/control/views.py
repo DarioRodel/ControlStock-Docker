@@ -130,8 +130,7 @@ class ProductoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
         if search:
             queryset = queryset.filter(
-                Q(codigo__icontains=search) |  # Busca por código (insensible a mayúsculas/minúsculas).
-                Q(nombre__icontains=search) |  # Busca por nombre.
+                Q(nombre__icontains=search_query) | Q(codigo_barras__icontains=search_query) |  # Busca por código (insensible a mayúsculas/minúsculas).
                 Q(descripcion__icontains=search)  # Busca por descripción.
             )
 
