@@ -81,7 +81,7 @@ DATABASES = {
         'USER': 'admin',
         'PASSWORD': 'Homer2708**',
         'HOST': 'db',
-        'PORT': '3307',
+        'PORT': '3306',
     }
 }
 WSGI_APPLICATION = 'ControlStock.wsgi.application'
