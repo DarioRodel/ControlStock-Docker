@@ -245,7 +245,6 @@
         }
 
 
-
         .custom-file-upload input[type="file"] {
             position: absolute;
             left: -9999px;
@@ -255,7 +254,6 @@
             cursor: pointer;
             margin: 0;
         }
-
 
 
         /* Definición de variables CSS para el tema claro (por defecto) */
@@ -362,7 +360,6 @@
         }
 
 
-
         .image-upload-container {
             border: 2px dashed var(--input-border);
             border-radius: var(--card-radius);
@@ -398,7 +395,6 @@
             background: var(--light-bg);
             max-height: 200px;
         }
-
 
 
         .custom-file-upload input[type="file"] {
@@ -450,23 +446,51 @@
                 <p>{{ form.non_field_errors }}</p>
                 <div class="row g-4">
                     <div class="col-md-6">
+                        <!-- Código de Barras -->
                         <div class="mb-3">
-                            <label for="{{ form.codigo_barras.id_for_label }}" class="form-label">Código de
-                                Barras</label>
+                            <label for="{{ form.codigo_barras.id_for_label }}" class="form-label">
+                                Código de Barras o Referencia<span class="text-danger">*</span>
+                            </label>
                             <div class="input-group">
-                                {{ form.codigo_barras|attr:"placeholder:Leer o ingresar código"|add_class:"form-control" }}
+                                {{ form.codigo_barras|attr:"placeholder:Ingresar código o referencia"|add_class:"form-control" }}
                             </div>
+                            {% if form.codigo_barras.errors %}
+                                <div class="alert alert-danger mt-2">
+                                    {% for error in form.codigo_barras.errors %}
+                                        {{ error|escape }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
 
+                        <!-- Nombre -->
                         <div class="mb-3">
-                            <label for="{{ form.nombre.id_for_label }}" class="form-label">Nombre<span
-                                    class="text-danger">*</span></label>
+                            <label for="{{ form.nombre.id_for_label }}" class="form-label">
+                                Nombre<span class="text-danger">*</span>
+                            </label>
                             {{ form.nombre|attr:"placeholder:Nombre del producto"|add_class:"form-control" }}
+                            {% if form.nombre.errors %}
+                                <div class="alert alert-danger mt-2">
+                                    {% for error in form.nombre.errors %}
+                                        {{ error|escape }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
 
+                        <!-- Categoría -->
                         <div class="mb-3">
-                            <label for="{{ form.categoria.id_for_label }}" class="form-label">Categoría</label>
+                            <label for="{{ form.categoria.id_for_label }}" class="form-label">
+                                Categoría<span class="text-danger">*</span>
+                            </label>
                             {{ form.categoria|add_class:"form-select" }}
+                            {% if form.categoria.errors %}
+                                <div class="alert alert-danger mt-2">
+                                    {% for error in form.categoria.errors %}
+                                        {{ error|escape }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </div>
 
                         <div class="mb-3">

@@ -218,6 +218,9 @@ class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
         context['fields'] = ['codigo', 'nombre', 'precio_compra', 'precio_venta', 'codigo_barras']
         return context
 
+    def form_invalid(self, form):
+        messages.error(self.request, 'Por favor corrige los errores en el formulario.')
+        return super().form_invalid(form)
 
 class ProductoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """

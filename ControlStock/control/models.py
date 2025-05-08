@@ -49,9 +49,9 @@ class Producto(models.Model):
         ('AGOTADO', 'Stock Agotado'),
     )
 
-    codigo_barras = models.CharField(max_length=100, unique=True, verbose_name='Código de Barras')
-    nombre = models.CharField(max_length=200)
-    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True)
+    nombre = models.CharField(max_length=100, blank=False)
+    codigo_barras = models.CharField(max_length=100, unique=True, blank=False,verbose_name='Código de Barras')
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, blank=False)
     ubicacion = models.ForeignKey(Ubicacion, on_delete=models.SET_NULL, null=True, blank=True)
     descripcion = models.TextField(blank=True)
     precio_compra = models.DecimalField(max_digits=10, decimal_places=2, default=0)

@@ -80,11 +80,10 @@ class ProductoForm(forms.ModelForm):
         model = Producto  # Asocia el formulario con el modelo Producto.
         fields = [ 'codigo_barras', 'nombre', 'categoria', 'ubicacion', 'descripcion',
                   'precio_compra', 'precio_venta', 'stock_actual', 'stock_minimo', 'estado', 'imagen']  # Asegúrate de incluir 'estado'.
-        error_messages = {
-            'codigo_barras': {'required': 'Este campo es obligatorio.'},
-            'nombre': {'required': 'Este campo es obligatorio.'},  # Mensaje de error personalizado.
-            'precio_compra': {'required': 'Este campo es obligatorio.'},  # Mensaje de error personalizado.
-            'precio_venta': {'required': 'Este campo es obligatorio.'},  # Mensaje de error personalizado.
+        widgets = {
+            'nombre': forms.TextInput(attrs={'required': True}),
+            'codigo_barras': forms.TextInput(attrs={'required': True}),
+            'categoria': forms.Select(attrs={'required': True}),
         }
 
     def clean_codigo(self):
