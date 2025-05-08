@@ -233,8 +233,50 @@
                         {% endfor %}
                         </tbody>
                     </table>
+                <div class="card-footer border-0 px-4 pb-4" style="background-color: var(--card-bg);">
+                <div class="text-end">
+                    <a href="{% url 'stock:dashboard' %}"
+                       class="btn btn-outline-primary btn-lg rounded-pill px-4 py-2 fs-4">
+                        <i class="fas fa-arrow-left me-2"></i>Volver al inicio
+                    </a>
+                </div>
+            </div>
                 </div>
             </div>
         </div>
     </div>
+
+
+    <script>
+        document.getElementById('searchInput').addEventListener('input', function (e) {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('tbody tr').forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // Dark Mode Toggle - Código Javascript para controlar el modo oscuro
+        const toggle = document.getElementById('darkModeToggle'); // Obtiene el elemento checkbox con el ID 'darkModeToggle'
+        const currentTheme = localStorage.getItem('theme'); // Intenta obtener el tema guardado previamente en el almacenamiento local del navegador
+
+        // Si se encontró un tema guardado y es 'dark', aplica el modo oscuro al cargar la página
+        if (currentTheme === 'dark') {
+            document.body.setAttribute('data-theme', 'dark'); // Establece el atributo 'data-theme' en el elemento 'body' para activar los estilos del tema oscuro definidos en CSS
+            toggle.checked = true; // Marca el checkbox del modo oscuro como activado
+        }
+
+        // Agrega un 'listener' para el evento 'change' en el checkbox del modo oscuro
+        toggle.addEventListener('change', () => {
+            if (toggle.checked) {
+                // Si el checkbox se activa (el usuario quiere modo oscuro)
+                document.body.setAttribute('data-theme', 'dark'); // Establece el atributo 'data-theme'
+                localStorage.setItem('theme', 'dark'); // Guarda 'dark' en el almacenamiento local
+            } else {
+                // Si el checkbox no está marcado (el usuario quiere modo claro)
+                document.body.removeAttribute('data-theme'); // Remueve el atributo 'data-theme'
+                localStorage.setItem('theme', 'light'); // Guarda 'light' en el almacenamiento local
+            }
+        });
+    </script>
 {% endblock %}
