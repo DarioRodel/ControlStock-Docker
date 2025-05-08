@@ -81,7 +81,7 @@ DATABASES = {
         'NAME': 'control_stock',
         'USER': 'admin',
         'PASSWORD': 'Homer2708**',
-        'HOST': 'db' if IS_DOCKER else 'localhost',
+        'HOST': 'db',
         'PORT': '3306',
     }
 }
