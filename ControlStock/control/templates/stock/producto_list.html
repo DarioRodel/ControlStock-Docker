@@ -209,7 +209,7 @@
         --table-header-bg: #1E293B;
         --card-bg: #1C2536; /* Fondo oscuro para las "tarjetas" */
         --input-border: #374151; /* Bordes oscuros en modo oscuro */
-    }   
+    }
     html, body {
     width: 100%;
     overflow-x: hidden; /* evita scroll horizontal */
@@ -235,120 +235,132 @@
         box-shadow: 0 1px 3px 0 var(--shadow-color),
         0 1px 2px -1px var(--shadow-color);
     }
-
-    @media (min-width: 768px) and (max-width: 991.98px) {
-        /* Ocultamos encabezado para usar estilo de tarjeta */
-        thead {
-            display: none;
-        }
-
-        tbody {
-            display: block;
-        }
-
-        /* Estilo de cada fila como tarjeta */
-        tr {
-            font-size: 0.95rem;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--card-bg);
-            border-radius: var(--card-radius);
-            box-shadow: 0 4px 12px var(--shadow-color);
-            margin-bottom: 1.5rem;
-            overflow: hidden;
-            padding: 1rem;
-        }
-
-        /* Estilo de celdas como pares clave/valor */
-        td {
-             font-size: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 0;
-            font-size: 0.95rem;
-            color: var(--text-color);
-            border-bottom: 1px solid var(--input-border);
-        }
-
-        td:last-child {
-            border-bottom: none;
-        }
-
-        td::before {
-            content: attr(data-label);
-            font-weight: 600;
-            color: var(--text-color);
-            opacity: 0.75;
-            margin-right: 1rem;
-        }
-
-        /* Oculta columna "Código" para liberar espacio */
-        td[data-label="Código"] svg.barcode {
-            width: 100%;
-            max-width: 220px;
-            height: auto;
-            margin-top: 0.5rem;
-        }
-
-        /* Estilo para acciones más legible */
-        td[data-label="Acciones"] {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.5rem;
-        }
-
-        td[data-label="Acciones"] > div.d-flex {
-            flex-direction: row;
-            gap: 0.75rem;
-        }
-
-        /* Botones más accesibles */
-        .btn-sm {
-            font-size: 0.85rem;
-            padding: 0.4rem 0.8rem;
-            border-radius: 8px;
-        }
-
-        .btn {
-            font-size: 1rem;
-            padding: 0.6rem 1.2rem;
-        }
-        input.form-control,
-select.form-select {
-  font-size: 1.05rem;
-  padding: 0.75rem 1rem;
-}
-
-        /* Badges más elegantes */
-        .badge {
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
-}
-        .table td {
-    white-space: normal; /* permite que el texto haga salto de línea */
-    word-break: break-word; /* rompe palabras largas si es necesario */
-}
-        /* Imagen centrada y pulida */
-        .img-thumbnail {
-            width: 48px;
-            height: 48px;
-            object-fit: cover;
-            border-radius: 50%;
-            box-shadow: 0 2px 6px var(--shadow-color);
-        }
-
-        .no-image-placeholder {
-            width: 48px;
-            height: 48px;
-            font-size: 1.2rem;
-            background-color: var(--table-header-bg);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+@media (min-width: 768px) and (max-width: 991.98px) {
+    /* Ocultamos encabezado para usar estilo de tarjeta */
+    thead {
+        display: none;
     }
+    body {
+        font-size: 1.2rem; /* Aumentado el tamaño de fuente en pantallas pequeñas */
+    }
+    h2 {
+        font-size: 1.8rem; /* Títulos más grandes en pantallas pequeñas */
+    }
+    tbody {
+        display: block;
+    }
+
+    /* Estilo de cada fila como tarjeta */
+    tr {
+        font-size: 1.6em; /* Aumentado el tamaño de la fuente de las filas */
+        display: flex;
+        flex-direction: column;
+        background-color: var(--card-bg);
+        border-radius: var(--card-radius);
+        box-shadow: 0 4px 12px var(--shadow-color);
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+        padding: 1rem;
+    }
+
+    /* Estilo de celdas como pares clave/valor */
+    td {
+        font-size: 1.6em; /* Aumentado el tamaño de la fuente de las celdas */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        color: var(--text-color);
+        border-bottom: 1px solid var(--input-border);
+    }
+
+    td:last-child {
+        border-bottom: none;
+    }
+
+    td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--text-color);
+        opacity: 0.75;
+        margin-right: 1rem;
+    }
+
+    /* Oculta columna "Código" para liberar espacio */
+    td[data-label="Código"] svg.barcode {
+        width: 100%;
+        max-width: 220px;
+        height: auto;
+        margin-top: 0.5rem;
+    }
+
+    /* Estilo para acciones más legible */
+    td[data-label="Acciones"] {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    td[data-label="Acciones"] > div.d-flex {
+        flex-direction: row;
+        gap: 0.75rem;
+    }
+
+    /* Botones más accesibles */
+    .btn-sm {
+        font-size: 1rem; /* Aumentado el tamaño de los botones pequeños */
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+    }
+
+    .btn {
+        font-size: 1.2rem; /* Aumentado el tamaño de los botones grandes */
+        padding: 0.6rem 1.2rem;
+    }
+
+    .btn,
+    input.form-control,
+    select.form-select {
+        font-size: 1.2rem; /* Aumentado el tamaño del texto en formularios y botones */
+    }
+
+    input.form-control,
+    select.form-select {
+        font-size: 1.1rem; /* Aumentado el tamaño del texto en los formularios */
+        padding: 0.75rem 1rem;
+    }
+
+    /* Badges más elegantes */
+    .badge {
+        font-size: 1.2rem; /* Aumentado el tamaño de las etiquetas */
+        padding: 0.5rem 1rem;
+    }
+
+    .table td {
+        white-space: normal; /* permite que el texto haga salto de línea */
+        word-break: break-word; /* rompe palabras largas si es necesario */
+    }
+
+    /* Imagen centrada y pulida */
+    .img-thumbnail {
+        width: 56px; /* Aumentado tamaño de imagen */
+        height: 56px;
+        object-fit: cover;
+        border-radius: 50%;
+        box-shadow: 0 2px 6px var(--shadow-color);
+    }
+
+    .no-image-placeholder {
+        font-size: 1.6rem; /* Aumentado tamaño del icono en el placeholder */
+        width: 56px; /* Aumentado tamaño del placeholder */
+        height: 56px;
+        background-color: var(--table-header-bg);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
 
 
 </style>
