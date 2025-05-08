@@ -3,7 +3,7 @@
 <script src="../../static/dark/js/darkmode.js" defer></script>
 
 {% block content %}
-<div class="container py-5">
+<div class="container-fluid py-5">
     <div class="dark-mode-toggle">
         <div class="form-check form-switch ms-auto mb-3">
             <input class="form-check-input" type="checkbox" id="darkModeToggle">
@@ -23,7 +23,7 @@
 
             <form method="post">
                 {% csrf_token %}
-                <div class="d-flex justify-content-center gap-3">
+                <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
                     <button type="submit" class="btn btn-danger btn-lg px-5 py-2"
                             style="background-color: var(--danger-color); border-color: var(--danger-color);">
                         <i class="fas fa-trash-alt me-2"></i> Eliminar
