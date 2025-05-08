@@ -74,7 +74,7 @@ TEMPLATES = [
         },
     },
 ]
-IS_DOCKER = os.environ.get('IS_DOCKER', '').lower() == 'true'
+IS_DOCKER = os.environ.get('IS_DOCKER', False)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
