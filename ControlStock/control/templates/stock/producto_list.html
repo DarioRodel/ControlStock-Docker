@@ -4,7 +4,7 @@
 <script src="{% static 'dark/js/darkmode.js' %}" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 
-<div class="container py-4">
+<div class="container-fluid py-4">
     <div class="form-check form-switch ms-auto mb-3">
         <input class="form-check-input" type="checkbox" id="darkModeToggle">
         <label class="form-check-label" for="darkModeToggle">Modo oscuro</label>
@@ -68,9 +68,9 @@
     </div>
 
     <div class="card border-0 shadow-sm">
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light text-uppercase small text-muted">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-uppercase small text-muted">
                 <tr>
                     <th class="text-center">Imagen</th>
                     <th>Código</th>
@@ -80,8 +80,8 @@
                     <th class="text-center">Estado</th>
                     <th class="text-center">Acciones</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 {% for producto in productos %}
                     <tr class="hover-highlight">
                         <td class="text-center" data-label="Imagen">
@@ -121,10 +121,12 @@
                         </td>
                         <td class="text-center" data-label="Acciones">
                             <div class="d-flex justify-content-center gap-2">
-                                <a href="{% url 'stock:producto_delete' producto.pk %}" class="btn btn-sm btn-outline-danger rounded-circle p-2">
+                                <a href="{% url 'stock:producto_delete' producto.pk %}"
+                                   class="btn btn-sm btn-outline-danger rounded-circle p-2">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
-                                <a href="{% url 'stock:producto_edit' producto.pk %}" class="btn btn-sm btn-outline-secondary rounded-circle"
+                                <a href="{% url 'stock:producto_edit' producto.pk %}"
+                                   class="btn btn-sm btn-outline-secondary rounded-circle"
                                    data-bs-toggle="tooltip" title="Editar Producto">
                                     <i class="fas fa-edit"></i>
                                 </a>
@@ -145,10 +147,10 @@
                         </td>
                     </tr>
                 {% endfor %}
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 
 
     {% if is_paginated %}
@@ -182,180 +184,201 @@
 </div>
 
 <style>
-  /* Variables actualizadas para mejor contraste */
-  :root {
-    --primary-color: #3B82F6;
-    --secondary-color: #6366F1;
-    --accent-color: #10B981;
-    --danger-color: #EF4444;
-    --background-color: #F8FAFC;
-    --card-radius: 12px;
-    --shadow-color: rgba(0, 0, 0, 0.05);
-    --text-color: #1E293B;
-    --table-header-bg: #F1F5F9;
-    --card-bg: #FFFFFF; /* Añadido para el fondo de las "tarjetas" en móvil */
-    --input-border: #E5E7EB; /* Añadido para los bordes en móvil */
-  }
+    /* Variables actualizadas para mejor contraste */
+    :root {
+        --primary-color: #3B82F6;
+        --secondary-color: #6366F1;
+        --accent-color: #10B981;
+        --danger-color: #EF4444;
+        --background-color: #F8FAFC;
+        --card-radius: 12px;
+        --shadow-color: rgba(0, 0, 0, 0.05);
+        --text-color: #1E293B;
+        --table-header-bg: #F1F5F9;
+        --card-bg: #FFFFFF; /* Añadido para el fondo de las "tarjetas" en móvil */
+        --input-border: #E5E7EB; /* Añadido para los bordes en móvil */
+    }
 
-  body[data-theme="dark"] {
-    --primary-color: #60A5FA;
-    --secondary-color: #818CF8;
-    --accent-color: #34D399;
-    --danger-color: #F87171;
-    --background-color: #0F172A;
-    --text-color: #E2E8F0;
-    --table-header-bg: #1E293B;
-    --card-bg: #1C2536; /* Fondo oscuro para las "tarjetas" */
-    --input-border: #374151; /* Bordes oscuros en modo oscuro */
-  }
-
-  body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    line-height: 1.6;
-  }
-
-  h2 {
-    font-weight: 700;
-    letter-spacing: -0.025em;
-    color: var(--text-color);
-  }
-
-  .card {
-    border-radius: var(--card-radius);
-    border: 1px solid var(--input-border);
-    box-shadow: 0 1px 3px 0 var(--shadow-color),
-                0 1px 2px -1px var(--shadow-color);
-  }
-
-  @media (min-width: 768px) and (max-width: 991.98px) {
-  /* Ocultamos encabezado para usar estilo de tarjeta */
-  thead {
-    display: none;
-  }
-
-  tbody {
-    display: block;
-  }
-
-  /* Estilo de cada fila como tarjeta */
-  tr {
-    display: flex;
-    flex-direction: column;
-    background-color: var(--card-bg);
-    border-radius: var(--card-radius);
-    box-shadow: 0 4px 12px var(--shadow-color);
-    margin-bottom: 1.5rem;
-    overflow: hidden;
-    padding: 1rem;
-  }
-
-  /* Estilo de celdas como pares clave/valor */
-  td {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 0;
-    font-size: 0.95rem;
-    color: var(--text-color);
-    border-bottom: 1px solid var(--input-border);
-  }
-
-  td:last-child {
-    border-bottom: none;
-  }
-
-  td::before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: var(--text-color);
-    opacity: 0.75;
-    margin-right: 1rem;
-  }
-
-  /* Oculta columna "Código" para liberar espacio */
-  td[data-label="Código"] svg.barcode {
-  width: 100%;
-  max-width: 220px;
-  height: auto;
-  margin-top: 0.5rem;
+    body[data-theme="dark"] {
+        --primary-color: #60A5FA;
+        --secondary-color: #818CF8;
+        --accent-color: #34D399;
+        --danger-color: #F87171;
+        --background-color: #0F172A;
+        --text-color: #E2E8F0;
+        --table-header-bg: #1E293B;
+        --card-bg: #1C2536; /* Fondo oscuro para las "tarjetas" */
+        --input-border: #374151; /* Bordes oscuros en modo oscuro */
+    }   
+    html, body {
+    width: 100%;
+    overflow-x: hidden; /* evita scroll horizontal */
 }
 
-  /* Estilo para acciones más legible */
-  td[data-label="Acciones"] {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
+    body {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        line-height: 1.6;
+         margin: 0;
+    padding: 0;
+    }
 
-  td[data-label="Acciones"] > div.d-flex {
-    flex-direction: row;
-    gap: 0.75rem;
-  }
+    h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        color: var(--text-color);
+    }
 
-  /* Botones más accesibles */
-  .btn-sm {
-    font-size: 0.85rem;
-    padding: 0.4rem 0.8rem;
-    border-radius: 8px;
-  }
+    .card {
+        border-radius: var(--card-radius);
+        border: 1px solid var(--input-border);
+        box-shadow: 0 1px 3px 0 var(--shadow-color),
+        0 1px 2px -1px var(--shadow-color);
+    }
 
-  /* Badges más elegantes */
-  .badge {
-    font-size: 0.85rem;
-    padding: 0.35rem 0.75rem;
-    border-radius: 999px;
-  }
+    @media (min-width: 768px) and (max-width: 991.98px) {
+        /* Ocultamos encabezado para usar estilo de tarjeta */
+        thead {
+            display: none;
+        }
 
-  /* Imagen centrada y pulida */
-  .img-thumbnail {
-    width: 48px;
-    height: 48px;
-    object-fit: cover;
-    border-radius: 50%;
-    box-shadow: 0 2px 6px var(--shadow-color);
-  }
+        tbody {
+            display: block;
+        }
 
-  .no-image-placeholder {
-    width: 48px;
-    height: 48px;
-    font-size: 1.2rem;
-    background-color: var(--table-header-bg);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+        /* Estilo de cada fila como tarjeta */
+        tr {
+            font-size: 0.95rem;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--card-bg);
+            border-radius: var(--card-radius);
+            box-shadow: 0 4px 12px var(--shadow-color);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            padding: 1rem;
+        }
+
+        /* Estilo de celdas como pares clave/valor */
+        td {
+             font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            font-size: 0.95rem;
+            color: var(--text-color);
+            border-bottom: 1px solid var(--input-border);
+        }
+
+        td:last-child {
+            border-bottom: none;
+        }
+
+        td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: var(--text-color);
+            opacity: 0.75;
+            margin-right: 1rem;
+        }
+
+        /* Oculta columna "Código" para liberar espacio */
+        td[data-label="Código"] svg.barcode {
+            width: 100%;
+            max-width: 220px;
+            height: auto;
+            margin-top: 0.5rem;
+        }
+
+        /* Estilo para acciones más legible */
+        td[data-label="Acciones"] {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        td[data-label="Acciones"] > div.d-flex {
+            flex-direction: row;
+            gap: 0.75rem;
+        }
+
+        /* Botones más accesibles */
+        .btn-sm {
+            font-size: 0.85rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+        }
+
+        .btn {
+            font-size: 1rem;
+            padding: 0.6rem 1.2rem;
+        }
+        input.form-control,
+select.form-select {
+  font-size: 1.05rem;
+  padding: 0.75rem 1rem;
 }
+
+        /* Badges más elegantes */
+        .badge {
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+}
+        .table td {
+    white-space: normal; /* permite que el texto haga salto de línea */
+    word-break: break-word; /* rompe palabras largas si es necesario */
+}
+        /* Imagen centrada y pulida */
+        .img-thumbnail {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px var(--shadow-color);
+        }
+
+        .no-image-placeholder {
+            width: 48px;
+            height: 48px;
+            font-size: 1.2rem;
+            background-color: var(--table-header-bg);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
 
 
 </style>
 
 <script>
-  // Dark Mode Toggle
-  const toggle = document.getElementById('darkModeToggle');
-  const currentTheme = localStorage.getItem('theme');
+    // Dark Mode Toggle
+    const toggle = document.getElementById('darkModeToggle');
+    const currentTheme = localStorage.getItem('theme');
 
-  if (currentTheme === 'dark') {
-    document.body.setAttribute('data-theme', 'dark');
-    toggle.checked = true;
-  }
-
-  toggle.addEventListener('change', () => {
-    if (toggle.checked) {
-      document.body.setAttribute('data-theme', 'dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.body.removeAttribute('data-theme');
-      localStorage.setItem('theme', 'light');
+    if (currentTheme === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        toggle.checked = true;
     }
-  });
 
-  // Inicializar tooltips de Bootstrap
-  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    toggle.addEventListener('change', () => {
+        if (toggle.checked) {
+            document.body.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.body.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'light');
+        }
+    });
 
-  // Generar los códigos de barras
-  window.addEventListener('DOMContentLoaded', () => {
-    JsBarcode(".barcode").init();
-  });
+    // Inicializar tooltips de Bootstrap
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+    // Generar los códigos de barras
+    window.addEventListener('DOMContentLoaded', () => {
+        JsBarcode(".barcode").init();
+    });
 </script>
