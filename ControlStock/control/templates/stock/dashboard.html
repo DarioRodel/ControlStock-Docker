@@ -105,7 +105,7 @@
             transform: translateY(-2px);
         }
 
-        /* Estilos específicos para los contenedores de los gráficos. Reduje la altura para que sean más pequeños. */
+        /* Estilos específicos para los contenedores de los gráficos. */
         #stockChart {
             width: 100% !important;
             height: 200px !important;
@@ -127,146 +127,293 @@
             font-size: 0.85rem;
         }
 
-        /* Media queries para hacer el diseño responsive en diferentes tamaños de pantalla.
-           Estos ajustan los tamaños de la fuente, los paddings y los márgenes para que se vea bien en móviles, tablets, etc. */
-        @media (max-width: 1399.98px) {
-            .metric-value {
-                font-size: 1.8rem;
-            }
-            .btn-dashboard {
-                padding: 8px 16px;
-                font-size: 0.9rem;
-            }
-        }
-
-        @media (max-width: 1199.98px) {
-            .card-icon {
-                font-size: 2.5rem;
-            }
-            .metric-value {
-                font-size: 1.6rem;
-            }
-        }
-
-        @media (max-width: 991.98px) {
-            .container {
-                padding-left: 15px;
-                padding-right: 15px;
-            }
-            .card-custom {
-                margin-bottom: 1rem;
-            }
-            .d-flex.gap-3 {
-                flex-wrap: wrap;
-                gap: 0.75rem !important;
-            }
-            .btn-dashboard {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-
-        @media (max-width: 767.98px) {
-            h1 {
-                font-size: 1.4rem;
-            }
-            .metric-title {
-                font-size: 0.9rem;
-            }
-            .metric-value {
-                font-size: 1.4rem;
-            }
-            .card-icon {
-                font-size: 2rem;
-            }
-            .table th, .table td {
-                padding: 0.5rem;
-                font-size: 0.8rem;
-            }
-            .badge {
-                font-size: 0.75rem;
-            }
-        }
-
-        @media (max-width: 575.98px) {
-            .container {
-                padding-left: 10px;
-                padding-right: 10px;
-            }
-            h1 {
-                font-size: 1.2rem;
-            }
-            .metric-title {
-                font-size: 0.8rem;
-            }
-            .metric-value {
-                font-size: 1.2rem;
-            }
-            .card-icon {
-                font-size: 1.8rem;
-            }
-            .card-body-custom canvas {
-                margin-top: 0;
-                margin-bottom: 0;
-            }
-            .card-body-custom {
-                padding: 15px;
-            }
-            .table th, .table td {
-                padding: 0.4rem;
-                font-size: 0.75rem;
-            }
-            .form-check-label {
-                font-size: 0.8rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .d-flex.justify-content-between.align-items-center.mb-3 {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.75rem;
-            }
-            .form-check.form-switch {
-                margin-left: 0;
-                margin-right: auto;
-            }
-            .btn-dashboard i {
-                margin-right: 3px;
-            }
-        }
-
-        /* Estilos para hacer las tablas scrollables horizontalmente en pantallas pequeñas. */
+        /* Mejora en la visualización de la tabla para pantallas pequeñas */
         .table-responsive {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
 
         .table {
-            min-width: 500px;
+            width: 100%;
+            min-width: 100%;
+            margin: 0 auto;
         }
 
-        /* Estilos para los botones en pantallas pequeñas. */
+        .table th, .table td {
+            padding: 1rem;
+            font-size: 1rem;
+            text-align: center;
+        }
+
         @media (max-width: 767.98px) {
-            .btn-dashboard {
-                font-size: 0.8rem;
-                padding: 6px 12px;
+            /* Ajuste de la tabla en móviles */
+            .table-responsive {
+                overflow-x: visible; /* Habilita un mejor manejo de las tablas en pantallas más pequeñas */
             }
-            .btn-dashboard i {
-                font-size: 0.8rem;
+
+            table {
+                width: 100%;
+                display: block;
+            }
+
+            thead {
+                display: none; /* Ocultamos los encabezados en pantallas pequeñas */
+            }
+
+            tbody tr {
+                display: flex;
+                flex-direction: column;
+                background: var(--card-bg);
+                border-radius: var(--card-radius);
+                box-shadow: 0 4px 12px var(--shadow-color);
+                margin-bottom: 1.5rem;
+                padding: 1rem;
+            }
+
+            tbody td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.75rem 0;
+                border-bottom: 1px solid var(--input-border);
+            }
+
+            tbody td:last-child {
+                border-bottom: none;
+            }
+
+            tbody td::before {
+                content: attr(data-label); /* Usamos el atributo 'data-label' para los títulos de cada celda */
+                font-weight: 600;
+                color: var(--text-color);
+                opacity: 0.75;
+                margin-right: 1rem;
+            }
+
+            .table th, .table td {
+                font-size: 1rem;
+            }
+
+            .card-custom .table td[data-label="Producto"]::before {
+                content: "Producto:";
+            }
+
+            .card-custom .table td[data-label="Cantidad"]::before {
+                content: "Cantidad:";
+            }
+
+            .card-custom .table td[data-label="Fecha"]::before {
+                content: "Fecha:";
+            }
+
+            /* Ajustes para que la tabla sea completamente legible en dispositivos móviles */
+        }
+
+        /* Mejoras para la tabla en pantallas pequeñas */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table {
+            width: 100%;
+            table-layout: fixed; /* Establece un diseño fijo para la tabla */
+        }
+
+        .table th, .table td {
+            padding: 1rem;
+            font-size: 0.9rem; /* Ajusta el tamaño de la fuente */
+            text-align: center;
+            word-wrap: break-word; /* Permite que el texto largo se ajuste y no desborde */
+        }
+
+        /* Mejoras para la tabla en pantallas pequeñas */
+@media (max-width: 767.98px) {
+    /* Ajuste de la tabla en móviles */
+    .table-responsive {
+        overflow-x: auto; /* Permite el scroll horizontal si la tabla es muy ancha */
+        -webkit-overflow-scrolling: touch; /* Mejora el desplazamiento en iOS */
+    }
+
+    table {
+        width: 100%;
+        display: block; /* Hace que la tabla se comporte como un bloque */
+    }
+
+    thead {
+        display: none; /* Ocultamos los encabezados en pantallas pequeñas */
+    }
+
+    tbody {
+        display: block; /* Asegura que el cuerpo de la tabla también sea un bloque */
+    }
+
+    tbody tr {
+        display: block; /* Cada fila se muestra como un bloque */
+        background: var(--card-bg);
+        border-radius: var(--card-radius);
+        box-shadow: 0 4px 12px var(--shadow-color);
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        transition: background-color 0.3s ease;
+    }
+
+    tbody tr:hover {
+        background-color: var(--card-hover); /* Resalta la fila al pasar el ratón */
+    }
+
+    tbody td {
+        display: flex; /* Usamos flex para alinear el "título" y el valor */
+        justify-content: space-between; /* Espacio entre el título y el valor */
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--input-border);
+    }
+
+    tbody td:last-child {
+        border-bottom: none;
+    }
+
+    tbody td::before {
+        content: attr(data-label) ":"; /* Añadimos dos puntos al "título" */
+        font-weight: 600;
+        color: var(--text-color);
+        opacity: 0.75;
+        margin-right: 1rem;
+    }
+
+    .table th, .table td {
+        font-size: 1rem;
+        padding: 0.75rem; /* Reducimos un poco el padding para más espacio */
+        text-align: left; /* Alineamos el texto a la izquierda para mejor lectura vertical */
+    }
+
+    /* Reajustar el tamaño de las métricas en dispositivos pequeños */
+    .metric-value {
+        font-size: 1.4rem;
+    }
+
+    .card-icon {
+        font-size: 2rem;
+    }
+
+    /* Para los gráficos en pantallas pequeñas */
+    #stockChart, #estadoChart {
+        height: 150px !important;
+    }
+
+    /* Mejorar la visualización de las métricas en el header */
+    .metric-title {
+        font-size: 1.2rem;
+    }
+
+    /* Mejoras en los botones del dashboard */
+    .btn-dashboard {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+    }
+
+    .btn-dashboard:hover {
+        transform: translateY(-2px); /* Efecto de animación al pasar por encima */
+        opacity: 0.85;
+    }
+
+    /* Mejorar la distribución de las tarjetas en dispositivos pequeños */
+    .col-lg-3, .col-md-6 {
+        flex: 0 0 100%; /* Ocupan el 100% en pantallas pequeñas */
+        max-width: 100%;
+    }
+
+    /* Ajustar las tarjetas de estadísticas */
+    .card-custom {
+        border-radius: 12px;
+        box-shadow: 0 6px 15px -5px rgba(0, 0, 0, 0.1); /* Sombra más suave */
+        transition: all 0.3s ease;
+    }
+
+    .card-custom:hover {
+        transform: scale(1.05); /* Efecto de agrandar al pasar por encima */
+        box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.2); /* Sombra más grande */
+    }
+
+    /* Reajustar el tamaño de los iconos en tarjetas */
+    .card-icon {
+        font-size: 2.5rem; /* Tamaño mayor para iconos */
+    }
+}
+
+
+        /* Mejoras para dispositivos entre 768px y 991px (tablets) */
+        @media (max-width: 991.98px) {
+            .metric-value {
+                font-size: 1.6rem; /* Aumentamos ligeramente el tamaño en tablets */
+            }
+
+            .card-icon {
+                font-size: 2.5rem; /* Aumentamos el tamaño del icono */
+            }
+
+            .btn-dashboard {
+                font-size: 0.9rem;
+                padding: 8px 16px;
+            }
+
+            /* Ajustamos las tablas para pantallas medianas */
+            .table th, .table td {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+
+            /* Ajustamos la disposición de las tarjetas */
+            .row.g-3 {
+                margin-left: -1rem; /* Espaciado mejorado */
+                margin-right: -1rem;
+            }
+
+            .col-lg-3 {
+                flex: 0 0 100%; /* Las tarjetas ocupan el 100% del ancho en pantallas medianas */
+            }
+
+            /* Gráficos: ajuste de los gráficos en dispositivos medianos */
+            #stockChart, #estadoChart {
+                height: 180px !important;
             }
         }
 
-        /* Evita el efecto hover en dispositivos táctiles. */
-        @media (hover: none) {
-            .card-custom:hover {
-                transform: none;
+        /* Ajustes específicos para tarjetas de métricas */
+        @media (max-width: 575.98px) {
+            .card-custom .card-body-custom {
+                padding: 15px;
             }
-            .btn-dashboard:hover {
-                opacity: 1;
-                transform: none;
+
+            .metric-value {
+                font-size: 1.4rem;
+            }
+
+            .card-icon {
+                font-size: 1.8rem;
             }
         }
+
+        /* Mejoras en la navegación principal */
+        @media (max-width: 991.98px) {
+            .d-flex.justify-content-between.align-items-center.mb-3 {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            #main-nav {
+                flex-wrap: wrap;
+                gap: 0.75rem !important;
+            }
+
+            .btn-dashboard {
+                flex: 1 1 45%;
+                min-width: 160px;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -355,14 +502,14 @@
                         <tbody>
                         {% for movimiento in movimientos %}
                             <tr>
-                                <td>{{ movimiento.producto.nombre|truncatechars:15 }}</td>
-                                <td>
-                                            <span class="badge bg-{{ movimiento.tipo|lower }} text-black">
-                                                {{ movimiento.get_tipo_display }}
-                                            </span>
+                                <td data-label="Producto">{{ movimiento.producto.nombre|truncatechars:15 }}</td>
+                                <td data-label="Tipo">
+                <span class="badge bg-{{ movimiento.tipo|lower }} text-black">
+                    {{ movimiento.get_tipo_display }}
+                </span>
                                 </td>
-                                <td>{{ movimiento.cantidad }}</td>
-                                <td>{{ movimiento.fecha|date:"d/m H:i" }}</td>
+                                <td data-label="Cantidad">{{ movimiento.cantidad }}</td>
+                                <td data-label="Fecha">{{ movimiento.fecha|date:"d/m H:i" }}</td>
                             </tr>
                         {% empty %}
                             <tr>
@@ -391,9 +538,9 @@
                         <tbody>
                         {% for producto in productos_bajo_stock %}
                             <tr>
-                                <td>{{ producto.nombre }}</td>
-                                <td>
-                                            <span class="badge bg-danger">{{ producto.stock_actual }} unidades</span>
+                                <td data-label="Producto">{{ producto.nombre }}</td>
+                                <td data-label="Stock Actual">
+                                    <span class="badge bg-danger">{{ producto.stock_actual }} unidades</span>
                                 </td>
                             </tr>
                         {% empty %}
