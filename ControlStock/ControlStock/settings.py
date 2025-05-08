@@ -74,14 +74,14 @@ TEMPLATES = [
         },
     },
 ]
-IS_DOCKER = os.environ.get('IS_DOCKER', False)
+IS_DOCKER = os.environ.get('IS_DOCKER', True)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'control_stock',
         'USER': 'admin',
         'PASSWORD': 'Homer2708**',
-        'HOST': 'db',
+        'HOST': 'db' if IS_DOCKER else 'localhost',
         'PORT': '3306',
     }
 }
