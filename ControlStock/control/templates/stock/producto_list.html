@@ -11,14 +11,15 @@
     </div>
 
     <div class="d-flex justify-content-between align-items-center mb-4 flex-column flex-md-row">
-        <h2 class="fw-bold text-primary d-flex align-items-center mb-3 mb-md-0">
-            <i class="fas fa-boxes me-2 fs-3"></i> Productos
+        <h2 class="fw-bold text-primary d-flex align-items-center mb-3 mb-md-0 fs-2">
+            <i class="fas fa-boxes me-2 fs-3 fs-md-1"></i> Productos
         </h2>
-        <div class="d-flex gap-2">
-            <a href="{% url 'stock:dashboard' %}" class="btn btn-light border shadow-sm d-flex align-items-center">
-                <i class="fas fa-arrow-left me-2"></i> Volver al Inicio
+        <div class="d-flex gap-2 fs-5">
+            <a href="{% url 'stock:dashboard' %}" class="btn btn-light border shadow-sm d-flex align-items-center fs-xs-4 fs-md-6">
+                <i class="fas fa-arrow-left me-2 fs-4"></i> Volver al Inicio
             </a>
-            <a href="{% url 'stock:producto_create' %}" class="btn btn-success shadow-sm">
+
+            <a href="{% url 'stock:producto_create' %}" class="btn btn-success shadow-sm fs-xs-4  fs-md-6">
                 <i class="fas fa-plus-circle me-2"></i> Nuevo Producto
             </a>
         </div>
@@ -28,14 +29,14 @@
         <div class="card-body">
             <form method="get" class="row g-3 align-items-end">
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold">Buscar</label>
-                    <input type="text" name="search" class="form-control form-control-lg"
+                    <label class="form-label fw-semibold fs-4">Buscar</label>
+                    <input type="text" name="search" class="form-control form-control-lg fs-5"
                            placeholder="Nombre o código..." value="{{ request.GET.search }}">
                 </div>
 
                 <div class="col-md-3">
-                    <label class="form-label fw-semibold">Categoría</label>
-                    <select name="categoria" class="form-select form-select-lg">
+                    <label class="form-label fw-semibold fs-4">Categoría</label>
+                    <select name="categoria" class="form-select form-select-lg fs-5">
                         <option value="">Todas</option>
                         {% for cat in categorias %}
                             <option value="{{ cat.id }}"
@@ -47,8 +48,8 @@
                 </div>
 
                 <div class="col-md-3">
-                    <label class="form-label fw-semibold">Estado</label>
-                    <select name="estado" class="form-select form-select-lg">
+                    <label class="form-label fw-semibold fs-4">Estado</label>
+                    <select name="estado" class="form-select form-select-lg fs-5">
                         <option value="">Todos</option>
                         {% for valor, nombre in estados %}
                             <option value="{{ valor }}" {% if request.GET.estado == valor %}selected{% endif %}>
@@ -59,7 +60,7 @@
                 </div>
 
                 <div class="col-md-2 d-grid">
-                    <button type="submit" class="btn btn-primary btn-lg">
+                    <button type="submit" class="btn btn-primary btn-lg fs-4">
                         <i class="fas fa-filter me-2"></i> Filtrar
                     </button>
                 </div>
@@ -210,16 +211,17 @@
         --card-bg: #1C2536; /* Fondo oscuro para las "tarjetas" */
         --input-border: #374151; /* Bordes oscuros en modo oscuro */
     }
+
     html, body {
-    width: 100%;
-    overflow-x: hidden; /* evita scroll horizontal */
-}
+        width: 100%;
+        overflow-x: hidden; /* evita scroll horizontal */
+    }
 
     body {
         font-family: 'Inter', system-ui, -apple-system, sans-serif;
         line-height: 1.6;
-         margin: 0;
-    padding: 0;
+        margin: 0;
+        padding: 0;
     }
 
     h2 {
@@ -235,168 +237,175 @@
         box-shadow: 0 1px 3px 0 var(--shadow-color),
         0 1px 2px -1px var(--shadow-color);
     }
-@media (min-width: 768px) and (max-width: 991.98px) {
-    body{
-                margin: 0.5em;
-        padding: 0.5em;
-            }
-     td[data-label="Stock"] {
-        font-size: 1.3em; /* Aumentamos el tamaño de la fuente */
-        padding: 0.75rem 0.70rem; /* Aumentamos el padding */
-    }
 
-    /* Aumentamos el tamaño de los inputs en el formulario */
-    .form-control, .form-select {
-        font-size: 1.25rem; /* Aumentamos el tamaño de la fuente */
-        padding: 0.75rem 1rem; /* Aumentamos el padding */
-    }
+    @media (min-width: 768px) and (max-width: 991.98px) {
+        body {
+            margin: 0.5em;
+            padding: 0.5em;
+        }
 
-    /* Aumentamos el tamaño del botón de filtro */
-    .btn-lg {
-        font-size: 1.25rem; /* Aumentamos el tamaño de la fuente */
-        padding: 0.75rem 1.5rem; /* Aumentamos el padding */
-    }
+        td[data-label="Stock"] {
+            font-size: 1.3em; /* Aumentamos el tamaño de la fuente */
+            padding: 0.75rem 0.70rem; /* Aumentamos el padding */
+        }
 
-    /* Aumentar el tamaño de las etiquetas */
-    .form-label {
-        font-size: 1.15rem; /* Aumentamos el tamaño de la fuente */
-    }
+        /* Aumentamos el tamaño de los inputs en el formulario */
+        .form-control, .form-select {
+            font-size: 1.25rem; /* Aumentamos el tamaño de la fuente */
+            padding: 0.75rem 1rem; /* Aumentamos el padding */
+        }
 
-    /* Aumentamos la altura de las filas del formulario */
-    .col-md-4, .col-md-3, .col-md-2 {
-        font-size: 1.2rem; /* Aumentamos el tamaño del texto en el formulario */
-    }
-    /* Ocultamos encabezado para usar estilo de tarjeta */
+        /* Aumentamos el tamaño del botón de filtro */
+        .btn-lg {
+            font-size: 1.25rem; /* Aumentamos el tamaño de la fuente */
+            padding: 0.75rem 1.5rem; /* Aumentamos el padding */
+        }
 
-    thead {
-        display: none;
-    }
-    body {
-        font-size: 1rem; /* Aumentado el tamaño de fuente en pantallas pequeñas */
-    }
-    h2 {
-        font-size: 1.4rem; /* Títulos más grandes en pantallas pequeñas */
-    }
-    tbody {
-        display: block;
-    }
+        /* Aumentar el tamaño de las etiquetas */
+        .form-label {
+            font-size: 1.15rem; /* Aumentamos el tamaño de la fuente */
+        }
 
-    /* Estilo de cada fila como tarjeta */
-    tr {
-        font-size: 1.3em; /* Aumentado el tamaño de la fuente de las filas */
-        display: flex;
-        flex-direction: column;
-        background-color: var(--card-bg);
-        border-radius: var(--card-radius);
-        box-shadow: 0 4px 12px var(--shadow-color);
-        margin-bottom: 1.5rem;
-        overflow: hidden;
-        padding: 1rem;
-    }
+        /* Aumentamos la altura de las filas del formulario */
+        .col-md-4, .col-md-3, .col-md-2 {
+            font-size: 1.2rem; /* Aumentamos el tamaño del texto en el formulario */
+        }
 
-    /* Estilo de celdas como pares clave/valor */
-    td {
-        font-size: 1.3em; /* Aumentado el tamaño de la fuente de las celdas */
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.75rem 0;
-        color: var(--text-color);
-        border-bottom: 1px solid var(--input-border);
-    }
+        /* Ocultamos encabezado para usar estilo de tarjeta */
+        thead {
+            display: none;
+        }
 
-    td:last-child {
-        border-bottom: none;
-    }
+        body {
+            font-size: 1rem; /* Aumentado el tamaño de fuente en pantallas pequeñas */
+        }
 
-    td::before {
-        content: attr(data-label);
-        font-weight: 600;
-        color: var(--text-color);
-        opacity: 0.75;
-        margin-right: 1rem;
-    }
+        h2 {
+            font-size: 1.4rem; /* Títulos más grandes en pantallas pequeñas */
+        }
 
-    /* Oculta columna "Código" para liberar espacio */
-    td[data-label="Código"] svg.barcode {
-        width: 100%;
-        max-width: 220px;
-        height: auto;
-        margin-top: 0.5rem;
-    }
-    td[data-label="Stock"] svg.barcode {
-        width: 100%;
-        max-width: 220px;
-        height: auto;
-        margin-top: 0.5rem;
-    }
-    /* Estilo para acciones más legible */
-    td[data-label="Acciones"] {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
+        tbody {
+            display: block;
+        }
 
-    td[data-label="Acciones"] > div.d-flex {
-        flex-direction: row;
-        gap: 0.75rem;
-    }
+        /* Estilo de cada fila como tarjeta */
+        tr {
+            font-size: 1.3em; /* Aumentado el tamaño de la fuente de las filas */
+            display: flex;
+            flex-direction: column;
+            background-color: var(--card-bg);
+            border-radius: var(--card-radius);
+            box-shadow: 0 4px 12px var(--shadow-color);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            padding: 1rem;
+        }
 
-    /* Botones más accesibles */
-    .btn-sm {
-        font-size: 1rem; /* Aumentado el tamaño de los botones pequeños */
-        padding: 0.4rem 0.8rem;
-        border-radius: 8px;
-    }
+        /* Estilo de celdas como pares clave/valor */
+        td {
+            font-size: 1.3em; /* Aumentado el tamaño de la fuente de las celdas */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            color: var(--text-color);
+            border-bottom: 1px solid var(--input-border);
+        }
 
-    .btn {
-        font-size: 1.2rem; /* Aumentado el tamaño de los botones grandes */
-        padding: 0.6rem 1.2rem;
-    }
+        td:last-child {
+            border-bottom: none;
+        }
 
-    .btn,
-    input.form-control,
-    select.form-select {
-        font-size: 1.2rem; /* Aumentado el tamaño del texto en formularios y botones */
-    }
+        td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: var(--text-color);
+            opacity: 0.75;
+            margin-right: 1rem;
+        }
 
-    input.form-control,
-    select.form-select {
-        font-size: 1.1rem; /* Aumentado el tamaño del texto en los formularios */
-        padding: 0.75rem 1rem;
-    }
+        /* Oculta columna "Código" para liberar espacio */
+        td[data-label="Código"] svg.barcode {
+            width: 100%;
+            max-width: 220px;
+            height: auto;
+            margin-top: 0.5rem;
+        }
 
-    /* Badges más elegantes */
-    .badge {
-        font-size: 1.2rem; /* Aumentado el tamaño de las etiquetas */
-        padding: 0.5rem 1rem;
-    }
+        td[data-label="Stock"] svg.barcode {
+            width: 100%;
+            max-width: 220px;
+            height: auto;
+            margin-top: 0.5rem;
+        }
 
-    .table td {
-        white-space: normal; /* permite que el texto haga salto de línea */
-        word-break: break-word; /* rompe palabras largas si es necesario */
-    }
+        /* Estilo para acciones más legible */
+        td[data-label="Acciones"] {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
 
-    /* Imagen centrada y pulida */
-    .img-thumbnail {
-        width: 56px; /* Aumentado tamaño de imagen */
-        height: 56px;
-        object-fit: cover;
-        border-radius: 50%;
-        box-shadow: 0 2px 6px var(--shadow-color);
-    }
+        td[data-label="Acciones"] > div.d-flex {
+            flex-direction: row;
+            gap: 0.75rem;
+        }
 
-    .no-image-placeholder {
-        font-size: 1.6rem; /* Aumentado tamaño del icono en el placeholder */
-        width: 56px; /* Aumentado tamaño del placeholder */
-        height: 56px;
-        background-color: var(--table-header-bg);
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        /* Botones más accesibles */
+        .btn-sm {
+            font-size: 1rem; /* Aumentado el tamaño de los botones pequeños */
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+        }
+
+        .btn {
+            font-size: 1.2rem; /* Aumentado el tamaño de los botones grandes */
+            padding: 0.6rem 1.2rem;
+        }
+
+        .btn,
+        input.form-control,
+        select.form-select {
+            font-size: 1.2rem; /* Aumentado el tamaño del texto en formularios y botones */
+        }
+
+        input.form-control,
+        select.form-select {
+            font-size: 1.1rem; /* Aumentado el tamaño del texto en los formularios */
+            padding: 0.75rem 1rem;
+        }
+
+        /* Badges más elegantes */
+        .badge {
+            font-size: 1.2rem; /* Aumentado el tamaño de las etiquetas */
+            padding: 0.5rem 1rem;
+        }
+
+        .table td {
+            white-space: normal; /* permite que el texto haga salto de línea */
+            word-break: break-word; /* rompe palabras largas si es necesario */
+        }
+
+        /* Imagen centrada y pulida */
+        .img-thumbnail {
+            width: 56px; /* Aumentado tamaño de imagen */
+            height: 56px;
+            object-fit: cover;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px var(--shadow-color);
+        }
+
+        .no-image-placeholder {
+            font-size: 1.6rem; /* Aumentado tamaño del icono en el placeholder */
+            width: 56px; /* Aumentado tamaño del placeholder */
+            height: 56px;
+            background-color: var(--table-header-bg);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     }
-}
 
 
 </style>
