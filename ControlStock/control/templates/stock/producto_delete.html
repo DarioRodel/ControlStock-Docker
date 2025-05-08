@@ -5,17 +5,17 @@
 {% block content %}
 <div class="container py-5 px-3 px-md-5">
     <div class="dark-mode-toggle">
-        <div class="form-check form-switch ms-auto mb-3">
+        <div class="form-check form-switch ms-auto mb-4">
             <input class="form-check-input" type="checkbox" id="darkModeToggle">
             <label class="form-check-label" for="darkModeToggle">Modo oscuro</label>
         </div>
     </div>
 
-    <h2 class="fw-bold mb-4 text-center" style="color: var(--secondary-color);">
+    <h2 class="fw-bold mb-4 text-center fs-1" style="color: var(--secondary-color);">
         <i class="fas fa-exclamation-triangle me-2"></i>Eliminar Producto
     </h2>
 
-    <div class="card border-0 shadow-sm">
+    <div class="card border-0 shadow-sm rounded-3">
         <div class="card-body">
             <h5 class="text-center mb-4 fs-3" style="color: var(--text-color);">
                 ¿Estás seguro de que deseas eliminar el producto <strong>{{ object.nombre }}</strong>?
@@ -23,13 +23,13 @@
 
             <form method="post">
                 {% csrf_token %}
-                <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
-                    <button type="submit" class="btn btn-danger btn-lg px-5 py-2 fs-3"
+                <div class="d-flex flex-column flex-md-row justify-content-center gap-4">
+                    <button type="submit" class="btn btn-danger btn-lg px-5 py-3 fs-4"
                             style="background-color: var(--danger-color); border-color: var(--danger-color);">
                         <i class="fas fa-trash-alt me-2"></i> Eliminar
                     </button>
                     <a href="{% url 'stock:producto_list' %}"
-                       class="btn btn-lg px-5 py-2 fs-3"
+                       class="btn btn-lg px-5 py-3 fs-4"
                        style="background-color: var(--card-bg);
                               border: 2px solid var(--input-border);
                               color: var(--text-color);">
@@ -143,11 +143,8 @@
 
     /* Ajustes para dispositivos móviles en tablas. */
     @media (max-width: 768px) {
-        body{
+        body {
             margin: 1em;
-        }
-        .table td, .table th {
-            padding: 0.75rem;
         }
     }
 </style>

@@ -9,6 +9,7 @@
             background-color: var(--card-bg); /* Usa la variable de color de fondo de la tarjeta. */
             border: 1px solid var(--input-border); /* Borde de 1px con el color del borde de los inputs. */
             box-shadow: 0 4px 6px -1px var(--shadow-color); /* Sombra suave usando la variable de color de sombra. */
+            border-radius: var(--card-radius); /* Bordes redondeados con la variable definida. */
         }
 
         /* Definición de variables CSS (modo claro por defecto). */
@@ -32,8 +33,9 @@
             --placeholder-color: #94a3b8; /* Color del texto de ejemplo en los campos. */
             --table-header-bg: #f8f9fa; /* Color de fondo del encabezado de las tablas. */
             --table-border: #e9ecef; /* Color del borde de las tablas. */
+            --font-size-base: 1rem; /* Tamaño base de fuente (1rem = 16px). */
+            --font-size-lg: 1.25rem; /* Tamaño de fuente más grande para títulos y encabezados. */
         }
-
 
         /* Estilos específicos para el modo oscuro (cuando el body tiene el atributo data-theme="dark"). */
         body[data-theme="dark"] {
@@ -58,6 +60,7 @@
             background-color: var(--background-color);
             color: var(--text-color);
             transition: background-color 0.3s, color 0.3s;
+            font-size: var(--font-size-base); /* Usar el tamaño base de la fuente. */
         }
 
         /* Re-estilo de la tarjeta con transición para el cambio de tema. */
@@ -66,42 +69,36 @@
             border: 1px solid var(--shadow-color);
             box-shadow: 0 4px 6px -1px var(--shadow-color);
             transition: background-color 0.3s;
+            border-radius: var(--card-radius);
         }
 
-
-        /* Repetición de la definición de variables CSS (parece redundante). */
-        :root {
-            --primary-color: #4CAF50;
-            --secondary-color: #2196F3;
-            --background-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-color: #212529;
-            --input-border: #dee2e6;
-            --hover-bg: #f8f9fa;
-            --shadow-color: rgba(0, 0, 0, 0.1);
+        /* Estilos para hacer que los textos sean más grandes en pantallas grandes. */
+        .card-body h5, .fw-bold, h2 {
+            font-size: var(--font-size-lg); /* Aumentamos el tamaño de las fuentes en pantallas grandes. */
         }
 
-        /* Repetición de los estilos para el modo oscuro (redundante). */
-        body[data-theme="dark"] {
-            --background-color: #1a1a1a;
-            --card-bg: #2d2d2d;
-            --text-color: #e0e0e0;
-            --input-border: #404040;
-            --hover-bg: #3d3d3d;
-            --shadow-color: rgba(255, 255, 255, 0.05);
+        /* Diseño de la tarjeta de confirmación más grande en pantallas medianas y grandes. */
+        .container {
+            max-width: 1200px; /* Aumentamos el ancho del contenedor. */
+            padding: 2rem 1.5rem; /* Mayor relleno en todos los lados. */
         }
 
-        /* Repetición de los estilos generales del body (redundante). */
-        body {
-            background-color: var(--background-color);
-            color: var(--text-color);
-            transition: all 0.3s ease;
+        /* Aumentar tamaño de las fuentes en dispositivos medianos (tablets). */
+        @media (min-width: 768px) {
+            body {
+                font-size: 1.25rem; /* Fuentes más grandes para pantallas medianas. */
+            }
+
+            .card-body h5, .fw-bold, h2 {
+                font-size: 1.5rem; /* Títulos y encabezados más grandes. */
+            }
         }
 
-        /* Re-estilo de la tarjeta (redundante). */
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--input-border);
+        /* Estilos para el modo oscuro y otros tamaños en pantallas grandes */
+        @media (min-width: 1200px) {
+            body {
+                font-size: 1.5rem; /* Fuentes más grandes en pantallas grandes (desktops). */
+            }
         }
 
         /* Estilos para las filas de la tabla al pasar el ratón (no se usa directamente en este formulario, pero está presente). */
@@ -110,12 +107,10 @@
             color: var(--text-color);
         }
 
-
         /* Estilo para el borde inferior del encabezado de tablas sin bordes (no se usa directamente aquí). */
         .table-borderless thead th {
             border-bottom: 2px solid var(--table-border) !important;
         }
-
 
         /* Estilos para las celdas de la tabla (no se usa directamente aquí). */
         .table td, .table th {
@@ -123,7 +118,6 @@
             padding: 1rem;
             background-color: var(--card-bg);
         }
-
 
         /* Ajustes para dispositivos móviles en tablas (no se usa directamente aquí). */
         @media (max-width: 768px) {
