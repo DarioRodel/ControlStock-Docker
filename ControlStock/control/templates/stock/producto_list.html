@@ -236,15 +236,42 @@
         0 1px 2px -1px var(--shadow-color);
     }
 @media (min-width: 768px) and (max-width: 991.98px) {
+     td[data-label="Stock"] {
+        font-size: 1.5rem; /* Aumentamos el tamaño de la fuente */
+        padding: 1rem 0; /* Aumentamos el padding */
+    }
+
+    /* Aumentamos el tamaño de los inputs en el formulario */
+    .form-control, .form-select {
+        font-size: 1.25rem; /* Aumentamos el tamaño de la fuente */
+        padding: 0.75rem 1rem; /* Aumentamos el padding */
+    }
+
+    /* Aumentamos el tamaño del botón de filtro */
+    .btn-lg {
+        font-size: 1.25rem; /* Aumentamos el tamaño de la fuente */
+        padding: 0.75rem 1.5rem; /* Aumentamos el padding */
+    }
+
+    /* Aumentar el tamaño de las etiquetas */
+    .form-label {
+        font-size: 1.15rem; /* Aumentamos el tamaño de la fuente */
+    }
+
+    /* Aumentamos la altura de las filas del formulario */
+    .col-md-4, .col-md-3, .col-md-2 {
+        font-size: 1.2rem; /* Aumentamos el tamaño del texto en el formulario */
+    }
     /* Ocultamos encabezado para usar estilo de tarjeta */
+
     thead {
         display: none;
     }
     body {
-        font-size: 1.2rem; /* Aumentado el tamaño de fuente en pantallas pequeñas */
+        font-size: 1rem; /* Aumentado el tamaño de fuente en pantallas pequeñas */
     }
     h2 {
-        font-size: 1.8rem; /* Títulos más grandes en pantallas pequeñas */
+        font-size: 1.4rem; /* Títulos más grandes en pantallas pequeñas */
     }
     tbody {
         display: block;
@@ -252,7 +279,7 @@
 
     /* Estilo de cada fila como tarjeta */
     tr {
-        font-size: 1.6em; /* Aumentado el tamaño de la fuente de las filas */
+        font-size: 1.3em; /* Aumentado el tamaño de la fuente de las filas */
         display: flex;
         flex-direction: column;
         background-color: var(--card-bg);
@@ -265,7 +292,7 @@
 
     /* Estilo de celdas como pares clave/valor */
     td {
-        font-size: 1.6em; /* Aumentado el tamaño de la fuente de las celdas */
+        font-size: 1.3em; /* Aumentado el tamaño de la fuente de las celdas */
         display: flex;
         justify-content: space-between;
         align-items: center;
