@@ -11,7 +11,7 @@ from django.conf import settings  # Acceso a la configuración global de Django.
 
 # Modelo para representar categorías de productos
 class Categoria(models.Model):
-    nombre = models.CharField(max_length=100, unique=True)  # Nombre único de la categoría.
+    nombre = models.CharField(max_length=100, unique=True,default='Sin categoria')  # Nombre único de la categoría.
     descripcion = models.TextField(blank=True)  # Descripción opcional.
     total_stock = models.IntegerField(default=0)  # Acumulado de stock de todos los productos de esta categoría.
     color = models.CharField(max_length=7, default='#4e73df')  # Color en formato HEX, útil para gráficos.
@@ -51,7 +51,7 @@ class Producto(models.Model):
 
     nombre = models.CharField(max_length=100, blank=False)
     codigo_barras = models.CharField(max_length=100, unique=True, blank=False,verbose_name='Código de Barras')
-    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, blank=False)
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, blank=False, default=1)
     ubicacion = models.ForeignKey(Ubicacion, on_delete=models.SET_NULL, null=True, blank=True)
     descripcion = models.TextField(blank=True)
     precio_compra = models.DecimalField(max_digits=10, decimal_places=2, default=0)
