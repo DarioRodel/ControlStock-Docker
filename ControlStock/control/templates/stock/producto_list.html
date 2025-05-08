@@ -10,8 +10,8 @@
         <label class="form-check-label" for="darkModeToggle">Modo oscuro</label>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-primary d-flex align-items-center">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-column flex-md-row">
+        <h2 class="fw-bold text-primary d-flex align-items-center mb-3 mb-md-0">
             <i class="fas fa-boxes me-2 fs-3"></i> Productos
         </h2>
         <div class="d-flex gap-2">
@@ -68,9 +68,9 @@
     </div>
 
     <div class="card border-0 shadow-sm">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light text-uppercase small text-muted">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light text-uppercase small text-muted">
                 <tr>
                     <th class="text-center">Imagen</th>
                     <th>Código</th>
@@ -80,11 +80,11 @@
                     <th class="text-center">Estado</th>
                     <th class="text-center">Acciones</th>
                 </tr>
-                </thead>
-                <tbody>
+            </thead>
+            <tbody>
                 {% for producto in productos %}
                     <tr class="hover-highlight">
-                        <td class="text-center">
+                        <td class="text-center" data-label="Imagen">
                             {% if producto.imagen %}
                                 <img src="{{ producto.imagen.url }}" class="img-thumbnail rounded-circle shadow-sm"
                                      style="width: 50px; height: 50px; object-fit: cover;">
@@ -95,42 +95,36 @@
                                 </div>
                             {% endif %}
                         </td>
-                        <td>
-                            {{ producto.codigo_barras }}
-
+                        <td data-label="Código">{{ producto.codigo_barras }}</td>
+                        <td data-label="Nombre">{{ producto.nombre }}</td>
+                        <td data-label="Categoría">
+                            <span class="badge bg-secondary-subtle text-dark px-3 py-2 rounded-pill">
+                                {{ producto.categoria.nombre|default:"-" }}
+                            </span>
                         </td>
-
-                        <td>{{ producto.nombre }}</td>
-                        <td>
-                                <span class="badge bg-secondary-subtle text-dark px-3 py-2 rounded-pill">
-                                    {{ producto.categoria.nombre|default:"-" }}
-                                </span>
+                        <td class="text-center" data-label="Stock">
+                            <span class="badge bg-light text-dark fs-6 dark-mode-badge">
+                                {{ producto.stock_actual }}
+                            </span>
                         </td>
-                        <td class="text-center">
-                                <span class="badge bg-light text-dark fs-6 dark-mode-badge">
-                                    {{ producto.stock_actual }}
-                                </span>
+                        <td class="text-center" data-label="Estado">
+                            <span class="badge py-2 px-3 rounded-pill
+                                {% if producto.estado == 'NORMAL' %} bg-success-subtle text-success
+                                {% elif producto.estado == 'BAJO' %} bg-warning-subtle text-warning
+                                {% else %} bg-danger-subtle text-danger {% endif %}">
+                                <i class="fas
+                                    {% if producto.estado == 'OK' %} fa-check-circle
+                                    {% elif producto.estado == 'BAJO' %} fa-exclamation-triangle
+                                    {% else %} fa-times-circle {% endif %} me-2"></i>
+                                {{ producto.get_estado_display }}
+                            </span>
                         </td>
-                        <td class="text-center">
-                                <span class="badge py-2 px-3 rounded-pill
-                                    {% if producto.estado == 'NORMAL' %} bg-success-subtle text-success
-                                    {% elif producto.estado == 'BAJO' %} bg-warning-subtle text-warning
-                                    {% else %} bg-danger-subtle text-danger {% endif %}">
-                                    <i class="fas
-                                        {% if producto.estado == 'OK' %} fa-check-circle
-                                        {% elif producto.estado == 'BAJO' %} fa-exclamation-triangle
-                                        {% else %} fa-times-circle {% endif %} me-2"></i>
-                                    {{ producto.get_estado_display }}
-                                </span>
-                        </td>
-                        <td class="text-center">
+                        <td class="text-center" data-label="Acciones">
                             <div class="d-flex justify-content-center gap-2">
-                                <a href="{% url 'stock:producto_delete' producto.pk %}"
-                                   class="btn btn-sm btn-outline-danger rounded-circle p-2">
+                                <a href="{% url 'stock:producto_delete' producto.pk %}" class="btn btn-sm btn-outline-danger rounded-circle p-2">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
-                                <a href="{% url 'stock:producto_edit' producto.pk %}"
-                                   class="btn btn-sm btn-outline-secondary rounded-circle"
+                                <a href="{% url 'stock:producto_edit' producto.pk %}" class="btn btn-sm btn-outline-secondary rounded-circle"
                                    data-bs-toggle="tooltip" title="Editar Producto">
                                     <i class="fas fa-edit"></i>
                                 </a>
@@ -151,10 +145,11 @@
                         </td>
                     </tr>
                 {% endfor %}
-                </tbody>
-            </table>
-        </div>
+            </tbody>
+        </table>
     </div>
+</div>
+
 
     {% if is_paginated %}
         <nav class="mt-4">
@@ -167,14 +162,12 @@
                         </a>
                     </li>
                 {% endif %}
-
                 {% for num in page_obj.paginator.page_range %}
                     <li class="page-item {% if page_obj.number == num %}active{% endif %}">
                         <a class="page-link"
                            href="?page={{ num }}&search={{ request.GET.search }}&categoria={{ request.GET.categoria }}&estado={{ request.GET.estado }}">{{ num }}</a>
                     </li>
                 {% endfor %}
-
                 {% if page_obj.has_next %}
                     <li class="page-item">
                         <a class="page-link"
@@ -189,256 +182,180 @@
 </div>
 
 <style>
-    /* Definición de variables CSS para el tema claro (por defecto) */
-    :root {
-        --primary-color: #4CAF50; /* Verde */
-        --secondary-color: #2196F3; /* Azul */
-        --accent-color: #FF9800; /* Naranja */
-        --danger-color: #f44336; /* Rojo */
-        --background-color: #f4f7fb; /* Gris claro */
-        --card-radius: 8px;
-        --shadow-color: rgba(0, 0, 0, 0.1);
-        --card-bg: #ffffff;
-        --text-color: #2d3748; /* Gris oscuro */
-        --card-hover: rgba(0, 0, 0, 0.03);
-        --light-bg: #f8f9fa; /* Gris muy claro */
-        --success-bg: #d1e7dd; /* Verde muy claro */
-        --warning-bg: #fff3cd; /* Amarillo muy claro */
-        --danger-bg: #f8d7da; /* Rojo muy claro */
-        --input-bg: #ffffff;
-        --input-border: #e2e8f0; /* Gris claro */
-        --placeholder-color: #94a3b8; /* Gris medio */
-        --table-border: #e9ecef; /* Gris claro para bordes de tabla */
-        --table-header-bg: #f8f9fa; /* Gris muy claro para encabezado de tabla */
-    }
+  /* Variables actualizadas para mejor contraste */
+  :root {
+    --primary-color: #3B82F6;
+    --secondary-color: #6366F1;
+    --accent-color: #10B981;
+    --danger-color: #EF4444;
+    --background-color: #F8FAFC;
+    --card-radius: 12px;
+    --shadow-color: rgba(0, 0, 0, 0.05);
+    --text-color: #1E293B;
+    --table-header-bg: #F1F5F9;
+    --card-bg: #FFFFFF; /* Añadido para el fondo de las "tarjetas" en móvil */
+    --input-border: #E5E7EB; /* Añadido para los bordes en móvil */
+  }
 
-    /* Estilos para el tema oscuro */
-    body[data-theme="dark"] {
-        --background-color: #121212; /* Gris muy oscuro */
-        --card-bg: #1e1e2f; /* Gris oscuro */
-        --text-color: #e0e0e0; /* Gris claro */
-        --shadow-color: rgba(255, 255, 255, 0.05);
-        --card-hover: rgba(255, 255, 255, 0.08);
-        --light-bg: #2d2d2d; /* Gris más oscuro */
-        --success-bg: #1a3a2e;
-        --warning-bg: #4d3d17;
-        --danger-bg: #4a2527;
-        --input-bg: #2d2d2d;
-        --input-border: #3d3d3d; /* Gris oscuro */
-        --placeholder-color: #a0aec0; /* Gris medio claro */
-        --table-border: #404040; /* Gris oscuro para bordes de tabla */
-        --table-header-bg: #2d2d2d; /* Gris más oscuro para encabezado de tabla */
-    }
+  body[data-theme="dark"] {
+    --primary-color: #60A5FA;
+    --secondary-color: #818CF8;
+    --accent-color: #34D399;
+    --danger-color: #F87171;
+    --background-color: #0F172A;
+    --text-color: #E2E8F0;
+    --table-header-bg: #1E293B;
+    --card-bg: #1C2536; /* Fondo oscuro para las "tarjetas" */
+    --input-border: #374151; /* Bordes oscuros en modo oscuro */
+  }
 
-    /* Estilos generales del body */
-    body {
-        background-color: var(--background-color);
-        color: var(--text-color);
-        transition: background-color 0.3s, color 0.3s;
-    }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+  }
 
-    /* Estilos para la tarjeta contenedora */
-    .card {
-        background-color: var(--card-bg);
-        border: 1px solid var(--shadow-color);
-        box-shadow: 0 4px 6px -1px var(--shadow-color);
-        transition: background-color 0.3s;
-    }
+  h2 {
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--text-color);
+  }
 
-    /* Estilos para fondos ligeros y de estado */
-    .bg-light {
-        background-color: var(--light-bg) !important;
-    }
+  .card {
+    border-radius: var(--card-radius);
+    border: 1px solid var(--input-border);
+    box-shadow: 0 1px 3px 0 var(--shadow-color),
+                0 1px 2px -1px var(--shadow-color);
+  }
 
-    .bg-success-subtle {
-        background-color: var(--success-bg) !important;
-    }
+  @media (min-width: 768px) and (max-width: 991.98px) {
+  /* Ocultamos encabezado para usar estilo de tarjeta */
+  thead {
+    display: none;
+  }
 
-    .bg-warning-subtle {
-        background-color: var(--warning-bg) !important;
-    }
+  tbody {
+    display: block;
+  }
 
-    .bg-danger-subtle {
-        background-color: var(--danger-bg) !important;
-    }
+  /* Estilo de cada fila como tarjeta */
+  tr {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--card-bg);
+    border-radius: var(--card-radius);
+    box-shadow: 0 4px 12px var(--shadow-color);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    padding: 1rem;
+  }
 
-    .bg-secondary-subtle {
-        background-color: #e2e8f0 !important;
-        color: #495057 !important; /* Un gris claro para secundario */
-    }
+  /* Estilo de celdas como pares clave/valor */
+  td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--input-border);
+  }
 
-    body[data-theme="dark"] .bg-secondary-subtle {
-        background-color: #495057 !important;
-        color: #e2e8f0 !important;
-    }
+  td:last-child {
+    border-bottom: none;
+  }
 
-    body[data-theme="dark"] .dark-mode-badge {
-        background-color: #343a40 !important;
-        color: #f8f9fa !important;
-    }
+  td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text-color);
+    opacity: 0.75;
+    margin-right: 1rem;
+  }
+
+  /* Oculta columna "Código" para liberar espacio */
+  td[data-label="Código"] svg.barcode {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+  margin-top: 0.5rem;
+}
+
+  /* Estilo para acciones más legible */
+  td[data-label="Acciones"] {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  td[data-label="Acciones"] > div.d-flex {
+    flex-direction: row;
+    gap: 0.75rem;
+  }
+
+  /* Botones más accesibles */
+  .btn-sm {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+  }
+
+  /* Badges más elegantes */
+  .badge {
+    font-size: 0.85rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+  }
+
+  /* Imagen centrada y pulida */
+  .img-thumbnail {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px var(--shadow-color);
+  }
+
+  .no-image-placeholder {
+    width: 48px;
+    height: 48px;
+    font-size: 1.2rem;
+    background-color: var(--table-header-bg);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
 
 
-    /* Estilos para los elementos de formulario */
-    .form-control, .form-select {
-        background-color: var(--input-bg) !important;
-        color: var(--text-color) !important;
-        border: 2px solid var(--input-border) !important;
-        transition: all 0.3s ease;
-    }
-
-    .form-control::placeholder {
-        color: var(--placeholder-color) !important;
-        opacity: 0.8;
-    }
-
-    .form-control:focus, .form-select:focus {
-        border-color: var(--primary-color) !important;
-        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2) !important;
-    }
-
-    /* Estilos para las etiquetas de formulario */
-    .form-label {
-        color: var(--text-color);
-    }
-
-    /* Estilos para el botón primario (Filtrar, Nuevo Producto) */
-    .btn-primary {
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
-    }
-
-    .btn-primary:hover {
-        background-color: #45a049;
-        border-color: #45a049;
-    }
-
-    /* Estilos para la paginación */
-    .pagination .page-link {
-        background-color: var(--card-bg);
-        border-color: var(--shadow-color);
-        color: var(--text-color);
-    }
-
-    .pagination .page-item.active .page-link {
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
-    }
-
-    /* Estilos para el placeholder de imagen cuando no hay imagen */
-    .no-image-placeholder {
-        background-color: var(--light-bg);
-        color: var(--text-color);
-    }
-
-    /* Estilos para botones de contorno (Volver, Editar) */
-    .btn-outline-secondary {
-        border-color: var(--shadow-color);
-        color: var(--text-color);
-    }
-
-    /* Estilos para el botón de eliminar */
-    .btn-outline-danger {
-        border-color: var(--danger-color);
-        color: var(--danger-color);
-    }
-
-    /* Estilo al pasar el ratón sobre las filas de la tabla */
-    .hover-highlight:hover {
-        background-color: var(--card-hover);
-    }
-
-    /* Estilos base para la tabla */
-    .table {
-        --bs-table-color: var(--text-color);
-        --bs-table-bg: transparent;
-        --bs-table-border-color: var(--table-border);
-        margin-bottom: 0;
-    }
-
-    /* Estilo al pasar el ratón sobre las filas de la tabla */
-    .table-hover tbody tr:hover {
-        --bs-table-accent-bg: var(--card-hover);
-        color: var(--text-color);
-    }
-
-    /* Estilos para la cabecera de la tabla */
-    .table-light {
-        --bs-table-bg: var(--table-header-bg);
-        --bs-table-color: var(--text-color);
-        border-bottom: 2px solid var(--table-border) !important;
-    }
-
-    /* Estilos para la cabecera de tablas sin bordes */
-    .table-borderless thead th {
-        border-bottom: 2px solid var(--table-border) !important;
-    }
-
-    /* Estilos para las celdas de la tabla */
-    .table td, .table th {
-        vertical-align: middle;
-        padding: 1rem;
-        background-color: var(--card-bg);
-    }
-
-    /* Estilos específicos para el botón de eliminar */
-    .btn-outline-danger {
-        --bs-btn-color: var(--danger-color);
-        --bs-btn-border-color: var(--danger-color);
-        --bs-btn-hover-bg: var(--danger-color);
-        --bs-btn-hover-border-color: var(--danger-color);
-        --bs-btn-active-bg: var(--danger-color);
-    }
-
-    /* Estilos para texto atenuado (cuando no hay productos) */
-    .text-muted {
-        color: var(--text-color) !important;
-        opacity: 0.7;
-    }
-
-    /* Ajustes para dispositivos móviles */
-    @media (max-width: 768px) {
-        .table-responsive {
-            border-radius: var(--card-radius);
-            border: 1px solid var(--input-border);
-        }
-
-        .table td, .table th {
-            padding: 0.75rem;
-        }
-    }
 </style>
 
 <script>
-    // Dark Mode Toggle - Código Javascript para controlar el modo oscuro
-    const toggle = document.getElementById('darkModeToggle'); // Obtiene el elemento checkbox con el ID 'darkModeToggle'
-    const currentTheme = localStorage.getItem('theme'); // Intenta obtener el tema guardado previamente en el almacenamiento local del navegador
+  // Dark Mode Toggle
+  const toggle = document.getElementById('darkModeToggle');
+  const currentTheme = localStorage.getItem('theme');
 
-    // Si se encontró un tema guardado y es 'dark', aplica el modo oscuro al cargar la página
-    if (currentTheme === 'dark') {
-        document.body.setAttribute('data-theme', 'dark'); // Establece el atributo 'data-theme' en el elemento 'body' para activar los estilos del tema oscuro definidos en CSS
-        toggle.checked = true; // Marca el checkbox del modo oscuro como activado
+  if (currentTheme === 'dark') {
+    document.body.setAttribute('data-theme', 'dark');
+    toggle.checked = true;
+  }
+
+  toggle.addEventListener('change', () => {
+    if (toggle.checked) {
+      document.body.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.body.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
     }
+  });
 
-    // Agrega un 'listener' para el evento 'change' en el checkbox del modo oscuro
-    toggle.addEventListener('change', () => {
-        if (toggle.checked) {
-            // Si el checkbox se activa (el usuario quiere modo oscuro)
-            document.body.setAttribute('data-theme', 'dark'); // Establece el atributo 'data-theme'
-            localStorage.setItem('theme', 'dark'); // Guarda la preferencia 'dark' en el almacenamiento local
-        } else {
-            // Si el checkbox no está marcado (el usuario quiere modo claro)
-            document.body.removeAttribute('data-theme'); // Remueve el atributo 'data-theme'
-            localStorage.setItem('theme', 'light'); // Guarda 'light' en el almacenamiento local
-        }
-    });
+  // Inicializar tooltips de Bootstrap
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
-    // Inicializar tooltips de Bootstrap
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-
-    // Generar los códigos de barras después de que se cargue el contenido
-    window.addEventListener('DOMContentLoaded', () => {
-        JsBarcode(".barcode").init();
-    });
-
+  // Generar los códigos de barras
+  window.addEventListener('DOMContentLoaded', () => {
+    JsBarcode(".barcode").init();
+  });
 </script>
