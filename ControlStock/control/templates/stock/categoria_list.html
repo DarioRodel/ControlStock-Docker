@@ -28,194 +28,128 @@
             --table-border: #e9ecef; /* Color del borde de las tablas */
         }
 
-
-        /* Estilos para el tema oscuro (cuando el body tiene el atributo data-theme="dark") */
-        body[data-theme="dark"] {
-            --background-color: #121212; /* Color de fondo oscuro */
-            --card-bg: #1e1e2f; /* Color de fondo oscuro para las tarjetas */
-            --text-color: #e0e0e0; /* Color del texto claro */
-            --shadow-color: rgba(255, 255, 255, 0.05); /* Color de la sombra claro */
-            --card-hover: rgba(255, 255, 255, 0.08); /* Color de fondo claro al pasar el ratón */
-            --light-bg: #2d2d2d; /* Otro color de fondo oscuro */
-            --success-bg: #1a3a2e; /* Color de fondo oscuro para mensajes de éxito */
-            --warning-bg: #4d3d17; /* Color de fondo oscuro para mensajes de advertencia */
-            --danger-bg: #4a2527; /* Color de fondo oscuro para mensajes de error */
-            --input-bg: #2d2d2d; /* Color de fondo oscuro para los inputs */
-            --input-border: #3d3d3d; /* Color del borde oscuro para los inputs */
-            --placeholder-color: #a0aec0; /* Color del placeholder claro */
-            --table-header-bg: #2d2d2d; /* Color de fondo oscuro para el encabezado de las tablas */
-            --table-border: #404040; /* Color del borde oscuro para las tablas */
-        }
-
         /* Estilos generales para el body */
         body {
-            background-color: var(--background-color); /* Usa la variable para el color de fondo del body */
-            color: var(--text-color); /* Usa la variable para el color del texto del body */
-            transition: background-color 0.3s, color 0.3s; /* Transición suave para los cambios de color */
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-size: 1.125rem; /* 18px */
+            line-height: 1.6;
+            font-family: 'Segoe UI', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        /* Agrandar el contenedor */
+        .container {
+            max-width: 1140px;
+            padding: 2rem 1.5rem;
         }
 
         /* Estilos para la tarjeta contenedora */
         .card {
-            background-color: var(--card-bg); /* Usa la variable para el color de fondo de la tarjeta */
-            border: 1px solid var(--shadow-color); /* Borde de la tarjeta con el color de la sombra */
-            box-shadow: 0 4px 6px -1px var(--shadow-color); /* Sombra de la tarjeta */
-            transition: background-color 0.3s; /* Transición suave para el cambio de color de fondo */
+            background-color: var(--card-bg);
+            border: 1px solid var(--shadow-color);
+            box-shadow: 0 4px 6px -1px var(--shadow-color);
+            transition: background-color 0.3s;
+        }
+
+        .card-header {
+            padding: 2rem;
+        }
+
+        .card-header h2 {
+            font-size: 1.75rem;
+        }
+
+        /* Estilos para los botones */
+        .btn, .btn-lg {
+            padding: 0.75rem 1.25rem;
+            font-size: 1rem;
+            border-radius: 0.75rem;
+        }
+
+        /* Estilos para los botones de acción */
+        .btn i, .input-group-text i {
+            font-size: 1.1rem;
         }
 
         /* Estilos para los campos de formulario */
         .form-control {
-            background-color: var(--input-bg) !important; /* Usa la variable para el color de fondo del input y fuerza la aplicación */
-            color: var(--text-color) !important; /* Usa la variable para el color del texto del input y fuerza la aplicación */
-            border: 2px solid var(--input-border) !important; /* Usa la variable para el color del borde del input y fuerza la aplicación */
-            transition: all 0.3s ease; /* Transición suave para todos los cambios */
+            background-color: var(--input-bg) !important;
+            color: var(--text-color) !important;
+            border: 2px solid var(--input-border) !important;
+            padding: 0.75rem 1.25rem;
+            font-size: 1rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
         }
 
-        /* Estilos para el placeholder de los campos de formulario */
         .form-control::placeholder {
-            color: var(--placeholder-color) !important; /* Usa la variable para el color del placeholder y fuerza la aplicación */
-            opacity: 0.8; /* Opacidad del placeholder */
-        }
-
-
-        /* Estilos para el botón de contorno rojo (peligro) */
-        .btn-outline-danger {
-            border-color: var(--danger-color); /* Usa la variable para el color del borde del botón */
-            color: var(--danger-color); /* Usa la variable para el color del texto del botón */
-        }
-
-        /* Estilos para la tabla ligera */
-        .table-light {
-            background-color: var(--hover-bg) !important; /* Usa la variable para el color de fondo al pasar el ratón y fuerza la aplicación */
-            color: var(--text-color) !important; /* Usa la variable para el color del texto y fuerza la aplicación */
-        }
-
-        /* Estilos para un fondo con degradado primario */
-        .bg-primary-gradient {
-            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(33, 150, 243, 0.05) 100%) !important; /* Degradado suave de verde a azul y fuerza la aplicación */
-        }
-
-        /* Estilos para la sombra al pasar el ratón */
-        .hover-shadow:hover {
-            background-color: var(--hover-bg) !important; /* Usa la variable para el color de fondo al pasar el ratón y fuerza la aplicación */
-            transform: translateY(-2px); /* Eleva ligeramente el elemento al pasar el ratón */
-            box-shadow: 0 4px 15px var(--shadow-color); /* Aplica una sombra al pasar el ratón */
-        }
-
-        /* Estilos para los campos de formulario y select */
-        .form-control, .form-select {
-            background-color: var(--card-bg); /* Usa la variable para el color de fondo de la tarjeta */
-            color: var(--text-color); /* Usa la variable para el color del texto */
-            border-color: var(--input-border); /* Usa la variable para el color del borde del input */
-        }
-
-        /* Estilos para el texto dentro de un input group */
-        .input-group-text {
-            background-color: var(--card-bg); /* Usa la variable para el color de fondo de la tarjeta */
-            border-color: var(--input-border); /* Usa la variable para el color del borde del input */
-            color: var(--text-color); /* Usa la variable para el color del texto */
-        }
-
-        /* Estilos para el botón de éxito (Guardar) */
-        .btn-success {
-            background: linear-gradient(135deg, rgba(32, 201, 151, 0.9), rgba(25, 135, 84, 0.9)); /* Degradado de verde */
-            border: none; /* Sin borde */
-        }
-
-        /* Estilos para el botón de contorno primario */
-        .btn-outline-primary {
-            border-color: var(--input-border); /* Usa la variable para el color del borde del input */
-            color: var(--text-color); /* Usa la variable para el color del texto */
-        }
-
-        /* Estilos para el indicador de color */
-        .color-indicator {
-            border-color: var(--input-border) !important; /* Usa la variable para el color del borde del input y fuerza la aplicación */
+            color: var(--placeholder-color) !important;
+            opacity: 0.8;
         }
 
         /* Estilos para la tabla */
-        .table {
-            --bs-table-color: var(--text-color); /* Usa la variable para el color del texto de la tabla */
-            --bs-table-bg: transparent; /* Fondo transparente para la tabla */
-            --bs-table-border-color: var(--table-border); /* Usa la variable para el color del borde de la tabla */
-            margin-bottom: 0; /* Elimina el margen inferior predeterminado */
-        }
-
-        /* Estilos para las filas de la tabla al pasar el ratón */
-        .table-hover tbody tr:hover {
-            --bs-table-accent-bg: var(--card-hover); /* Usa la variable para el color de fondo al pasar el ratón */
-            color: var(--text-color); /* Usa la variable para el color del texto */
-        }
-
-        /* Estilos para la cabecera de la tabla ligera */
-        .table-light {
-            --bs-table-bg: var(--table-header-bg); /* Usa la variable para el color de fondo del encabezado */
-            --bs-table-color: var(--text-color); /* Usa la variable para el color del texto */
-            border-bottom: 2px solid var(--table-border) !important; /* Borde inferior más grueso y fuerza la aplicación */
-        }
-
-        /* Estilos para la cabecera de tablas sin bordes */
-        .table-borderless thead th {
-            border-bottom: 2px solid var(--table-border) !important; /* Borde inferior más grueso y fuerza la aplicación */
-        }
-
-        /* Estilos para la sombra al pasar el ratón */
-        .hover-shadow:hover {
-            background: var(--card-hover) !important;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px var(--shadow-color);
-        }
-
-        /* Estilos para el indicador de color */
-        .color-indicator {
-            width: 24px; /* Ancho del indicador */
-            height: 24px; /* Alto del indicador */
-            border-radius: 6px; /* Bordes redondeados */
-            border: 2px solid var(--input-border); /* Borde con el color del input */
-            transition: all 0.2s ease; /* Transición suave para cambios */
-        }
-
-        /* Estilos para las celdas de la tabla */
         .table td, .table th {
-            vertical-align: middle; /* Alineación vertical al centro */
-            padding: 1rem; /* Espaciado interno */
-            background-color: var(--card-bg); /* Usa el color de fondo de la tarjeta */
+            padding: 1.25rem;
+            font-size: 1rem;
         }
 
-        /* Estilos para los botones de acción (editar y eliminar) */
-        .btn-outline-primary {
-            --bs-btn-color: var(--primary-color); /* Usa la variable para el color del texto */
-            --bs-btn-border-color: var(--primary-color); /* Usa la variable para el color del borde */
-            --bs-btn-hover-bg: var(--primary-color); /* Usa la variable para el color de fondo al pasar el ratón */
-            --bs-btn-hover-border-color: var(--primary-color); /* Usa la variable para el color del borde al pasar el ratón */
-            --bs-btn-active-bg: var(--primary-color); /* Usa la variable para el color de fondo al estar activo */
+        /* Ajustes para el modo oscuro */
+        body[data-theme="dark"] {
+            --background-color: #121212;
+            --card-bg: #1e1e2f;
+            --text-color: #e0e0e0;
+            --shadow-color: rgba(255, 255, 255, 0.05);
+            --card-hover: rgba(255, 255, 255, 0.08);
+            --light-bg: #2d2d2d;
+            --success-bg: #1a3a2e;
+            --warning-bg: #4d3d17;
+            --danger-bg: #4a2527;
+            --input-bg: #2d2d2d;
+            --input-border: #3d3d3d;
+            --placeholder-color: #a0aec0;
+            --table-header-bg: #2d2d2d;
+            --table-border: #404040;
         }
 
-        .btn-outline-danger {
-            --bs-btn-color: var(--danger-color); /* Usa la variable para el color del texto */
-            --bs-btn-border-color: var(--danger-color); /* Usa la variable para el color del borde */
-            --bs-btn-hover-bg: var(--danger-color); /* Usa la variable para el color de fondo al pasar el ratón */
-            --bs-btn-hover-border-color: var(--danger-color); /* Usa la variable para el color del borde al pasar el ratón */
-            --bs-btn-active-bg: var(--danger-color); /* Usa la variable para el color de fondo al estar activo */
+        /* Estilos para el "hover" y filas de la tabla */
+        .table-hover tbody tr:hover {
+            background-color: var(--card-hover);
+            color: var(--text-color);
         }
 
         /* Ajustes de borde redondeado */
         .rounded-start {
-            border-radius: 12px 0 0 12px !important; /* Borde redondeado solo en la esquina superior izquierda e inferior izquierda y fuerza la aplicación */
+            border-radius: 12px 0 0 12px !important;
         }
 
         .rounded-end {
-            border-radius: 0 12px 12px 0 !important; /* Borde redondeado solo en la esquina superior derecha e inferior derecha y fuerza la aplicación */
+            border-radius: 0 12px 12px 0 !important;
         }
 
-        /* Ajustes para dispositivos móviles */
+        /* Ajustes en dispositivos móviles */
         @media (max-width: 768px) {
-            .table-responsive {
-                border-radius: var(--card-radius); /* Usa la variable para el radio del borde de la tarjeta */
-                border: 1px solid var(--input-border); /* Usa la variable para el color del borde del input */
+            .table td, .table th {
+                padding: 0.75rem;
+                font-size: 0.95rem;
             }
 
-            .table td, .table th {
-                padding: 0.75rem; /* Reduce el espaciado interno para pantallas más pequeñas */
+            .container {
+                padding: 1.5rem;
+            }
+
+            .h3 {
+                font-size: 1.5rem;
+            }
+
+            .btn {
+                font-size: 0.95rem;
+                padding: 0.65rem 1.1rem;
             }
         }
     </style>
@@ -229,11 +163,11 @@
         <div class="card shadow-lg border-0 rounded-3">
             <div class="card-header bg-primary-gradient p-4">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h2 class="h3 mb-0 fw-bold" style="color: var(--primary-color);">
+                    <h2 class="h3 mb-0 fw-bold fs-xs-3" style="color: var(--primary-color);">
                         <i class="fas fa-tags me-2"></i>Gestión de Categorías
                     </h2>
                     <a href="{% url 'stock:categoria_create' %}"
-                       class="btn btn-success btn-lg rounded-pill px-4 py-2">
+                       class="btn btn-success btn-lg rounded-pill px-4 py-2 fs-4">
                         <i class="fas fa-plus-circle me-2"></i>Nueva Categoría
                     </a>
                 </div>
@@ -244,10 +178,10 @@
                     <div class="col-md-6">
                         <div class="input-group">
                         <span class="input-group-text bg-transparent border-end-0">
-                            <i class="fas fa-search" style="color: var(--text-color);"></i>
+                            <i class="fas fa-search fs-4" style="color: var(--text-color);"></i>
                         </span>
                             <input type="text"
-                                   class="form-control form-control-lg border-start-0"
+                                   class="form-control form-control-lg border-start-0 fs-4"
                                    placeholder="Buscar categoría..."
                                    id="searchInput">
                         </div>
@@ -258,23 +192,23 @@
                     <table class="table table-hover align-middle table-borderless">
                         <thead class="table-light">
                         <tr>
-                            <th class="py-3 px-4 rounded-start">ID</th>
-                            <th class="py-3 px-4">Nombre</th>
-                            <th class="py-3 px-4 rounded-end">Acciones</th>
+                            <th class="py-3 px-4 rounded-start fs-5">ID</th>
+                            <th class="py-3 px-4 fs-5">Nombre</th>
+                            <th class="py-3 px-4 fs-5 rounded-end">Acciones</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for categoria in categorias %}
                             <tr class="position-relative hover-shadow">
-                                <td class="px-4 fw-semibold">{{ categoria.id }}</td>
-                                <td class="px-4">
+                                <td class="px-4 fw-semibold fs-4">{{ categoria.id }}</td>
+                                <td class="px-4 fs-4">
                                     <div class="d-flex align-items-center">
                                     <span class="color-indicator me-3"
                                           style="background-color: {{ categoria.color }}"></span>
                                         {{ categoria.nombre }}
                                     </div>
                                 </td>
-                                <td class="px-4">
+                                <td class="px-4 fs-4">
                                     <div class="d-flex gap-2">
                                         <a href="{% url 'stock:categoria_edit' categoria.pk %}"
                                            class="btn btn-sm btn-outline-primary rounded-circle p-2">
@@ -291,12 +225,8 @@
                             <tr>
                                 <td colspan="3" class="text-center py-5">
                                     <div class="d-flex flex-column align-items-center">
-                                        <i class="fas fa-box-open fa-3x mb-3" style="color: var(--primary-color);"></i>
-                                        <h4 class="h5 mb-2">No se encontraron categorías</h4>
-                                        <p class="mb-0 opacity-75">Comienza creando tu primera categoría</p>
-                                        <a href="{% url 'stock:categoria_create' %}" class="btn btn-primary btn-lg">
-                                <i class="fas fa-plus-circle me-2"></i> Agregar Nueva Categoria
-                            </a>
+                                        <i class="fas fa-box-open fa-3x mb-3" style="color: var(--danger-color);"></i>
+                                        <p class="fw-bold" style="color: var(--danger-color);">No se encontraron categorías.</p>
                                     </div>
                                 </td>
                             </tr>
@@ -305,48 +235,6 @@
                     </table>
                 </div>
             </div>
-
-            <div class="card-footer border-0 px-4 pb-4" style="background-color: var(--card-bg);">
-                <div class="text-end">
-                    <a href="{% url 'stock:dashboard' %}"
-                       class="btn btn-outline-primary btn-lg rounded-pill px-4 py-2">
-                        <i class="fas fa-arrow-left me-2"></i>Volver al inicio
-                    </a>
-                </div>
-            </div>
         </div>
     </div>
-
-    <script>
-        document.getElementById('searchInput').addEventListener('input', function (e) {
-            const searchTerm = e.target.value.toLowerCase();
-            document.querySelectorAll('tbody tr').forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
-            });
-        });
-
-        // Dark Mode Toggle - Código Javascript para controlar el modo oscuro
-        const toggle = document.getElementById('darkModeToggle'); // Obtiene el elemento checkbox con el ID 'darkModeToggle'
-        const currentTheme = localStorage.getItem('theme'); // Intenta obtener el tema guardado previamente en el almacenamiento local del navegador
-
-        // Si se encontró un tema guardado y es 'dark', aplica el modo oscuro al cargar la página
-        if (currentTheme === 'dark') {
-            document.body.setAttribute('data-theme', 'dark'); // Establece el atributo 'data-theme' en el elemento 'body' para activar los estilos del tema oscuro definidos en CSS
-            toggle.checked = true; // Marca el checkbox del modo oscuro como activado
-        }
-
-        // Agrega un 'listener' para el evento 'change' en el checkbox del modo oscuro
-        toggle.addEventListener('change', () => {
-            if (toggle.checked) {
-                // Si el checkbox se activa (el usuario quiere modo oscuro)
-                document.body.setAttribute('data-theme', 'dark'); // Establece el atributo 'data-theme'
-                localStorage.setItem('theme', 'dark'); // Guarda 'dark' en el almacenamiento local
-            } else {
-                // Si el checkbox no está marcado (el usuario quiere modo claro)
-                document.body.removeAttribute('data-theme'); // Remueve el atributo 'data-theme'
-                localStorage.setItem('theme', 'light'); // Guarda 'light' en el almacenamiento local
-            }
-        });
-    </script>
 {% endblock %}
