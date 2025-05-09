@@ -1,3 +1,4 @@
+import openpyxl
 from django.core.mail import send_mail
 from django.shortcuts import redirect, render  # Importa la función redirect para redireccionar a otras URLs.
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, \
