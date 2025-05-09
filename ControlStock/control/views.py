@@ -1,18 +1,10 @@
-from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.http import JsonResponse
 from django.shortcuts import redirect, render  # Importa la función redirect para redireccionar a otras URLs.
-from django.utils.decorators import method_decorator
-from django.utils.timezone import now
-from django.views import View
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, \
     DeleteView  # Importa vistas genéricas de Django.
 from django.urls import reverse_lazy  # Importa reverse_lazy para generar URLs de forma diferida.
 from django.contrib import messages  # Importa el sistema de mensajes de Django para mostrar notificaciones al usuario.
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
-
 from .forms import ProductoForm, ReporteErrorForm  # Importa los formularios de la aplicación.
 from django.views.generic.edit import FormView  # Importa la vista genérica para manejar formularios.
 from django.db.models import Q
