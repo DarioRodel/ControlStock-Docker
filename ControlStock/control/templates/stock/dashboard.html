@@ -50,8 +50,13 @@
             font-family: 'Segoe UI', system-ui, sans-serif;
             color: var(--text-color);
             transition: background-color 0.3s, color 0.3s;
+            overflow-x: hidden; /* Evita que aparezca scroll horizontal */
+        margin: 0;
+        padding: 0;
         }
-
+         .container {
+        overflow-x: hidden; /* Evita el desplazamiento horizontal */
+    }
         /* Estilos para las tarjetas que contienen la información. */
         .card-custom {
             border: none;
