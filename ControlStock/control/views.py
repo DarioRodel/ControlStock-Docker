@@ -22,7 +22,14 @@ from django.db.models import Sum, F
 from django.views.generic import TemplateView
 from rest_framework.views import APIView
 from django.contrib.auth.mixins import PermissionRequiredMixin
-
+from django.http import HttpResponse
+from django.utils import timezone
+import csv
+import openpyxl
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import Table, TableStyle
+from reportlab.lib import colors
 
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'stock/dashboard.html'
@@ -467,3 +474,145 @@ class ProductoAPIView(APIView):
             })
         except Producto.DoesNotExist:
             return Response({'exists': False})
+
+
+class ExportMixin:
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        # Aplicar los mismos filtros que en la vista principal
+        search = self.request.GET.get('search')
+        categoria = self.request.GET.get('categoria')
+        estado = self.request.GET.get('estado')
+
+        if search:
+            queryset = queryset.filter(
+                Q(codigo_barras__icontains=search) |
+                Q(nombre__icontains=search) |
+                Q(descripcion__icontains=search)
+            )
+
+        if categoria:
+            queryset = queryset.filter(categoria__id=categoria)
+
+        if estado:
+            queryset = queryset.filter(estado=estado)
+
+        return queryset
+
+
+def export_productos_csv(request):
+    productos = Producto.objects.all()
+
+    search = request.GET.get('search')
+    categoria = request.GET.get('categoria')
+    estado = request.GET.get('estado')
+
+    if search:
+        productos = productos.filter(
+            Q(codigo_barras__icontains=search) |
+            Q(nombre__icontains=search) |
+            Q(descripcion__icontains=search)
+        )
+
+    if categoria:
+        productos = productos.filter(categoria__id=categoria)
+
+    if estado:
+        productos = productos.filter(estado=estado)
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="productos_{timezone.now().date()}.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Código', 'Nombre', 'Categoría', 'Stock Actual', 'Precio Compra', 'Precio Venta', 'Estado'])
+
+    for producto in productos:
+        writer.writerow([
+            producto.codigo_barras,
+            producto.nombre,
+            producto.categoria.nombre,
+            producto.stock_actual,
+            producto.precio_compra,
+            producto.precio_venta,
+            producto.get_estado_display()
+        ])
+    return response
+
+
+def export_productos_excel(request):
+    productos = Producto.objects.all()
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename="productos_{timezone.now().date()}.xlsx"'
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Productos"
+
+    # Encabezados
+    columns = ['Código', 'Nombre', 'Categoría', 'Stock Actual', 'Precio Compra', 'Precio Venta', 'Estado']
+    ws.append(columns)
+
+    # Datos
+    for producto in productos:
+        ws.append([
+            producto.codigo_barras,
+            producto.nombre,
+            producto.categoria.nombre,
+            producto.stock_actual,
+            producto.precio_compra,
+            producto.precio_venta,
+            producto.get_estado_display()
+        ])
+
+    wb.save(response)
+    return response
+
+
+def export_productos_pdf(request):
+    productos = Producto.objects.all()
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="productos_{timezone.now().date()}.pdf"'
+
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
+
+    # Encabezado
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(50, height - 50, "Reporte de Productos")
+    p.setFont("Helvetica", 12)
+    p.drawString(50, height - 80, f"Fecha: {timezone.now().date()}")
+
+    # Datos de la tabla
+    data = [['Código', 'Nombre', 'Categoría', 'Stock', 'P. Compra', 'P. Venta', 'Estado']]
+
+    for producto in productos:
+        data.append([
+            producto.codigo_barras,
+            producto.nombre,
+            producto.categoria.nombre,
+            str(producto.stock_actual),
+            f"€{producto.precio_compra}",
+            f"€{producto.precio_venta}",
+            producto.get_estado_display()
+        ])
+
+    table = Table(data)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]))
+
+    table.wrapOn(p, width - 100, height)
+    table.drawOn(p, 50, height - 150)
+
+    p.showPage()
+    p.save()
+    return response
