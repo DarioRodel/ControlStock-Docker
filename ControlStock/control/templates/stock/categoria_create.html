@@ -1,488 +1,277 @@
 {% block content %}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="../../static/dark/js/darkmode.js" defer></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="../../static/dark/js/darkmode.js" defer></script>
 
-    <style>
-        /* Aquí empieza todo el CSS para darle estilo a la página. */
-        /* :root define variables de colores y otros estilos que se usan en todo el sitio (modo claro). */
-        :root {
-            --primary-color: #4CAF50; /* Color principal (verde). */
-            --secondary-color: #2196F3; /* Color secundario (azul). */
-            --accent-color: #FF9800; /* Color de acento (naranja). */
-            --danger-color: #f44336; /* Color para errores (rojo). */
-            --background-color: #f4f7fb; /* Color de fondo general (gris claro). */
-            --card-radius: 8px; /* Radio de las esquinas de las tarjetas. */
-            --shadow-color: rgba(0, 0, 0, 0.1); /* Color de la sombra. */
-            --card-bg: #ffffff; /* Fondo de las tarjetas (blanco). */
-            --text-color: #2d3748; /* Color del texto principal (gris oscuro). */
-            --card-hover: rgba(0, 0, 0, 0.03); /* Fondo al pasar el ratón en tarjetas. */
-            --light-bg: #f8f9fa; /* Otro fondo claro. */
-            --success-bg: #d1e7dd; /* Fondo para mensajes de éxito. */
-            --warning-bg: #fff3cd; /* Fondo para mensajes de advertencia. */
-            --danger-bg: #f8d7da; /* Fondo para mensajes de error. */
-            --input-bg: #ffffff; /* Fondo de los campos de formulario (blanco). */
-            --input-border: #e2e8f0; /* Borde de los campos de formulario (gris claro). */
-            --placeholder-color: #94a3b8; /* Color del texto de ejemplo en los campos. */
-            --table-header-bg: #f8f9fa; /* Fondo del encabezado de las tablas. */
-            --table-border: #e9ecef; /* Borde de las tablas. */
-        }
+<style>
+    :root {
+        --primary-color: #4CAF50;
+        --secondary-color: #2196F3;
+        --accent-color: #FF9800;
+        --danger-color: #f44336;
+        --background-color: #f4f7fb;
+        --card-radius: 8px;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+        --card-bg: #ffffff;
+        --text-color: #2d3748;
+        --card-hover: rgba(0, 0, 0, 0.03);
+        --light-bg: #f8f9fa;
+        --success-bg: #d1e7dd;
+        --warning-bg: #fff3cd;
+        --danger-bg: #f8d7da;
+        --input-bg: #ffffff;
+        --input-border: #e2e8f0;
+        --placeholder-color: #94a3b8;
+        --table-header-bg: #f8f9fa;
+        --table-border: #e9ecef;
+    }
 
+    body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        font-size: 1.125rem;
+        line-height: 1.6;
+        font-family: 'Segoe UI', sans-serif;
+        transition: background-color 0.3s, color 0.3s;
+    }
 
-        /* Estilos específicos para cuando el body tiene el atributo data-theme="dark" (modo oscuro). */
-        body[data-theme="dark"] {
-            --background-color: #121212; /* Fondo oscuro. */
-            --card-bg: #1e1e2f; /* Fondo oscuro para tarjetas. */
-            --text-color: #e0e0e0; /* Texto claro. */
-            --shadow-color: rgba(255, 255, 255, 0.05); /* Sombra clara. */
-            --card-hover: rgba(255, 255, 255, 0.08); /* Fondo claro al pasar el ratón. */
-            --light-bg: #2d2d2d; /* Otro fondo oscuro. */
-            --success-bg: #1a3a2e; /* Fondo oscuro para éxito. */
-            --warning-bg: #4d3d17; /* Fondo oscuro para advertencia. */
-            --danger-bg: #4a2527; /* Fondo oscuro para error. */
-            --input-bg: #2d2d2d; /* Fondo oscuro para inputs. */
-            --input-border: #3d3d3d; /* Borde oscuro para inputs. */
-            --placeholder-color: #a0aec0; /* Placeholder claro. */
-            --table-header-bg: #2d2d2d; /* Fondo oscuro para encabezado de tabla. */
-            --table-border: #404040; /* Borde oscuro para tabla. */
-        }
+    .container {
+        max-width: 1140px;
+        padding: 2rem 1.5rem;
+    }
 
-        /* Estilos generales del body (aplica el color de fondo y texto). */
-        body {
-            background-color: var(--background-color);
-            color: var(--text-color);
-            transition: background-color 0.3s, color 0.3s; /* Animación para el cambio de tema. */
-        }
+    .card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--shadow-color);
+        box-shadow: 0 4px 6px -1px var(--shadow-color);
+        border-radius: 1rem;
+    }
 
+    .card-header {
+        background: linear-gradient(135deg, var(--primary-color), #45a049);
+        padding: 2rem;
+        border-radius: 1rem 1rem 0 0 !important;
+    }
 
-        /* Estilos para los campos de formulario (inputs). */
-        .form-control {
-            background-color: var(--input-bg) !important; /* !important fuerza esta propiedad. */
-            color: var(--text-color) !important;
-            border: 2px solid var(--input-border) !important;
-            transition: all 0.3s ease; /* Animación para cambios. */
-        }
+    .form-control {
+        background-color: var(--input-bg) !important;
+        color: var(--text-color) !important;
+        border: 2px solid var(--input-border) !important;
+        padding: 0.75rem 1.25rem;
+        font-size: 1.1rem;
+        border-radius: 0.75rem;
+        transition: all 0.3s ease;
+    }
 
-        /* Estilo para el texto de ejemplo dentro de los campos. */
-        .form-control::placeholder {
-            color: var(--placeholder-color) !important;
-            opacity: 0.8; /* Un poco transparente. */
-        }
+    .color-preview {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        border: 3px solid var(--input-border);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
 
+    body[data-theme="dark"] {
+        --background-color: #121212;
+        --card-bg: #1e1e2f;
+        --text-color: #e0e0e0;
+        --shadow-color: rgba(255, 255, 255, 0.05);
+        --card-hover: rgba(255, 255, 255, 0.08);
+        --light-bg: #2d2d2d;
+        --success-bg: #1a3a2e;
+        --warning-bg: #4d3d17;
+        --danger-bg: #4a2527;
+        --input-bg: #2d2d2d;
+        --input-border: #3d3d3d;
+        --placeholder-color: #a0aec0;
+        --table-header-bg: #2d2d2d;
+        --table-border: #404040;
+    }
 
-        /* Estilo para las etiquetas de los formularios. */
-        .form-label {
-            color: var(--text-color);
-        }
-
-        /* Estilo para los botones primarios (como el de "Guardar"). */
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        /* Estilo al pasar el ratón por los botones primarios. */
-        .btn-primary:hover {
-            background-color: #45a049; /* Un verde un poco más oscuro. */
-            border-color: #45a049;
-        }
-
-        /* Estilos para la paginación (si hubiera una lista larga). */
-        .pagination .page-item.active {
-            background-color: var(--primary-color); /* Marca la página actual. */
-            border-color: var(--primary-color);
-        }
-
-        /* Repetición de :root (parece un error o una sección anterior no borrada). */
-        :root {
-            --primary-color: #4CAF50;
-            --secondary-color: #2196F3;
-            --background-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-color: #212529;
-            --input-border: #dee2e6;
-            --hover-bg: #f8f9fa;
-            --shadow-color: rgba(0, 0, 0, 0.1);
-        }
-
-        /* Repetición del body para el modo oscuro (parece un error o sección no borrada). */
-        body[data-theme="dark"] {
-            --background-color: #1a1a1a;
-            --card-bg: #2d2d2d;
-            --text-color: #e0e0e0;
-            --input-border: #404040;
-            --hover-bg: #3d3d3d;
-            --shadow-color: rgba(255, 255, 255, 0.05);
-        }
-
-        /* Repetición de estilos generales del body (parece un error). */
-        body {
-            background-color: var(--background-color);
-            color: var(--text-color);
-            transition: all 0.3s ease;
-        }
-
-
-        /* Estilos para las filas de la tabla al pasar el ratón. */
-        .table-hover tbody tr:hover {
-            --bs-table-accent-bg: var(--card-hover);
-            color: var(--text-color);
-        }
-
-        /* Estilo para el borde inferior del encabezado de tablas sin bordes. */
-        .table-borderless thead th {
-            border-bottom: 2px solid var(--table-border) !important;
-        }
-
-
-        /* Estilos para las celdas de la tabla (datos y encabezados). */
-        .table td, .table th {
-            vertical-align: middle; /* Centra verticalmente el contenido. */
-            padding: 1rem; /* Espacio alrededor del contenido. */
-            background-color: var(--card-bg); /* Usa el fondo de las tarjetas. */
-        }
-
-
-        /* Estilo para texto atenuado (como cuando no hay datos). */
-        .text-muted {
-            color: var(--text-color) !important;
-            opacity: 0.7;
-        }
-
-        /* Ajustes para pantallas pequeñas (móviles). */
-        @media (max-width: 768px) {
-            .table td, .table th {
-                padding: 0.75rem; /* Menos espacio en pantallas pequeñas. */
-            }
-        }
-
-        /* Otra sección de :root definiendo más variables de estilo, ahora enfocadas en el formulario. */
-        :root {
-            --form-bg: #ffffff; /* Fondo del formulario. */
-            --form-text: #333333; /* Color del texto en el formulario. */
-            --form-border: #e0e0e0; /* Borde del formulario. */
-            --form-shadow: rgba(0, 0, 0, 0.08); /* Sombra del formulario. */
-            --btn-cancelar-bg: #6c757d; /* Fondo del botón Cancelar (gris). */
-            --btn-cancelar-hover: #5a6268; /* Fondo al pasar el ratón en Cancelar. */
-            --primary-color: #4CAF50; /* Repetición del color primario. */
-            --input-bg: #f8f9fa; /* Repetición del fondo de los inputs. */
-            --input-border: #dee2e6; /* Repetición del borde de los inputs. */
-            --text-color: #212529; /* Repetición del color del texto. */
-        }
-
-        /* Estilos para el modo oscuro del formulario. */
-        body[data-theme="dark"] {
-            --form-bg: #2d2d2d;
-            --form-text: #e0e0e0;
-            --form-border: #404040;
-            --form-shadow: rgba(255, 255, 255, 0.05);
-            --btn-cancelar-bg: #5a6268;
-            --btn-cancelar-hover: #4a4f54;
-            --input-bg: #3d3d3d;
-            --input-border: #505050;
-            --text-color: #e0e0e0;
-        }
-
-        /* Estilo principal del contenedor del formulario (la tarjeta). */
-        .form-card {
-            background-color: var(--form-bg);
-            color: var(--form-text);
-            border-radius: 15px; /* Esquinas redondeadas. */
-            padding: 40px; /* Espacio dentro del formulario. */
-            box-shadow: 0 4px 10px var(--form-shadow); /* Sombra para resaltarlo. */
-            border: 1px solid var(--form-border); /* Borde sutil. */
-            transition: all 0.3s ease; /* Animación para cambios. */
-            max-width: 600px; /* Ancho máximo del formulario. */
-            margin: 0 auto; /* Centra el formulario horizontalmente. */
-        }
-
-        /* Estilo para el título del formulario. */
-        .form-card h2 {
-            font-weight: 700; /* Texto en negrita. */
-            color: var(--primary-color); /* Usa el color verde principal. */
-            margin-bottom: 30px; /* Espacio debajo del título. */
-            text-align: center; /* Centra el título. */
-        }
-
-        /* Re-estilo de los campos de formulario (inputs). */
-        .form-control {
-            background-color: var(--input-bg);
-            color: var(--text-color);
-            border: 2px solid var(--input-border);
-            border-radius: 12px; /* Esquinas más redondeadas. */
-            padding: 12px 16px; /* Espacio dentro del campo. */
-            transition: all 0.3s ease;
-        }
-
-        /* Estilo cuando se enfoca un campo de formulario (se selecciona). */
-        .form-control:focus {
-            border-color: var(--primary-color); /* Borde verde al enfocar. */
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2); /* Sombra verde al enfocar. */
-        }
-
-        /* Estilo general para los botones del formulario. */
-        .btn-form {
-            border-radius: 25px; /* Bordes muy redondeados (tipo píldora). */
-            font-weight: 600; /* Texto en negrita. */
-            padding: 12px 24px; /* Espacio dentro del botón. */
-            transition: all 0.3s ease;
-            display: flex; /* Para alinear ícono y texto. */
-            align-items: center; /* Centra verticalmente los elementos. */
-            justify-content: center; /* Centra horizontalmente los elementos. */
-            gap: 8px; /* Espacio entre ícono y texto. */
-        }
-
-        /* Estilo específico para el botón "Guardar" (primario). */
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color), #45a049); /* Degradado de verde. */
-            border: none; /* Sin borde. */
-        }
-
-        /* Estilo al pasar el ratón por el botón "Guardar". */
-        .btn-primary:hover {
-            opacity: 0.9; /* Un poco transparente. */
-            transform: translateY(-1px); /* Se eleva un poco. */
-        }
-
-        /* Estilo para el botón "Cancelar". */
-        .btn-cancelar {
-            background-color: var(--btn-cancelar-bg); /* Fondo gris. */
-            color: #fff; /* Texto blanco. */
-            border: none; /* Sin borde. */
-        }
-
-        /* Estilo al pasar el ratón por el botón "Cancelar". */
-        .btn-cancelar:hover {
-            background-color: var(--btn-cancelar-hover); /* Gris un poco más oscuro. */
-            transform: translateY(-1px); /* Se eleva un poco. */
-        }
-
-        /* Estilo para el selector de color. */
-        .form-control-color {
-            width: 60px; /* Ancho fijo. */
-            height: 45px; /* Alto fijo. */
-            padding: 5px;
-            border-radius: 8px !important;
-            border: 2px solid var(--input-border); /* Borde. */
-            cursor: pointer; /* Cambia el cursor al pasar por encima. */
-        }
-
-        /* Re-estilo de las etiquetas de los formularios. */
-        .form-label {
-            color: var(--text-color);
-            font-weight: 500; /* Un poco en negrita. */
-            margin-bottom: 8px; /* Espacio debajo de la etiqueta. */
-        }
-
-        /* Estilo para el contenedor del interruptor del modo oscuro. */
-        .dark-mode-toggle {
-            position: relative;
-            margin-bottom: 20px; /* Espacio debajo del interruptor. */
-        }
-        /* Breakpoint Medium (Tablets) - 768px */
     @media (max-width: 768px) {
-        .form-card {
-            padding: 30px;
-            margin: 0 15px;
-            max-width: 100%;
+        .container {
+            padding: 1.5rem;
         }
 
-        .form-card h2 {
-            font-size: 1.5rem;
-            margin-bottom: 25px;
-        }
-
-        .form-control {
-            padding: 10px 14px;
+        .btn-lg {
             font-size: 0.95rem;
+            padding: 0.65rem 1.1rem;
         }
 
-        .btn-form {
-            padding: 10px 20px;
-            font-size: 0.95rem;
-        }
-
-        .d-flex.align-items-center.gap-3 {
+        .color-preview-container {
             flex-direction: column;
             align-items: flex-start;
-            gap: 15px !important;
         }
     }
 
-    /* Breakpoint Small (Móviles grandes) - 576px */
-    @media (max-width: 576px) {
-        .form-card {
-            padding: 25px;
-            border-radius: 12px;
-        }
-
-        .form-card h2 {
-            font-size: 1.4rem;
-            margin-bottom: 20px;
-        }
-
-        .form-control {
-            font-size: 0.9rem;
-            border-radius: 10px;
-        }
-
-        .btn-form {
-            width: 100%;
-            padding: 12px;
-            font-size: 0.9rem;
-        }
-
-        .d-flex.justify-content-between.mt-4.gap-3 {
-            flex-direction: column;
-            gap: 15px !important;
-        }
-
-        .dark-mode-toggle {
-            margin-bottom: 15px;
-        }
-
-        .form-check-label {
-            font-size: 0.9rem;
-        }
+    /* Estilos específicos para el selector de color mejorado */
+    .color-selector-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
     }
 
-    /* Breakpoint Extra Small (Móviles pequeños) - 480px */
-    @media (max-width: 480px) {
-        .form-card {
-            padding: 20px;
-        }
-
-        .form-card h2 {
-            font-size: 1.3rem;
-        }
-
-        .form-label {
-            font-size: 0.95rem;
-        }
-
-        .form-control-color {
-            width: 50px;
-            height: 40px;
-        }
-
-        .text-muted {
-            font-size: 0.85rem;
-        }
-
-        .container.py-5 {
-            padding-top: 2rem !important;
-            padding-bottom: 2rem !important;
-        }
+    .color-preview {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        border: 3px solid var(--input-border);
+        cursor: pointer;
+        transition: all 0.3s ease;
     }
 
-    /* Optimizaciones específicas para modo oscuro */
-    @media (max-width: 768px) {
-        body[data-theme="dark"] .form-card {
-            box-shadow: 0 2px 6px rgba(255, 255, 255, 0.1);
-        }
+    .color-preview:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
     }
 
-    /* Mejoras de toque para móviles */
-    @media (hover: none) {
-        .btn-form:hover {
-            transform: none !important;
-            opacity: 1 !important;
-        }
-
-        .form-control:focus {
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15) !important;
-        }
+    .color-info {
+        display: flex;
+        flex-direction: column;
     }
 
-    /* Ajuste de altura en pantallas pequeñas */
-    @media (max-height: 600px) {
-        .container.py-5 {
-            padding-top: 1.5rem !important;
-            padding-bottom: 1.5rem !important;
-        }
-
-        .form-card {
-            padding: 15px;
-        }
+    .color-code {
+        font-size: 1rem;
+        background-color: var(--light-bg);
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-family: monospace;
     }
-    </style>
 
-    <div class="container py-5">
-        <div class="dark-mode-toggle">
-            <div class="form-check form-switch ms-auto mb-3">
-                <input class="form-check-input" type="checkbox" id="darkModeToggle">
-                <label class="form-check-label" for="darkModeToggle">Modo oscuro</label>
-            </div>
-        </div>
+    .btn-color-picker {
+        align-self: flex-start;
+        margin-top: 5px;
+    }
 
-        <div class="form-card">
-            <h2>
+    /* Estilos para los botones de acción */
+    .btn-action {
+        border-radius: 25px;
+        font-weight: 600;
+        padding: 12px 24px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), #45a049);
+        border: none;
+    }
+
+    .btn-primary:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        background-color: var(--secondary-color);
+        border: none;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+</style>
+
+<div class="container py-5">
+    <div class="form-check form-switch ms-auto mb-3">
+        <input class="form-check-input" type="checkbox" id="darkModeToggle">
+        <label class="form-check-label" for="darkModeToggle">Modo oscuro</label>
+    </div>
+
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header bg-primary-gradient p-4">
+            <h2 class="h3 mb-0 fw-bold text-white">
                 <i class="fas fa-plus-circle me-2"></i>Crear Nueva Categoría
             </h2>
+        </div>
+
+        <div class="card-body p-4">
             <form method="post" novalidate>
                 {% csrf_token %}
                 <div class="mb-4">
-                    <label for="id_nombre" class="form-label">Nombre de la categoría</label>
+                    <label for="id_nombre" class="form-label fs-5 fw-semibold">Nombre de la categoría</label>
                     <input type="text"
                            name="nombre"
-                           class="form-control"
+                           class="form-control form-control-lg fs-5"
                            id="id_nombre"
                            required
                            placeholder="Ej: Electrónica">
                 </div>
 
                 <div class="mb-4">
-                    <label for="id_color" class="form-label">Color de la categoría</label>
-                    <div class="d-flex align-items-center gap-3">
+                    <label for="id_color" class="form-label fs-5 fw-semibold">Color de la categoría</label>
+                    <div class="color-selector-container">
+                        <div class="color-preview"
+                             style="background-color: #4CAF50;"
+                             onclick="document.getElementById('id_color').click()">
+                        </div>
+
                         <input type="color"
                                name="color"
-                               class="form-control form-control-color"
                                id="id_color"
                                value="#4CAF50"
-                               required>
-                        <span class="text-muted" style="color: var(--text-color) !important; opacity: 0.8;">
-                        Selecciona un color identificativo
-                    </span>
+                               required
+                               class="visually-hidden"
+                               onchange="updateColorPreview(this)">
+
+                        <div class="color-info">
+                            <span class="color-code mb-2" id="colorCode">#4CAF50</span>
+                            <button type="button"
+                                    class="btn btn-outline-secondary btn-color-picker"
+                                    onclick="document.getElementById('id_color').click()">
+                                <i class="fas fa-palette me-2"></i>Cambiar color
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-between mt-4 gap-3">
+                <div class="d-flex justify-content-end gap-3 mt-5">
                     <a href="{% url 'stock:categoria_list' %}"
-                       class="btn btn-cancelar btn-form flex-grow-1">
+                       class="btn btn-secondary btn-action">
                         <i class="fas fa-times me-2"></i>Cancelar
                     </a>
                     <button type="submit"
-                            class="btn btn-primary btn-form flex-grow-1">
+                            class="btn btn-primary btn-action">
                         <i class="fas fa-save me-2"></i>Guardar
                     </button>
                 </div>
             </form>
         </div>
     </div>
+</div>
 
-    <script>
-        // Dark Mode Toggle - Código Javascript para controlar el modo oscuro.
-        const toggle = document.getElementById('darkModeToggle'); // Obtiene el checkbox del modo oscuro.
-        const currentTheme = localStorage.getItem('theme'); // Revisa si hay un tema guardado en el navegador.
+<script>
+    // Dark Mode Toggle
+    const toggle = document.getElementById('darkModeToggle');
+    const currentTheme = localStorage.getItem('theme');
 
-        // Si el tema guardado es "dark", activa el modo oscuro al cargar la página.
-        if (currentTheme === 'dark') {
-            document.body.setAttribute('data-theme', 'dark'); // Añade un atributo al body para activar los estilos oscuros.
-            toggle.checked = true; // Marca el checkbox como activado.
+    if (currentTheme === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        toggle.checked = true;
+    }
+
+    toggle.addEventListener('change', () => {
+        if (toggle.checked) {
+            document.body.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.body.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'light');
         }
+    });
 
-        // Escucha los cambios en el checkbox del modo oscuro.
-        toggle.addEventListener('change', () => {
-            if (toggle.checked) {
-                // Si se activa, establece el tema a "dark" y lo guarda.
-                document.body.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                // Si se desactiva, elimina el atributo y guarda el tema como "light".
-                document.body.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'light');
-            }
-        });
-    </script>
+    function updateColorPreview(input) {
+        const preview = document.querySelector('.color-preview');
+        const colorCode = document.getElementById('colorCode');
+        preview.style.backgroundColor = input.value;
+        colorCode.textContent = input.value;
+    }
+</script>
 {% endblock %}

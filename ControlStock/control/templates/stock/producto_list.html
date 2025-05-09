@@ -15,7 +15,8 @@
             <i class="fas fa-boxes me-2 fs-3 fs-md-1"></i> Productos
         </h2>
         <div class="d-flex gap-2 fs-5">
-            <a href="{% url 'stock:dashboard' %}" class="btn btn-light border shadow-sm d-flex align-items-center fs-xs-4 fs-md-6">
+            <a href="{% url 'stock:dashboard' %}"
+               class="btn btn-light border shadow-sm d-flex align-items-center fs-xs-4 fs-md-6">
                 <i class="fas fa-arrow-left me-2 fs-4"></i> Volver al Inicio
             </a>
 
@@ -210,6 +211,52 @@
         --table-header-bg: #1E293B;
         --card-bg: #1C2536; /* Fondo oscuro para las "tarjetas" */
         --input-border: #374151; /* Bordes oscuros en modo oscuro */
+    }
+
+    body[data-theme="dark"] {
+        background-color: var(--background-color);
+        color: var(--text-color);
+    }
+
+    body[data-theme="dark"] .card {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+    }
+
+    body[data-theme="dark"] .table-light {
+        background-color: var(--table-header-bg);
+        color: var(--text-color);
+    }
+
+    body[data-theme="dark"] .form-control,
+    body[data-theme="dark"] .form-select {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        border-color: var(--input-border);
+    }
+
+    body[data-theme="dark"] .btn-light {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        border-color: var(--input-border);
+    }
+
+    body[data-theme="dark"] .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+    }
+
+    body[data-theme="dark"] .btn-success {
+        background-color: var(--accent-color);
+        border-color: var(--accent-color);
+        color: white;
+    }
+
+    body[data-theme="dark"] .btn-outline-secondary,
+    body[data-theme="dark"] .btn-outline-danger {
+        border-color: var(--input-border);
+        color: var(--text-color);
     }
 
     html, body {
