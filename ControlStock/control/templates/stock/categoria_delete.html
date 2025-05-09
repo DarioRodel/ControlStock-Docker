@@ -135,25 +135,25 @@
             </div>
         </div>
 
-        <h2 class="fw-bold mb-4 text-center" style="color: var(--primary-color);">
+        <h2 class="fw-bold mb-4 text-center fs-1" style="color: var(--primary-color);">
             <i class="fas fa-exclamation-triangle me-2"></i>Eliminar Categoría
         </h2>
 
         <div class="card border-0 shadow-sm">
             <div class="card-body">
-                <h5 class="text-center mb-4" style="color: var(--text-color);">
+                <h5 class="text-center mb-4 fs-3" style="color: var(--text-color);">
                     ¿Estás seguro de que deseas eliminar la categoría <strong>{{ object.nombre }}</strong>?
                 </h5>
 
                 <form method="post">
                     {% csrf_token %}
                     <div class="d-flex justify-content-center gap-3">
-                        <button type="submit" class="btn btn-danger btn-lg px-5 py-2"
+                        <button type="submit" class="btn btn-danger btn-lg px-5 py-2 fs-3"
                                 style="background-color: var(--danger-color); border-color: var(--danger-color);">
                             <i class="fas fa-trash-alt me-2"></i> Eliminar
                         </button>
                         <a href="{% url 'stock:categoria_list' %}"
-                           class="btn btn-lg px-5 py-2"
+                           class="btn btn-lg px-5 py-2 fs-3"
                            style="background-color: var(--card-bg);
                               border: 2px solid var(--input-border);
                               color: var(--text-color);">
