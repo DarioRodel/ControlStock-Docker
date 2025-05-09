@@ -44,10 +44,10 @@
     }
 
     .login-container form input {
-        padding: 12px;
+        padding: 14px; /* Aumentar el padding */
         border-radius: 5px;
         border: 1px solid #ccc;
-        font-size: 1rem;
+        font-size: 1.1rem; /* Aumentar tamaño de fuente */
         outline: none;
         transition: border-color 0.3s;
     }
@@ -57,11 +57,11 @@
     }
 
     .login-container form button {
-        padding: 12px;
+        padding: 14px; /* Aumentar padding */
         border: none;
         background-color: #4CAF50;
         color: white;
-        font-size: 1.1rem;
+        font-size: 1.2rem; /* Aumentar tamaño de fuente */
         font-weight: bold;
         border-radius: 5px;
         cursor: pointer;
@@ -95,30 +95,39 @@
 
     /* Mejora para dispositivos pequeños */
     @media (max-width: 768px) {
-        h2{
-            font-size: 2em;
-        }
         body {
             padding: 0;
         }
 
+        .login-container {
+            padding: 50px; /* Reducir padding del contenedor */
+            max-width: 100%; /* Asegurar que el contenedor ocupe todo el ancho disponible */
+        }
+
         .login-container h2 {
-            font-size: 1.8rem;
+            font-size: 2.2em; /* Aumentar tamaño de título */
         }
 
         .login-container form input {
-            font-size: 0.95rem;
+            font-size: 1.1em; /* Aumentar tamaño de fuente de los campos */
+            padding: 16px; /* Aumentar padding para mejor visualización */
         }
 
         .login-container form button {
-            font-size: 1rem;
+            font-size: 1.3em; /* Aumentar tamaño de fuente del botón */
+            padding: 16px; /* Aumentar padding del botón */
+        }
+
+        .login-container .password-reset a {
+            font-size: 1em; /* Aumentar tamaño del enlace */
         }
     }
 </style>
+
 {% block content %}
   <div class="login-container">
     <h2>Iniciar sesión</h2>
-    <form method="post">
+    <form method="post" class="fs-2">
       {% csrf_token %}
       {{ form.as_p }}
       <button type="submit">Entrar</button>
