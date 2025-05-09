@@ -9,19 +9,19 @@
             <input class="form-check-input" type="checkbox" id="darkModeToggle">
             <label class="form-check-label" for="darkModeToggle">Modo oscuro</label>
         </div>
-        <h2 class="fw-bold text-primary mb-4 text-center">Editar Categoría</h2>
+        <h2 class="fw-bold text-primary mb-4 text-center fs-1">Editar Categoría</h2>
         <div class="card border-0 shadow-sm">
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label for="id_nombre" class="form-label">Nombre de la categoría</label>
-                        <input type="text" name="nombre" class="form-control" id="id_nombre"
+                        <label for="id_nombre" class="form-label fs-4">Nombre de la categoría</label>
+                        <input type="text" name="nombre" class="form-control fs-5" id="id_nombre"
                                value="{{ categoria.nombre }}" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="id_color" class="form-label">Color de la categoría</label>
+                        <label for="id_color" class="form-label fs-4">Color de la categoría</label>
                         <input type="color" name="color" class="form-control form-control-color" id="id_color"
                                value="{{ categoria.color }}" required>
                     </div>
@@ -295,7 +295,7 @@
     @media (max-width: 768px) {
 
         .table td, .table th {
-            padding: 0.75rem;
+            padding: 0.5rem;
         }
     }
 </style>
