@@ -100,6 +100,16 @@ class Producto(models.Model):
 
     # Método sobrescrito para generar código QR automáticamente
     def save(self, *args, **kwargs):
+        if self.stock_actual <= 0:
+            self.estado = "AGOTADO"
+        elif self.stock_actual < self.stock_minimo:
+            self.estado = "BAJO"
+        else:
+            self.estado = "NORMAL"
+
+            # 3. Guardar para obtener ID (primera vez)
+        super().save(*args, **kwargs)
+
         if not self.codigo_barras:
             self.codigo_barras = self.codigo  # Esto parece redundante, ya que no hay un campo llamado 'codigo'
         super().save(*args, **kwargs)

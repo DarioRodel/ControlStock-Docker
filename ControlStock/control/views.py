@@ -23,6 +23,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import Table, TableStyle
 from reportlab.lib import colors
 
+
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'stock/dashboard.html'
 
@@ -146,31 +147,6 @@ class ProductoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         return context
 
 
-class ProductoDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
-    """
-    Vista para mostrar los detalles de un producto específico. Requiere login.
-    """
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.rol not in ['admin', 'ventas']:
-            return render(request, 'stock/403.html',
-                          {'message': "No tienes permisos para acceder a esta página."},
-                          status=403)
-        return super().dispatch(request, *args, **kwargs)
-
-    permission_required = 'stock.change_producto'
-    model = Producto
-    template_name = 'stock/producto_detail.html'  # Plantilla para los detalles del producto.
-    context_object_name = 'producto'  # Nombre de la variable del producto en el contexto.
-
-    def get_context_data(self, **kwargs):
-        """
-        Añade al contexto los últimos 10 movimientos de stock del producto.
-        """
-        context = super().get_context_data(**kwargs)
-        context['movimientos'] = self.object.movimientos.all()[:10]  # Obtiene los últimos 10 movimientos relacionados.
-        return context
-
 
 class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """
@@ -220,6 +196,7 @@ class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
     def form_invalid(self, form):
         messages.error(self.request, 'Por favor corrige los errores en el formulario.')
         return super().form_invalid(form)
+
 
 class ProductoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """
@@ -608,3 +585,28 @@ def export_productos_pdf(request):
     p.showPage()
     p.save()
     return response
+class ProductoDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
+    """
+    Vista para mostrar los detalles de un producto específico. Requiere login.
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.rol not in ['admin', 'ventas']:
+            return render(request, 'stock/403.html',
+                          {'message': "No tienes permisos para acceder a esta página."},
+                          status=403)
+        return super().dispatch(request, *args, **kwargs)
+
+    permission_required = 'stock.change_producto'
+    model = Producto
+    template_name = 'stock/producto_detail.html'  # Plantilla para los detalles del producto.
+    context_object_name = 'producto'  # Nombre de la variable del producto en el contexto.
+
+    def get_context_data(self, **kwargs):
+        """
+        Añade al contexto los últimos 10 movimientos de stock del producto.
+        """
+        context = super().get_context_data(**kwargs)
+        context['movimientos'] = self.object.movimientos.all()[:10]  # Obtiene los últimos 10 movimientos relacionados.
+        return context
+

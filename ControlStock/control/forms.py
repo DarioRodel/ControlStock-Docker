@@ -72,25 +72,30 @@ class MovimientoStockForm(forms.ModelForm):
 
 
 class ProductoForm(forms.ModelForm):
-    """
-    Formulario para crear o editar productos.
-    Incluye el campo 'estado' para manejar el estado del stock.
-    """
     class Meta:
-        model = Producto  # Asocia el formulario con el modelo Producto.
-        fields = [ 'codigo_barras', 'nombre', 'categoria', 'ubicacion', 'descripcion',
-                  'precio_compra', 'precio_venta', 'stock_actual', 'stock_minimo', 'estado', 'imagen']  # Asegúrate de incluir 'estado'.
+        model = Producto
+        fields = [
+            'codigo_barras',
+            'nombre',
+            'categoria',
+            'descripcion',
+            'precio_compra',
+            'precio_venta',
+            'stock_actual',
+            'stock_minimo',
+            'imagen',
+            'ubicacion'
+        ]
+        # Elimina el atributo 'required' de codigo_barras
         widgets = {
             'nombre': forms.TextInput(attrs={'required': True}),
-            'codigo_barras': forms.TextInput(attrs={'required': True}),
             'categoria': forms.Select(attrs={'required': True}),
         }
 
-    def clean_codigo(self):
-        codigo = self.cleaned_data['codigo']
-        if Producto.objects.filter(codigo=codigo).exists():
-            raise forms.ValidationError("Este código ya está en uso.")
-        return codigo
+    # Hacer que codigo_barras NO sea obligatorio en el formulario
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['codigo_barras'].required = False  # ¡Importante!
 
 class ReporteErrorForm(forms.Form):
     """
