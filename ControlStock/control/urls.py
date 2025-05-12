@@ -6,7 +6,8 @@ from .views import (
     ReporteErrorView,
     CategoriaCreateView,
     ProductoAPIView,
-    CategoriaUpdateView, export_productos_csv, export_productos_excel, export_productos_pdf
+    CategoriaUpdateView, export_productos_csv, export_productos_excel, export_productos_pdf, AtributoListView,
+    AtributoCreateView, AtributoUpdateView, AtributoDeleteView
 )  # Importación directa de clases de vistas específicas, para mayor claridad o reutilización.
 from django.conf import settings  # Permite acceder a configuraciones del proyecto (como DEBUG, MEDIA_URL, etc.).
 from django.conf.urls.static import static  # Se usa para servir archivos estáticos/media durante el desarrollo.
@@ -58,6 +59,10 @@ urlpatterns = [
     path('productos/exportar/csv/', export_productos_csv, name='export_productos_csv'),
     path('productos/exportar/excel/', export_productos_excel, name='export_productos_excel'),
     path('productos/exportar/pdf/', export_productos_pdf, name='export_productos_pdf'),
+path('atributos/', AtributoListView.as_view(), name='atributo_list'),
+    path('atributos/nuevo/', AtributoCreateView.as_view(), name='atributo_create'),
+    path('atributos/<int:pk>/editar/', AtributoUpdateView.as_view(), name='atributo_edit'),
+    path('atributos/<int:pk>/eliminar/', AtributoDeleteView.as_view(), name='atributo_delete'),
 ]
 
 # Esta configuración solo aplica si el entorno está en modo desarrollo.

@@ -10,7 +10,7 @@ from .forms import ProductoForm, ReporteErrorForm  # Importa los formularios de 
 from django.views.generic.edit import FormView  # Importa la vista genérica para manejar formularios.
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Producto, MovimientoStock, Categoria
+from .models import Producto, MovimientoStock, Categoria, Atributo, OpcionAtributo
 from django.db.models import Sum, F
 from django.views.generic import TemplateView
 from rest_framework.views import APIView
@@ -22,7 +22,9 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import Table, TableStyle
 from reportlab.lib import colors
-
+from django.forms import inlineformset_factory
+from .models import Producto, ProductoAtributo
+from .forms import ProductoForm, ProductoAtributoForm
 
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'stock/dashboard.html'
@@ -189,13 +191,22 @@ class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Puedes agregar más datos al contexto si es necesario
-        context['fields'] = ['codigo', 'nombre', 'precio_compra', 'precio_venta', 'codigo_barras']
+        if self.request.POST:
+            context['atributo_formset'] = ProductoAtributoFormSet(self.request.POST)
+        else:
+            context['atributo_formset'] = ProductoAtributoFormSet()
         return context
 
-    def form_invalid(self, form):
-        messages.error(self.request, 'Por favor corrige los errores en el formulario.')
-        return super().form_invalid(form)
+    def form_valid(self, form):
+        context = self.get_context_data()
+        atributo_formset = context['atributo_formset']
+        if atributo_formset.is_valid():
+            self.object = form.save()
+            atributo_formset.instance = self.object
+            atributo_formset.save()
+            return super().form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 
 class ProductoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
@@ -610,3 +621,41 @@ class ProductoDetailView(LoginRequiredMixin, PermissionRequiredMixin, DetailView
         context['movimientos'] = self.object.movimientos.all()[:10]  # Obtiene los últimos 10 movimientos relacionados.
         return context
 
+
+class AtributoListView(LoginRequiredMixin, ListView):
+    model = Atributo
+    template_name = 'stock/atributo_list.html'
+
+
+class AtributoCreateView(LoginRequiredMixin, CreateView):
+    model = Atributo
+    fields = ['nombre', 'descripcion']
+    template_name = 'stock/atributo_form.html'
+    success_url = reverse_lazy('stock:atributo_list')
+
+
+class AtributoUpdateView(LoginRequiredMixin, UpdateView):
+    model = Atributo
+    fields = ['nombre', 'descripcion']
+    template_name = 'stock/atributo_form.html'
+    success_url = reverse_lazy('stock:atributo_list')
+
+
+class AtributoDeleteView(LoginRequiredMixin, DeleteView):
+    model = Atributo
+    template_name = 'stock/atributo_confirm_delete.html'
+    success_url = reverse_lazy('stock:atributo_list')
+
+class OpcionAtributoCreateView(LoginRequiredMixin, CreateView):
+    model = OpcionAtributo
+    fields = ['atributo', 'nombre']
+    template_name = 'stock/opcionatributo_form.html'
+    success_url = reverse_lazy('stock:atributo_list')
+
+ProductoAtributoFormSet = inlineformset_factory(
+    Producto,
+    ProductoAtributo,
+    form=ProductoAtributoForm,
+    extra=1,
+    can_delete=True
+)

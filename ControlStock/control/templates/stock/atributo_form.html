@@ -1,0 +1,186 @@
+{% load widget_tweaks %}
+{% block content %}
+<div class="container mt-5">
+    <h2>{{ view.object.pk|yesno:"Editar Atributo,Nuevo Atributo" }}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="mb-3">
+            <label for="{{ form.nombre.id_for_label }}" class="form-label">Nombre</label>
+            {{ form.nombre|add_class:"form-control" }}
+            {% if form.nombre.errors %}
+                <div class="text-danger">{{ form.nombre.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.descripcion.id_for_label }}" class="form-label">Descripción</label>
+            {{ form.descripcion|add_class:"form-control" }}
+            {% if form.descripcion.errors %}
+                <div class="text-danger">{{ form.descripcion.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.productos.id_for_label }}" class="form-label">Asignar a Productos</label>
+            {{ form.productos|add_class:"form-control" }}
+            {% if form.productos.errors %}
+                <div class="text-danger">{{ form.productos.errors }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{% url 'stock:atributo_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
+<style>
+    /* :root define variables de CSS para los colores y estilos de tu tema principal. */
+:root {
+    --primary-color: #4CAF50;
+    --secondary-color: #2196F3;
+    --accent-color: #FF9800;
+    --danger-color: #f44336;
+    --background-color: #f4f7fb;
+    --card-radius: 20px;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --card-bg: #fff;
+    --text-color: #333;
+    --card-hover: rgba(0, 0, 0, 0.1);
+    --badge-success: #28a745;
+    --badge-warning: #ffc107;
+    --badge-danger: #dc3545;
+}
+
+/* body[data-theme="dark"] redefine las variables para el modo oscuro. */
+body[data-theme="dark"] {
+    --background-color: #0d1117;
+    --card-bg: #161b22;
+    --text-color: #c9d1d9;
+    --shadow-color: rgba(255, 255, 255, 0.05);
+    --card-hover: rgba(255, 255, 255, 0.05);
+    --primary-color: #58a6ff;
+    --secondary-color: #6e7681;
+    --accent-color: #f78166;
+    --danger-color: #ff7b72;
+}
+
+/* Estilos generales del body para el fondo, la fuente y la transición del tema. */
+body {
+    background-color: var(--background-color);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+    padding: 2rem;
+}
+
+/* Estilos para los formularios */
+form {
+    background-color: var(--card-bg);
+    padding: 2rem;
+    border-radius: var(--card-radius);
+    box-shadow: 0 6px 15px -5px var(--shadow-color);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Cuando el formulario está en hover */
+form:hover {
+    transform: translateY(-5px);
+    background-color: var(--card-hover);
+}
+
+/* Estilos para las etiquetas de los campos */
+label.form-label {
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+/* Estilos para los campos de entrada */
+input, select, textarea {
+    width: 100%;
+    padding: 0.8rem;
+    margin: 0.5rem 0;
+    border: 1px solid #ccc;
+    border-radius: var(--card-radius);
+    background-color: #f7f7f7;
+    color: var(--text-color);
+    transition: border 0.3s ease;
+}
+
+/* Estilos para el campo cuando tiene un error */
+input:invalid, select:invalid, textarea:invalid {
+    border-color: var(--danger-color);
+}
+
+/* Estilos para los botones */
+button[type="submit"], a.btn {
+    padding: 0.8rem 1.6rem;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.3s;
+    display: inline-block;
+    text-align: center;
+}
+
+button[type="submit"] {
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+}
+
+button[type="submit"]:hover {
+    background-color: var(--secondary-color);
+}
+
+a.btn.btn-secondary {
+    background-color: var(--secondary-color);
+    color: #fff;
+    margin-left: 1rem;
+}
+
+a.btn.btn-secondary:hover {
+    background-color: var(--accent-color);
+}
+
+/* Estilos para mostrar los mensajes de error */
+.text-danger {
+    color: var(--danger-color);
+    font-size: 0.9rem;
+}
+
+/* Para campos de selección (checkboxes, select multiple, etc.) */
+select.form-control {
+    height: auto;
+    padding: 0.8rem;
+}
+
+/* Media query para pantallas pequeñas */
+@media (max-width: 767.98px) {
+    body {
+        margin: 0.2em;
+    }
+
+    form {
+        padding: 1rem;
+    }
+
+    .form-label {
+        font-size: 0.9rem;
+    }
+
+    input, select, textarea {
+        padding: 0.6rem;
+    }
+
+    button[type="submit"], a.btn {
+        font-size: 0.9rem;
+        padding: 0.6rem 1.4rem;
+    }
+}
+
+
+</style>

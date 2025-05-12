@@ -79,6 +79,7 @@
                     <th>Código</th>
                     <th>Nombre</th>
                     <th>Categoría</th>
+                    <th class="text-center">Atributos</th>
                     <th class="text-center">Stock</th>
                     <th class="text-center">Estado</th>
                     <th class="text-center">Acciones</th>
@@ -104,6 +105,15 @@
                             <span class="badge bg-secondary-subtle text-dark px-3 py-2 rounded-pill">
                                 {{ producto.categoria.nombre|default:"-" }}
                             </span>
+                        </td>
+                        <td data-label="Atributos">
+                            {% for pa in producto.productoatributo_set.all %}
+                                <span class="badge bg-info-subtle text-dark mb-1">
+            {{ pa.opcion_atributo }}: {{ pa.stock }}
+        </span>
+                            {% empty %}
+                                <span class="text-muted">Sin atributos</span>
+                            {% endfor %}
                         </td>
                         <td class="text-center" data-label="Stock">
                             <span class="badge bg-light text-dark fs-5 dark-mode-badge ">
@@ -184,17 +194,18 @@
             </ul>
         </nav>
     {% endif %}
-<br>
+    <br>
     <div class="dropdown mb-3">
-    <button class="btn btn-secondary dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fas fa-file-export me-2"></i>Exportar Productos
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="exportDropdown">
-        <li><a class="dropdown-item" href="{% url 'stock:export_productos_csv' %}">CSV</a></li>
-        <li><a class="dropdown-item" href="{% url 'stock:export_productos_excel' %}">Excel</a></li>
-        <li><a class="dropdown-item" href="{% url 'stock:export_productos_pdf' %}">PDF</a></li>
-    </ul>
-</div>
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown"
+                aria-expanded="false">
+            <i class="fas fa-file-export me-2"></i>Exportar Productos
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="exportDropdown">
+            <li><a class="dropdown-item" href="{% url 'stock:export_productos_csv' %}">CSV</a></li>
+            <li><a class="dropdown-item" href="{% url 'stock:export_productos_excel' %}">Excel</a></li>
+            <li><a class="dropdown-item" href="{% url 'stock:export_productos_pdf' %}">PDF</a></li>
+        </ul>
+    </div>
 </div>
 
 <style>

@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Atributos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+    <div class="container" style="padding: 2rem;">
+        <h1 style="margin-bottom: 2rem;">Lista de Atributos</h1>
+
+        <div class="row" style="display: flex; flex-wrap: wrap; gap: 1rem;">
+            {% for atributo in object_list %}
+                <div class="card-custom" style="flex: 1 1 250px;">
+                    <div class="card-body-custom">
+                        <h5 class="metric-title">{{ atributo.nombre }}</h5>
+                        <p class="text-muted">{{ atributo.descripcion|default:"Sin descripción" }}</p>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No hay atributos disponibles.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>
+<style>
+    /* :root define variables de CSS para los colores y estilos de tu tema principal. */
+:root {
+    --primary-color: #4CAF50;
+    --secondary-color: #2196F3;
+    --accent-color: #FF9800;
+    --danger-color: #f44336;
+    --background-color: #f4f7fb;
+    --card-radius: 20px;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --card-bg: #fff;
+    --text-color: #333;
+    --card-hover: rgba(0, 0, 0, 0.1);
+}
+
+/* body[data-theme="dark"] redefine las variables para el modo oscuro. */
+body[data-theme="dark"] {
+    --background-color: #0d1117;
+    --card-bg: #161b22;
+    --text-color: #c9d1d9;
+    --shadow-color: rgba(255, 255, 255, 0.05);
+    --card-hover: rgba(255, 255, 255, 0.05);
+    --primary-color: #58a6ff;
+    --secondary-color: #6e7681;
+    --accent-color: #f78166;
+    --danger-color: #ff7b72;
+}
+
+/* Estilos generales del body para el fondo, la fuente y la transición del tema. */
+body {
+    background-color: var(--background-color);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+    padding: 2rem;
+}
+
+/* Estilos generales del contenedor */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Estilos para las tarjetas que contienen los atributos */
+.card-custom {
+    background-color: var(--card-bg);
+    border-radius: var(--card-radius);
+    box-shadow: 0 6px 15px -5px var(--shadow-color);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    padding: 1rem;
+}
+
+.card-custom:hover {
+    transform: translateY(-5px);
+    background-color: var(--card-hover);
+}
+
+/* Estilo del cuerpo de la tarjeta */
+.card-body-custom {
+    padding: 1rem;
+}
+
+/* Títulos de las métricas dentro de las tarjetas */
+.metric-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--text-color);
+}
+
+/* Descripción debajo del título en las tarjetas */
+.text-muted {
+    color: var(--secondary-color);
+}
+
+/* Estilos para los contenedores de las filas */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Enfoque para dispositivos móviles */
+@media (max-width: 767.98px) {
+    /* Ajustes a las tarjetas para pantallas pequeñas */
+    .card-custom {
+        flex: 1 1 100%;
+        max-width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .metric-title {
+        font-size: 1rem; /* Tamaño de fuente más pequeño */
+    }
+
+    .text-muted {
+        font-size: 0.9rem; /* Tamaño de fuente más pequeño para la descripción */
+    }
+
+    /* Ajuste del contenedor principal */
+    .container {
+        padding: 1rem;
+    }
+}
+
+</style>

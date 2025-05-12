@@ -1,5 +1,6 @@
 from django import forms  # Importa el módulo de formularios de Django.
-from .models import MovimientoStock, Producto, Ubicacion  # Importa los modelos relacionados con los formularios.
+from .models import MovimientoStock, Producto, Ubicacion, \
+    ProductoAtributo  # Importa los modelos relacionados con los formularios.
 
 
 class MovimientoStockForm(forms.ModelForm):
@@ -71,6 +72,16 @@ class MovimientoStockForm(forms.ModelForm):
         return cleaned_data  # Devuelve los datos limpios, incluyendo las validaciones personalizadas.
 
 
+class ProductoAtributoForm(forms.ModelForm):
+    class Meta:
+        model = ProductoAtributo
+        fields = ['opcion_atributo', 'stock']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Puedes personalizar el queryset aquí si necesitas filtrar las opciones
+
+
 class ProductoForm(forms.ModelForm):
     class Meta:
         model = Producto
@@ -85,6 +96,7 @@ class ProductoForm(forms.ModelForm):
             'stock_minimo',
             'imagen',
             'ubicacion'
+
         ]
         # Elimina el atributo 'required' de codigo_barras
         widgets = {
