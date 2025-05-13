@@ -217,6 +217,25 @@ class ProductoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # Obtener todos los atributos con sus opciones
+        atributos = Atributo.objects.prefetch_related('opciones').all()
+        opciones_data = []
+        atributo_opciones_dict = {}
+
+        for atributo in atributos:
+            opciones = list(atributo.opciones.all())
+            atributo_opciones_dict[atributo.id] = opciones
+            for opcion in opciones:
+                opciones_data.append({
+                    'id': opcion.id,
+                    'atributo_id': atributo.id,
+                    'valor': opcion.valor,
+                })
+
+        context['atributos'] = atributos
+        context['atributo_opciones_dict'] = atributo_opciones_dict
+        context['opciones_json'] = json.dumps(opciones_data)
+
         # Creamos el formset fuera del condicional para que siempre esté disponible
         ProductoAtributoFormSet = forms.inlineformset_factory(
             Producto,

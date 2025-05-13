@@ -81,7 +81,7 @@ class ProductoAtributoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
+        self.fields['atributo'].queryset = Atributo.objects.all()
         if 'atributo' in self.data:
             try:
                 atributo_id = int(self.data.get('atributo'))
