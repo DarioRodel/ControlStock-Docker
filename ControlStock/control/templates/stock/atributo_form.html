@@ -1,4 +1,6 @@
 {% load widget_tweaks %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
 {% block content %}
 <div class="container mt-5">
     <h2>{{ view.object.pk|yesno:"Editar Atributo,Nuevo Atributo" }}</h2>
@@ -23,14 +25,6 @@
             {% endif %}
         </div>
 
-        <div class="mb-3">
-            <label for="{{ form.productos.id_for_label }}" class="form-label">Asignar a Productos</label>
-            {{ form.productos|add_class:"form-control" }}
-            {% if form.productos.errors %}
-                <div class="text-danger">{{ form.productos.errors }}</div>
-            {% endif %}
-        </div>
-
         <button type="submit" class="btn btn-primary">Guardar</button>
         <a href="{% url 'stock:atributo_list' %}" class="btn btn-secondary">Ver atributos disponibles</a>
         <a href="{% url 'stock:producto_list' %}" class="btn btn-secondary">Volver a lista de productos</a>
@@ -40,59 +34,59 @@
 {% endblock %}
 <style>
 :root {
-    --primary-color: #4CAF50;
-    --secondary-color: #2196F3;
-    --accent-color: #FF9800;
-    --danger-color: #f44336;
-    --background-color: #f4f7fb;
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --secondary: #06b6d4;
+    --secondary-hover: #0891b2;
+    --danger: #ef4444;
+    --background: #f9fafb;
     --card-bg: #ffffff;
-    --card-radius: 0.75rem;
-    --shadow-color: rgba(0, 0, 0, 0.08);
-    --text-color: #2d3748;
+    --text: #1f2937;
     --input-bg: #ffffff;
-    --input-border: #d1d5db;
-    --placeholder-color: #9ca3af;
-    --transition: 0.25s ease-in-out;
+    --border: #e5e7eb;
+    --radius: 0.75rem;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    --transition: all 0.3s ease-in-out;
+    --placeholder: #9ca3af;
 }
 
 body[data-theme="dark"] {
-    --background-color: #121212;
-    --card-bg: #1e1e1e;
-    --text-color: #e0e0e0;
-    --shadow-color: rgba(255, 255, 255, 0.05);
-    --input-bg: #2a2a2a;
-    --input-border: #444;
-    --placeholder-color: #a0aec0;
+    --background: #0f172a;
+    --card-bg: #1e293b;
+    --text: #f1f5f9;
+    --input-bg: #334155;
+    --border: #475569;
+    --placeholder: #94a3b8;
+    --shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
 }
 
 body {
-    background-color: var(--background-color);
-    color: var(--text-color);
-    font-family: 'Segoe UI', sans-serif;
-    font-size: clamp(0.95rem, 2vw, 1rem);
-    line-height: 1.6;
+    background: var(--background);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
     padding: 2rem 1rem;
-    transition: background-color var(--transition), color var(--transition);
+    line-height: 1.6;
+    font-size: 1rem;
+    transition: var(--transition);
 }
 
 .container {
-    max-width: 800px;
+    max-width: 720px;
     margin: 0 auto;
-    padding: 2rem;
 }
 
 h2 {
-    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-size: 1.875rem;
     font-weight: 700;
-    color: var(--primary-color);
+    color: var(--primary);
     margin-bottom: 1.5rem;
 }
 
 form {
-    background-color: var(--card-bg);
+    background: var(--card-bg);
     padding: 2rem;
-    border-radius: var(--card-radius);
-    box-shadow: 0 8px 20px var(--shadow-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
     transition: var(--transition);
 }
 
@@ -101,38 +95,37 @@ form:hover {
 }
 
 label.form-label {
-    display: block;
     font-weight: 600;
     margin-bottom: 0.5rem;
+    display: block;
 }
 
 input.form-control,
 textarea.form-control,
 select.form-control {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--input-border);
-    border-radius: var(--card-radius);
-    background-color: var(--input-bg);
-    color: var(--text-color);
-    font-size: 1rem;
-    transition: border-color var(--transition), box-shadow var(--transition);
+    padding: 0.75rem 1rem;
+    background: var(--input-bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: var(--transition);
 }
 
 input:focus,
 textarea:focus,
 select:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
     outline: none;
 }
 
 .form-control::placeholder {
-    color: var(--placeholder-color);
+    color: var(--placeholder);
 }
 
 .text-danger {
-    color: var(--danger-color);
+    color: var(--danger);
     font-size: 0.875rem;
     margin-top: 0.25rem;
 }
@@ -142,33 +135,33 @@ select:focus {
     padding: 0.65rem 1.25rem;
     border-radius: 999px;
     font-weight: 600;
-    text-decoration: none;
     text-align: center;
     font-size: 1rem;
-    transition: background-color var(--transition), transform var(--transition);
+    transition: var(--transition);
     border: none;
     cursor: pointer;
     margin-top: 1rem;
     margin-right: 0.75rem;
+    text-decoration: none;
 }
 
 .btn-primary {
-    background-color: var(--primary-color);
+    background: var(--primary);
     color: #fff;
 }
 
 .btn-primary:hover {
-    background-color: #388e3c;
+    background: var(--primary-hover);
     transform: translateY(-2px);
 }
 
 .btn-secondary {
-    background-color: var(--secondary-color);
+    background: var(--secondary);
     color: #fff;
 }
 
 .btn-secondary:hover {
-    background-color: #1976d2;
+    background: var(--secondary-hover);
     transform: translateY(-2px);
 }
 
@@ -193,3 +186,4 @@ select:focus {
     }
 }
 </style>
+
