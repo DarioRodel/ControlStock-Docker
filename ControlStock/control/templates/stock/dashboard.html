@@ -146,9 +146,10 @@
         }
 
         @media (max-width: 767.98px) {
-            body{
+            body {
                 margin: 0.2em;
             }
+
             /* Ajuste de la tabla en móviles */
             .table-responsive {
                 overflow-x: visible; /* Habilita un mejor manejo de las tablas en pantallas más pequeñas */
@@ -231,129 +232,131 @@
         }
 
         /* Mejoras para la tabla en pantallas pequeñas */
-@media (max-width: 767.98px) {
-    body{
+        @media (max-width: 767.98px) {
+            body {
                 margin: 0.2em;
             }
-    /* Ajuste de la tabla en móviles */
-    .table-responsive {
-        overflow-x: auto; /* Permite el scroll horizontal si la tabla es muy ancha */
-        -webkit-overflow-scrolling: touch; /* Mejora el desplazamiento en iOS */
-    }
 
-    table {
-        width: 100%;
-        display: block; /* Hace que la tabla se comporte como un bloque */
-    }
+            /* Ajuste de la tabla en móviles */
+            .table-responsive {
+                overflow-x: auto; /* Permite el scroll horizontal si la tabla es muy ancha */
+                -webkit-overflow-scrolling: touch; /* Mejora el desplazamiento en iOS */
+            }
 
-    thead {
-        display: none; /* Ocultamos los encabezados en pantallas pequeñas */
-    }
+            table {
+                width: 100%;
+                display: block; /* Hace que la tabla se comporte como un bloque */
+            }
 
-    tbody {
-        display: block; /* Asegura que el cuerpo de la tabla también sea un bloque */
-    }
+            thead {
+                display: none; /* Ocultamos los encabezados en pantallas pequeñas */
+            }
 
-    tbody tr {
-        display: block; /* Cada fila se muestra como un bloque */
-        background: var(--card-bg);
-        border-radius: var(--card-radius);
-        box-shadow: 0 4px 12px var(--shadow-color);
-        margin-bottom: 1.5rem;
-        padding: 1rem;
-        transition: background-color 0.3s ease;
-    }
+            tbody {
+                display: block; /* Asegura que el cuerpo de la tabla también sea un bloque */
+            }
 
-    tbody tr:hover {
-        background-color: var(--card-hover); /* Resalta la fila al pasar el ratón */
-    }
+            tbody tr {
+                display: block; /* Cada fila se muestra como un bloque */
+                background: var(--card-bg);
+                border-radius: var(--card-radius);
+                box-shadow: 0 4px 12px var(--shadow-color);
+                margin-bottom: 1.5rem;
+                padding: 1rem;
+                transition: background-color 0.3s ease;
+            }
 
-    tbody td {
-        display: flex; /* Usamos flex para alinear el "título" y el valor */
-        justify-content: space-between; /* Espacio entre el título y el valor */
-        align-items: center;
-        padding: 0.75rem 0;
-        border-bottom: 1px solid var(--input-border);
-    }
+            tbody tr:hover {
+                background-color: var(--card-hover); /* Resalta la fila al pasar el ratón */
+            }
 
-    tbody td:last-child {
-        border-bottom: none;
-    }
+            tbody td {
+                display: flex; /* Usamos flex para alinear el "título" y el valor */
+                justify-content: space-between; /* Espacio entre el título y el valor */
+                align-items: center;
+                padding: 0.75rem 0;
+                border-bottom: 1px solid var(--input-border);
+            }
 
-    tbody td::before {
-        content: attr(data-label) ":"; /* Añadimos dos puntos al "título" */
-        font-weight: 600;
-        color: #161b22;
-        opacity: 0.75;
-        margin-right: 1rem;
-    }
+            tbody td:last-child {
+                border-bottom: none;
+            }
 
-    .table th, .table td {
-        font-size: 1rem;
-        padding: 0.75rem; /* Reducimos un poco el padding para más espacio */
-        text-align: left; /* Alineamos el texto a la izquierda para mejor lectura vertical */
-    }
+            tbody td::before {
+                content: attr(data-label) ":"; /* Añadimos dos puntos al "título" */
+                font-weight: 600;
+                color: #161b22;
+                opacity: 0.75;
+                margin-right: 1rem;
+            }
 
-    /* Reajustar el tamaño de las métricas en dispositivos pequeños */
-    .metric-value {
-        font-size: 1.4rem;
-    }
+            .table th, .table td {
+                font-size: 1rem;
+                padding: 0.75rem; /* Reducimos un poco el padding para más espacio */
+                text-align: left; /* Alineamos el texto a la izquierda para mejor lectura vertical */
+            }
 
-    .card-icon {
-        font-size: 2rem;
-    }
+            /* Reajustar el tamaño de las métricas en dispositivos pequeños */
+            .metric-value {
+                font-size: 1.4rem;
+            }
 
-    /* Para los gráficos en pantallas pequeñas */
-    #stockChart, #estadoChart {
-        height: 150px !important;
-    }
+            .card-icon {
+                font-size: 2rem;
+            }
 
-    /* Mejorar la visualización de las métricas en el header */
-    .metric-title {
-        font-size: 1.2rem;
-    }
+            /* Para los gráficos en pantallas pequeñas */
+            #stockChart, #estadoChart {
+                height: 150px !important;
+            }
 
-    /* Mejoras en los botones del dashboard */
-    .btn-dashboard {
-        font-size: 0.9rem;
-        padding: 8px 16px;
-    }
+            /* Mejorar la visualización de las métricas en el header */
+            .metric-title {
+                font-size: 1.2rem;
+            }
 
-    .btn-dashboard:hover {
-        transform: translateY(-2px); /* Efecto de animación al pasar por encima */
-        opacity: 0.85;
-    }
+            /* Mejoras en los botones del dashboard */
+            .btn-dashboard {
+                font-size: 0.9rem;
+                padding: 8px 16px;
+            }
 
-    /* Mejorar la distribución de las tarjetas en dispositivos pequeños */
-    .col-lg-3, .col-md-6 {
-        flex: 0 0 100%; /* Ocupan el 100% en pantallas pequeñas */
-        max-width: 100%;
-    }
+            .btn-dashboard:hover {
+                transform: translateY(-2px); /* Efecto de animación al pasar por encima */
+                opacity: 0.85;
+            }
 
-    /* Ajustar las tarjetas de estadísticas */
-    .card-custom {
-        border-radius: 12px;
-        box-shadow: 0 6px 15px -5px rgba(0, 0, 0, 0.1); /* Sombra más suave */
-        transition: all 0.3s ease;
-    }
+            /* Mejorar la distribución de las tarjetas en dispositivos pequeños */
+            .col-lg-3, .col-md-6 {
+                flex: 0 0 100%; /* Ocupan el 100% en pantallas pequeñas */
+                max-width: 100%;
+            }
 
-    .card-custom:hover {
-        transform: scale(1.05); /* Efecto de agrandar al pasar por encima */
-        box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.2); /* Sombra más grande */
-    }
+            /* Ajustar las tarjetas de estadísticas */
+            .card-custom {
+                border-radius: 12px;
+                box-shadow: 0 6px 15px -5px rgba(0, 0, 0, 0.1); /* Sombra más suave */
+                transition: all 0.3s ease;
+            }
 
-    /* Reajustar el tamaño de los iconos en tarjetas */
-    .card-icon {
-        font-size: 2.5rem; /* Tamaño mayor para iconos */
-    }
-}
+            .card-custom:hover {
+                transform: scale(1.05); /* Efecto de agrandar al pasar por encima */
+                box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.2); /* Sombra más grande */
+            }
+
+            /* Reajustar el tamaño de los iconos en tarjetas */
+            .card-icon {
+                font-size: 2.5rem; /* Tamaño mayor para iconos */
+            }
+        }
 
 
         /* Mejoras para dispositivos entre 768px y 991px (tablets) */
         @media (max-width: 991.98px) {
-            body{
+            body {
                 margin: 0.2em;
             }
+
             .metric-value {
                 font-size: 1.6rem; /* Aumentamos ligeramente el tamaño en tablets */
             }
@@ -391,9 +394,10 @@
 
         /* Ajustes específicos para tarjetas de métricas */
         @media (max-width: 575.98px) {
-            body{
+            body {
                 margin: 0.2em;
             }
+
             .card-custom .card-body-custom {
                 padding: 15px;
             }
@@ -409,9 +413,10 @@
 
         /* Mejoras en la navegación principal */
         @media (max-width: 991.98px) {
-            body{
+            body {
                 margin: 0.2em;
             }
+
             .d-flex.justify-content-between.align-items-center.mb-3 {
                 flex-direction: column;
                 align-items: flex-start;
@@ -608,6 +613,7 @@
         <a href="{% url 'stock:reportar_error' %}" class="btn btn-danger btn-dashboard">
             <i class="fas fa-file-export me-1"></i>Reporte
         </a>
+        <a href="{% url 'stock:atributo_list' %}" class="btn btn-secondary btn-action">Ver atributos disponibles</a>
     </div>
 </div>
 

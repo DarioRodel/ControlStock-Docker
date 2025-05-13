@@ -2,188 +2,197 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 {% block content %}
-<div class="container mt-5">
-    <h2>{{ view.object.pk|yesno:"Editar Atributo,Nuevo Atributo" }}</h2>
+    <div class="container mt-5">
+        <h2>{{ view.object.pk|yesno:"Editar Atributo,Nuevo Atributo" }}</h2>
 
-    <form method="post" novalidate>
-        {% csrf_token %}
-        {{ form.non_field_errors }}
+        <form method="post" novalidate class="card">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
 
-        <div class="mb-3">
-            <label for="{{ form.nombre.id_for_label }}" class="form-label">Nombre</label>
-            {{ form.nombre|add_class:"form-control" }}
-            {% if form.nombre.errors %}
-                <div class="text-danger">{{ form.nombre.errors }}</div>
-            {% endif %}
-        </div>
+            <div class="mb-3">
+                <label for="{{ form.nombre.id_for_label }}" class="form-label">Nombre</label>
+                {{ form.nombre|add_class:"form-control" }}
+                {% if form.nombre.errors %}
+                    <div class="text-danger">{{ form.nombre.errors }}</div>
+                {% endif %}
+            </div>
 
-        <div class="mb-3">
-            <label for="{{ form.descripcion.id_for_label }}" class="form-label">Descripción</label>
-            {{ form.descripcion|add_class:"form-control" }}
-            {% if form.descripcion.errors %}
-                <div class="text-danger">{{ form.descripcion.errors }}</div>
-            {% endif %}
-        </div>
+            <div class="mb-3">
+                <label for="{{ form.descripcion.id_for_label }}" class="form-label">Descripción</label>
+                {{ form.descripcion|add_class:"form-control" }}
+                {% if form.descripcion.errors %}
+                    <div class="text-danger">{{ form.descripcion.errors }}</div>
+                {% endif %}
+            </div>
 
-        <button type="submit" class="btn btn-primary">Guardar</button>
-        <a href="{% url 'stock:atributo_list' %}" class="btn btn-secondary">Ver atributos disponibles</a>
-        <a href="{% url 'stock:producto_list' %}" class="btn btn-secondary">Volver a lista de productos</a>
-        <a href="{% url 'stock:producto_create' %}" class="btn btn-secondary">Volver a crear productos</a>
-    </form>
-</div>
+            <button type="submit" class="btn btn-primary btn-action">Guardar</button>
+        </form>
+        <a href="{% url 'stock:atributo_list' %}" class="btn btn-secondary btn-action">Ver atributos disponibles</a>
+        <a href="{% url 'stock:producto_list' %}" class="btn btn-secondary btn-action">Volver a lista de productos</a>
+        <a href="{% url 'stock:producto_create' %}" class="btn btn-secondary btn-action">Volver a crear productos</a>
+    </div>
 {% endblock %}
+
 <style>
-:root {
-    --primary: #6366f1;
-    --primary-hover: #4f46e5;
-    --secondary: #06b6d4;
-    --secondary-hover: #0891b2;
-    --danger: #ef4444;
-    --background: #f9fafb;
-    --card-bg: #ffffff;
-    --text: #1f2937;
-    --input-bg: #ffffff;
-    --border: #e5e7eb;
-    --radius: 0.75rem;
-    --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-    --transition: all 0.3s ease-in-out;
-    --placeholder: #9ca3af;
-}
+    :root {
+        --primary-color: #4CAF50;
+        --primary-hover: #45a049;
+        --secondary-color: #2196F3;
+        --secondary-hover: #1976d2;
+        --danger-color: #ef4444;
+        --background-color: #f4f7fb;
+        --card-bg: #ffffff;
+        --text-color: #2d3748;
+        --input-bg: #ffffff;
+        --input-border: #e2e8f0;
+        --placeholder-color: #94a3b8;
+        --card-radius: 0.75rem;
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --transition: 0.3s ease-in-out;
+    }
 
-body[data-theme="dark"] {
-    --background: #0f172a;
-    --card-bg: #1e293b;
-    --text: #f1f5f9;
-    --input-bg: #334155;
-    --border: #475569;
-    --placeholder: #94a3b8;
-    --shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
-}
+    body[data-theme="dark"] {
+        --background-color: #121212;
+        --card-bg: #1e1e2f;
+        --text-color: #e0e0e0;
+        --input-bg: #2d2d2d;
+        --input-border: #3d3d3d;
+        --placeholder-color: #a0aec0;
+        --shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+    }
 
-body {
-    background: var(--background);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    padding: 2rem 1rem;
-    line-height: 1.6;
-    font-size: 1rem;
-    transition: var(--transition);
-}
+    body {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        font-family: 'Inter', sans-serif;
+        font-size: 1rem;
+        line-height: 1.6;
+        transition: var(--transition);
+        padding: 2rem 1rem;
+    }
 
-.container {
-    max-width: 720px;
-    margin: 0 auto;
-}
-
-h2 {
-    font-size: 1.875rem;
-    font-weight: 700;
-    color: var(--primary);
-    margin-bottom: 1.5rem;
-}
-
-form {
-    background: var(--card-bg);
-    padding: 2rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    transition: var(--transition);
-}
-
-form:hover {
-    transform: translateY(-2px);
-}
-
-label.form-label {
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    display: block;
-}
-
-input.form-control,
-textarea.form-control,
-select.form-control {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    background: var(--input-bg);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    transition: var(--transition);
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
-    outline: none;
-}
-
-.form-control::placeholder {
-    color: var(--placeholder);
-}
-
-.text-danger {
-    color: var(--danger);
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-}
-
-.btn {
-    display: inline-block;
-    padding: 0.65rem 1.25rem;
-    border-radius: 999px;
-    font-weight: 600;
-    text-align: center;
-    font-size: 1rem;
-    transition: var(--transition);
-    border: none;
-    cursor: pointer;
-    margin-top: 1rem;
-    margin-right: 0.75rem;
-    text-decoration: none;
-}
-
-.btn-primary {
-    background: var(--primary);
-    color: #fff;
-}
-
-.btn-primary:hover {
-    background: var(--primary-hover);
-    transform: translateY(-2px);
-}
-
-.btn-secondary {
-    background: var(--secondary);
-    color: #fff;
-}
-
-.btn-secondary:hover {
-    background: var(--secondary-hover);
-    transform: translateY(-2px);
-}
-
-@media (max-width: 768px) {
     .container {
-        padding: 1rem;
-    }
-
-    form {
-        padding: 1.25rem;
-    }
-
-    .btn {
-        width: 100%;
-        margin-bottom: 0.5rem;
-        font-size: 0.95rem;
-        padding: 0.75rem;
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 1.5rem;
     }
 
     h2 {
-        font-size: 1.5rem;
+        font-size: 1.875rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
     }
-}
-</style>
 
+    form.card {
+        background-color: var(--card-bg);
+        border-radius: var(--card-radius);
+        padding: 2rem;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+    }
+
+    form.card:hover {
+        transform: translateY(-2px);
+    }
+
+    label.form-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    input.form-control,
+    textarea.form-control,
+    select.form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background-color: var(--input-bg);
+        color: var(--text-color);
+        border: 1px solid var(--input-border);
+        border-radius: var(--card-radius);
+        font-size: 1rem;
+        transition: var(--transition);
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: var(--placeholder-color);
+    }
+
+    .text-danger {
+        color: var(--danger-color);
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 0.65rem 1.25rem;
+        border-radius: 999px;
+        font-weight: 600;
+        text-align: center;
+        font-size: 1rem;
+        transition: var(--transition);
+        border: none;
+        cursor: pointer;
+        margin-top: 1rem;
+        margin-right: 0.75rem;
+        text-decoration: none;
+    }
+
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+        color: #fff;
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        background-color: var(--secondary-color);
+        color: #fff;
+    }
+
+    .btn-secondary:hover {
+        background-color: var(--secondary-hover);
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 1rem;
+        }
+
+        form.card {
+            padding: 1.25rem;
+        }
+
+        .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            padding: 0.75rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+        }
+    }
+</style>
