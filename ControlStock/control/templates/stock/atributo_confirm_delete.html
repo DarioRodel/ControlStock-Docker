@@ -4,14 +4,6 @@
     <script src="../../static/dark/js/darkmode.js" defer></script>
 
     <style>
-        /* Estilo para la tarjeta contenedora principal. */
-        .card {
-            background-color: var(--card-bg); /* Usa la variable de color de fondo de la tarjeta. */
-            border: 1px solid var(--input-border); /* Borde de 1px con el color del borde de los inputs. */
-            box-shadow: 0 4px 6px -1px var(--shadow-color); /* Sombra suave usando la variable de color de sombra. */
-            border-radius: var(--card-radius); /* Bordes redondeados con la variable definida. */
-        }
-
         /* Definición de variables CSS (modo claro por defecto). */
         :root {
             --primary-color: #4CAF50; /* Color primario (verde). */
@@ -63,7 +55,12 @@
             font-size: var(--font-size-base); /* Usar el tamaño base de la fuente. */
         }
 
-        /* Re-estilo de la tarjeta con transición para el cambio de tema. */
+        /* Diseño de la tarjeta de confirmación más grande en pantallas medianas y grandes. */
+        .container {
+            max-width: 1200px; /* Aumentamos el ancho del contenedor. */
+            padding: 2rem 1.5rem; /* Mayor relleno en todos los lados. */
+        }
+
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--shadow-color);
@@ -72,57 +69,42 @@
             border-radius: var(--card-radius);
         }
 
-        /* Estilos para hacer que los textos sean más grandes en pantallas grandes. */
         .card-body h5, .fw-bold, h2 {
             font-size: var(--font-size-lg); /* Aumentamos el tamaño de las fuentes en pantallas grandes. */
         }
 
-        /* Diseño de la tarjeta de confirmación más grande en pantallas medianas y grandes. */
-        .container {
-            max-width: 1200px; /* Aumentamos el ancho del contenedor. */
-            padding: 2rem 1.5rem; /* Mayor relleno en todos los lados. */
+        /* Diseño del formulario y botones */
+        .btn-lg {
+            font-size: 1.25rem;
+            padding: 10px 20px;
         }
 
-        /* Aumentar tamaño de las fuentes en dispositivos medianos (tablets). */
-        @media (min-width: 768px) {
-            body {
-                font-size: 1.25rem; /* Fuentes más grandes para pantallas medianas. */
-            }
-
-            .card-body h5, .fw-bold, h2 {
-                font-size: 1.5rem; /* Títulos y encabezados más grandes. */
-            }
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
         }
 
-        /* Estilos para el modo oscuro y otros tamaños en pantallas grandes */
-        @media (min-width: 1200px) {
-            body {
-                font-size: 1.5rem; /* Fuentes más grandes en pantallas grandes (desktops). */
-            }
+        .btn-danger:hover {
+            background-color: #d32f2f;
+            border-color: #d32f2f;
         }
 
-        /* Estilos para las filas de la tabla al pasar el ratón (no se usa directamente en este formulario, pero está presente). */
-        .table-hover tbody tr:hover {
-            --bs-table-accent-bg: var(--card-hover);
-            color: var(--text-color);
-        }
-
-        /* Estilo para el borde inferior del encabezado de tablas sin bordes (no se usa directamente aquí). */
-        .table-borderless thead th {
-            border-bottom: 2px solid var(--table-border) !important;
-        }
-
-        /* Estilos para las celdas de la tabla (no se usa directamente aquí). */
-        .table td, .table th {
-            vertical-align: middle;
-            padding: 1rem;
+        .btn-secondary {
             background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 2px solid var(--input-border);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--card-hover);
+            color: var(--text-color);
+            border-color: var(--input-border);
         }
 
         /* Ajustes para dispositivos móviles en tablas (no se usa directamente aquí). */
         @media (max-width: 768px) {
-            .table td, .table th {
-                padding: 0.75rem;
+            .card-body h5, .fw-bold, h2 {
+                font-size: 1.25rem; /* Títulos y encabezados más grandes en móviles. */
             }
         }
     </style>
@@ -136,27 +118,22 @@
     </div>
 
         <h2 class="fw-bold mb-4 text-center fs-1" style="color: var(--primary-color);">
-            <i class="fas fa-exclamation-triangle me-2"></i>Eliminar Categoría
+            <i class="fas fa-exclamation-triangle me-2"></i>Eliminar Atributo
         </h2>
 
         <div class="card border-0 shadow-sm">
             <div class="card-body">
                 <h5 class="text-center mb-4 fs-3" style="color: var(--text-color);">
-                    ¿Estás seguro de que deseas eliminar la categoría <strong>{{ object.nombre }}</strong>?
+                    ¿Estás seguro de que deseas eliminar el atributo <strong>{{ object.nombre }}</strong>?
                 </h5>
 
                 <form method="post">
                     {% csrf_token %}
                     <div class="d-flex justify-content-center gap-3">
-                        <button type="submit" class="btn btn-danger btn-lg px-5 py-2 fs-3"
-                                style="background-color: var(--danger-color); border-color: var(--danger-color);">
+                        <button type="submit" class="btn btn-danger btn-lg px-5 py-2 fs-3">
                             <i class="fas fa-trash-alt me-2"></i> Eliminar
                         </button>
-                        <a href="{% url 'stock:categoria_list' %}"
-                           class="btn btn-lg px-5 py-2 fs-3"
-                           style="background-color: var(--card-bg);
-                              border: 2px solid var(--input-border);
-                              color: var(--text-color);">
+                        <a href="{% url 'stock:atributo_list' %}" class="btn btn-secondary btn-lg px-5 py-2 fs-3">
                             <i class="fas fa-arrow-left me-2"></i> Cancelar
                         </a>
                     </div>

@@ -663,11 +663,11 @@ class AtributoUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('stock:atributo_list')
 
 
+# AtributoDeleteView ya está bien configurada, no se requieren cambios
 class AtributoDeleteView(LoginRequiredMixin, DeleteView):
     model = Atributo
     template_name = 'stock/atributo_confirm_delete.html'
     success_url = reverse_lazy('stock:atributo_list')
-
 
 class OpcionAtributoForm(forms.ModelForm):
     productos = forms.ModelMultipleChoiceField(

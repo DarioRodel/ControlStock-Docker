@@ -5,6 +5,9 @@
     <title>Reportar un Error</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="../../static/dark/js/darkmode.js" defer></script>
     <style>
         /* Definición de variables CSS para el tema claro (por defecto) */
@@ -86,82 +89,82 @@
     </style>
 </head>
 <body>
-    <div class="container py-5">
-        <div class="dark-mode-toggle">
-            <div class="form-check form-switch ms-auto mb-3">
-                <input class="form-check-input" type="checkbox" id="darkModeToggle">
-                <label class="form-check-label" for="darkModeToggle">Modo oscuro</label>
-            </div>
-        </div>
+<div class="container py-5">
+    <div class="form-check form-switch ms-auto mb-2">
+        <input class="form-check-input" type="checkbox" id="darkModeToggle">
+        <label class="form-check-label" for="darkModeToggle">
+            <i class="fas fa-moon me-1"></i>Modo oscuro
+        </label>
+    </div>
 
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-danger text-white">
-                        <h4 class="mb-0"><i class="fas fa-bug me-2"></i>Reportar un Error</h4>
-                    </div>
-                    <div class="card-body">
-                        <p class="dark-theme-text mb-4">
-                            Si has encontrado un problema, por favor descríbelo aquí abajo. Lo revisaremos lo antes posible.
-                        </p>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0"><i class="fas fa-bug me-2"></i>Reportar un Error</h4>
+                </div>
+                <div class="card-body">
+                    <p class="dark-theme-text mb-4">
+                        Si has encontrado un problema, por favor descríbelo aquí abajo. Lo revisaremos lo antes posible.
+                    </p>
 
-                        <form method="post">
-                            {% csrf_token %}
-                            {% if messages %}
-                            {% endif %}
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if messages %}
+                        {% endif %}
 
-                            <div class="mb-3">
-                                <label for="id_asunto" class="form-label">Asunto</label>
-                                {{ form.asunto }}
-                            </div>
-                            <div class="mb-3">
-                                <label for="id_descripcion" class="form-label">Descripción</label>
-                                {{ form.descripcion }}
-                            </div>
-                            <div class="mb-3">
-                                <label for="id_email" class="form-label">Tu correo electrónico (opcional)</label>
-                                {{ form.email }}
-                            </div>
+                        <div class="mb-3">
+                            <label for="id_asunto" class="form-label">Asunto</label>
+                            {{ form.asunto }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_descripcion" class="form-label">Descripción</label>
+                            {{ form.descripcion }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">Tu correo electrónico (opcional)</label>
+                            {{ form.email }}
+                        </div>
 
-                            <div class="d-flex justify-content-between">
-                                <a href="{% url 'stock:dashboard' %}" class="btn btn-secondary">Volver</a>
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="fas fa-paper-plane me-2"></i>Enviar Reporte
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'stock:dashboard' %}" class="btn btn-secondary">Volver</a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-paper-plane me-2"></i>Enviar Reporte
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="https://kit.fontawesome.com/a2e0e6bb0c.js" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/a2e0e6bb0c.js" crossorigin="anonymous"></script>
 
-    <script>
-        // Dark Mode Toggle - Código Javascript para controlar el modo oscuro
-        const toggle = document.getElementById('darkModeToggle'); // Obtiene el elemento checkbox con el ID 'darkModeToggle'
-        const currentTheme = localStorage.getItem('theme'); // Intenta obtener el tema guardado previamente en el almacenamiento local del navegador
+<script>
+    // Dark Mode Toggle - Código Javascript para controlar el modo oscuro
+    const toggle = document.getElementById('darkModeToggle'); // Obtiene el elemento checkbox con el ID 'darkModeToggle'
+    const currentTheme = localStorage.getItem('theme'); // Intenta obtener el tema guardado previamente en el almacenamiento local del navegador
 
-        // Si se encontró un tema guardado y es 'dark', aplica el modo oscuro al cargar la página
-        if (currentTheme === 'dark') {
-            document.body.setAttribute('data-theme', 'dark'); // Establece el atributo 'data-theme' en el elemento 'body' para activar los estilos del tema oscuro definidos en CSS
-            toggle.checked = true; // Marca el checkbox del modo oscuro como activado
+    // Si se encontró un tema guardado y es 'dark', aplica el modo oscuro al cargar la página
+    if (currentTheme === 'dark') {
+        document.body.setAttribute('data-theme', 'dark'); // Establece el atributo 'data-theme' en el elemento 'body' para activar los estilos del tema oscuro definidos en CSS
+        toggle.checked = true; // Marca el checkbox del modo oscuro como activado
+    }
+
+    // Agrega un 'listener' para el evento 'change' en el checkbox del modo oscuro
+    toggle.addEventListener('change', () => {
+        if (toggle.checked) {
+            // Si el checkbox se activa (el usuario quiere modo oscuro)
+            document.body.setAttribute('data-theme', 'dark'); // Establece el atributo 'data-theme'
+            localStorage.setItem('theme', 'dark'); // Guarda la preferencia 'dark' en el almacenamiento local
+        } else {
+            // Si el checkbox no está marcado (el usuario quiere modo claro)
+            document.body.removeAttribute('data-theme'); // Remueve el atributo 'data-theme'
+            localStorage.setItem('theme', 'light'); // Guarda 'light' en el almacenamiento local
         }
-
-        // Agrega un 'listener' para el evento 'change' en el checkbox del modo oscuro
-        toggle.addEventListener('change', () => {
-            if (toggle.checked) {
-                // Si el checkbox se activa (el usuario quiere modo oscuro)
-                document.body.setAttribute('data-theme', 'dark'); // Establece el atributo 'data-theme'
-                localStorage.setItem('theme', 'dark'); // Guarda la preferencia 'dark' en el almacenamiento local
-            } else {
-                // Si el checkbox no está marcado (el usuario quiere modo claro)
-                document.body.removeAttribute('data-theme'); // Remueve el atributo 'data-theme'
-                localStorage.setItem('theme', 'light'); // Guarda 'light' en el almacenamiento local
-            }
-        });
-    </script>
+    });
+</script>
 </body>
 </html>
 

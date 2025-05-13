@@ -81,12 +81,11 @@
 <body>
 
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="fw-bold">Lista de Atributos</h1>
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="darkModeToggle">
-            <label class="form-check-label" for="darkModeToggle">Modo oscuro</label>
-        </div>
+    <div class="form-check form-switch ms-auto mb-2">
+        <input class="form-check-input" type="checkbox" id="darkModeToggle">
+        <label class="form-check-label" for="darkModeToggle">
+            <i class="fas fa-moon me-1"></i>Modo oscuro
+        </label>
     </div>
 
     <div class="row g-3">
@@ -95,6 +94,12 @@
                 <div class="card card-custom p-3 h-100">
                     <h5 class="metric-title">{{ atributo.nombre }}</h5>
                     <p class="text-muted">{{ atributo.descripcion|default:"Sin descripción" }}</p>
+                    <!-- Ícono para eliminar -->
+                    <div class="d-flex justify-content-end">
+                        <a href="{% url 'stock:atributo_delete' atributo.pk %}" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash-alt"></i> Eliminar
+                        </a>
+                    </div>
                 </div>
             </div>
         {% empty %}
@@ -103,6 +108,7 @@
                 <p class="fw-bold text-danger">No hay atributos disponibles.</p>
             </div>
         {% endfor %}
+
     </div>
 
     <div class="d-flex justify-content-start mt-4">
