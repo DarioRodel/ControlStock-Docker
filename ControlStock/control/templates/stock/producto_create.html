@@ -1,3 +1,4 @@
+{% load custom_filters %}
 {% load static %}
 {% load widget_tweaks %}
 <!DOCTYPE html>
@@ -230,6 +231,22 @@
             background-color: var(--card-hover);
         }
 
+        .atributo-form .card {
+            background: var(--card-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        #add-atributo {
+            transition: all 0.3s ease;
+        }
+
+        #add-atributo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 6px var(--shadow-color);
+        }
+
         .current-image-preview {
             position: relative;
             border: 1px solid var(--input-border);
@@ -255,6 +272,27 @@
             margin: 0;
         }
 
+        .atributo-form {
+            background-color: var(--card-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .atributo-form:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 1px var(--primary-color);
+        }
+
+        .remove-atributo {
+            transition: all 0.2s ease;
+        }
+
+        .remove-atributo:hover {
+            transform: scale(1.05);
+        }
 
         /* Definición de variables CSS para el tema claro (por defecto) */
         :root {
@@ -427,7 +465,17 @@
 
             <form method="post" novalidate enctype="multipart/form-data">
                 {% csrf_token %}
-                <p>{{ form.non_field_errors }}</p>
+                <!-- Mostrar errores del formulario principal -->
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <ul>
+                            {% for error in form.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
                 <div class="row g-4">
                     <div class="col-md-6">
                         <!-- Código de Barras -->
@@ -505,142 +553,69 @@
                             {{ form.stock_minimo|attr:"placeholder:Cantidad mínima"|add_class:"form-control" }}
                         </div>
 
-
+                        <!-- Imagen del Producto -->
                         <div class="mb-3">
                             <label for="{{ form.imagen.id_for_label }}" class="form-label">Imagen del Producto</label>
                             <div class="image-upload-container">
-                                <!-- Botón de carga de imagen -->
                                 <label for="{{ form.imagen.id_for_label }}" class="btn btn-outline-primary">
                                     <i class="fas fa-upload me-2"></i> Agregar Imagen
                                 </label>
                                 <input type="file" name="{{ form.imagen.name }}" id="{{ form.imagen.id_for_label }}"
-                                       class="form-control-file" accept="image/*" style="display:none;"
-                                       onchange="previewImage(event)">
-
-                                <p class="image-upload-text mt-2">Arrastra y suelta la imagen aquí o haz clic para
-                                    seleccionar</p>
-
-                                {% if form.imagen.errors %}
-                                    <div class="text-danger small">{{ form.imagen.errors }}</div>
-                                {% endif %}
-
-                                <div id="imagePreview" class="mt-3" style="display:none;">
-                                    <p class="text-muted small mb-2">Vista previa de la imagen:</p>
-                                    <div class="image-wrapper position-relative">
-                                        <img id="previewImg" class="img-fluid rounded-3 shadow-sm border"
-                                             style="max-height: 200px;">
-                                    </div>
-                                </div>
-
-                                {% if form.instance.imagen %}
-                                    <div class="current-image-preview mt-3">
-                                        <p class="text-muted small mb-2">Imagen actual:</p>
-                                        <div class="image-wrapper position-relative">
-                                            <img src="{{ form.instance.imagen.url }}" alt="Imagen actual del producto"
-                                                 class="img-fluid rounded-3 shadow-sm border"
-                                                 style="max-height: 200px;">
-                                        </div>
-                                    </div>
-                                {% endif %}
+                                       class="form-control-file" accept="image/*" style="display:none;">
                             </div>
                         </div>
-                        <div class="col-md-12">
-    <div class="card mb-4">
-        <div class="card-header">
-            <h4 class="mb-0">Atributos del Producto</h4>
-        </div>
-        <div class="card-body">
-            <div id="atributos-container">
-                {{ atributos_formset.management_form }}
-                {% for form in atributos_formset %}
-                    <div class="row g-3 atributo-form mb-3">
-                        <div class="col-md-5">
-                            <label class="form-label">Atributo</label>
-                            {{ form.opcion_atributo|add_class:"form-select" }}
+                    </div> <!-- Cierre de la columna derecha -->
+
+                    <div class="col-md-12">
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0">Atributos del Producto</h4>
+                                <a href="{% url 'stock:atributo_create' %}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-plus"></i> Agregar Atributo
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <div id="atributos-container">
+                                    {{ atributo_formset.management_form }}
+                                    {% for form in atributo_formset %}
+                                        <div class="atributo-form row g-3 mb-3 border p-3 rounded">
+                                            <div class="col-md-5">
+                                                {{ form.atributo.errors }}
+                                                <select name="{{ form.atributo.html_name }}"
+                                                        class="form-select atributo-select">
+                                                    <option value="">Seleccione un atributo</option>
+                                                    {% for atributo in atributos %}
+                                                        <option value="{{ atributo.id }}"
+                                                                {% if form.atributo.value == atributo.id %}selected{% endif %}>
+                                                            {{ atributo.nombre }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                            </div>
                         </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            {% if form.instance.pk %}
-                                {{ form.DELETE|add_class:"form-check-input" }}
-                                <label class="form-check-label ms-2">Eliminar</label>
-                            {% endif %}
-                            {{ form.id }}
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'stock:producto_list' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> Volver a la lista de productos
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> Guardar Producto
+                            </button>
                         </div>
                     </div>
-                {% endfor %}
-            </div>
-            <div class="mt-3">
-                <label for="nuevoAtributoSelect" class="form-label">Seleccionar o crear atributo</label>
-                <select id="nuevoAtributoSelect" class="form-select">
-                    <option value="" disabled selected>Seleccionar atributo</option>
-                    {% for atributo in atributos_formset.empty_form.fields.opcion_atributo.queryset %}
-                        <option value="{{ atributo.pk }}">{{ atributo.nombre }}</option>
-                    {% endfor %}
-                    <option value="__new__">+ Crear nuevo atributo</option>
-                </select>
-            </div>
-
-            <a href="{% url 'stock:atributo_create' %}" class="btn btn-outline-primary mt-3" id="add-atributo">
-                <i class="fas fa-plus me-2"></i>Agregar Atributo
-            </a>
-        </div>
-    </div>
-</div>
-
-
-
+                </div>
             </form>
         </div>
-    <div class="d-flex justify-content-between mt-4">
-                    <a href="{% url 'stock:producto_list' %}" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-1"></i> Volver a la lista de productos
-                    </a>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-1"></i> Guardar Producto
-                    </button>
-                </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Clonar formulario de atributo
-        document.getElementById('add-atributo').addEventListener('click', function () {
-            const totalForms = document.getElementById('id_atributos-TOTAL_FORMS');
-            const formNum = parseInt(totalForms.value);
-            const newForm = document.querySelector('.atributo-form').cloneNode(true);
-            const regex = new RegExp(`-${formNum - 1}-`, 'g');
-            // Limpiar valores del formulario clonado
-            newForm.querySelectorAll('input, select').forEach(input => {
-                input.value = '';
-                input.checked = false;
-                input.name = input.name.replace(regex, `-${formNum}-`);
-                input.id = input.id.replace(regex, `-${formNum}-`);
-            });
-
-            // Actualizar el contador de formularios
-            totalForms.value = formNum + 1;
-
-            // Agregar el nuevo formulario al contenedor
-            document.getElementById('atributos-container').appendChild(newForm);
-        });
-    });
-
-    function previewImage(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const preview = document.getElementById('imagePreview');
-                const previewImg = document.getElementById('previewImg');
-                previewImg.src = e.target.result;
-                preview.style.display = 'block'; // Show the preview div
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-</script>
-
 </body>
+
 </html>

@@ -53,11 +53,12 @@ class Atributo(models.Model):
     def __str__(self):
         return self.nombre
 
-# Modelo para las opciones de cada atributo (como XS, S, M, L, XL para TALLA)
+
 class OpcionAtributo(models.Model):
     atributo = models.ForeignKey(Atributo, on_delete=models.CASCADE, related_name='opciones')
     valor = models.CharField(max_length=50)
     orden = models.PositiveIntegerField(default=0)
+  # Añade esta línea
 
     class Meta:
         verbose_name = 'Opción de Atributo'
@@ -78,7 +79,8 @@ class Producto(models.Model):
 
     nombre = models.CharField(max_length=100, blank=False)
     codigo_barras = models.CharField(max_length=100, unique=True, blank=False,verbose_name='Código de Barras')
-    atributos = models.ManyToManyField(OpcionAtributo, through='ProductoAtributo', blank=True)
+    # Si ya no estás usando OpcionAtributo
+    atributos = models.ManyToManyField(Atributo, through='ProductoAtributo')
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, blank=False, default=1)
     ubicacion = models.ForeignKey(Ubicacion, on_delete=models.SET_NULL, null=True, blank=True)
     descripcion = models.TextField(blank=True)
@@ -217,17 +219,12 @@ class UsuarioPersonalizado(AbstractUser):
     def __str__(self):
         return f"{self.get_full_name()} ({self.rol})"
 
-
 class ProductoAtributo(models.Model):
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    opcion_atributo = models.ForeignKey(OpcionAtributo, on_delete=models.CASCADE)
-    stock = models.IntegerField(default=0, validators=[MinValueValidator(0)])
-
+    producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
+    atributo = models.ForeignKey('Atributo', on_delete=models.CASCADE)
+    valor = models.CharField(max_length=100, default='N/A')
     class Meta:
-        verbose_name = 'Atributo de Producto'
-        verbose_name_plural = 'Atributos de Producto'
-        unique_together = [['producto', 'opcion_atributo']]
+        unique_together = ('producto', 'atributo')
 
-    def __str__(self):
-        return f"{self.producto} - {self.opcion_atributo} (Stock: {self.stock})"
+
 

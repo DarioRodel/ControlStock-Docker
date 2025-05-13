@@ -1,3 +1,5 @@
+import json
+
 import openpyxl
 from django.core.mail import send_mail
 from django.shortcuts import redirect, render  # Importa la función redirect para redireccionar a otras URLs.
@@ -6,7 +8,9 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, \
 from django.urls import reverse_lazy  # Importa reverse_lazy para generar URLs de forma diferida.
 from django.contrib import messages  # Importa el sistema de mensajes de Django para mostrar notificaciones al usuario.
 from rest_framework.response import Response
-from .forms import ProductoForm, ReporteErrorForm  # Importa los formularios de la aplicación.
+
+from django import forms
+from .forms import ProductoForm, ReporteErrorForm, ProductoAtributoFormSet  # Importa los formularios de la aplicación.
 from django.views.generic.edit import FormView  # Importa la vista genérica para manejar formularios.
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -147,54 +151,88 @@ class ProductoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         context['categorias'] = Categoria.objects.all()  # Obtiene todas las categorías para el filtro.
         context['estados'] = Producto.ESTADO_STOCK  # Obtiene las opciones de estado para el filtro.
         return context
-
-
-
 class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    """
-    Vista para crear un nuevo producto. Requiere login y utiliza un formulario.
-    """
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.rol not in ['admin', 'ventas']:
-            return render(request, 'stock/403.html',
-                          {'message': "No tienes permisos para acceder a esta página."},
-                          status=403)
-        return super().dispatch(request, *args, **kwargs)
-
     permission_required = 'control.add_producto'
     model = Producto
     form_class = ProductoForm
     template_name = 'stock/producto_create.html'
     success_url = reverse_lazy('stock:producto_list')
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        producto = self.object
-        initial_stock = producto.stock_actual
-
-        MovimientoStock.objects.create(
-            producto=producto,
-            tipo='ENTRADA',
-            cantidad=initial_stock,
-            usuario=self.request.user,
-            observaciones='Registro de creación de producto'
-        )
-
-        producto.refresh_from_db()
-        if producto.stock_actual != initial_stock:
-            producto.stock_actual = initial_stock
-            producto.save()
-
-        messages.success(self.request, 'Producto creado y movimiento registrado correctamente.')
-        return response
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        # Usando POST para manejar el formset correctamente
         if self.request.POST:
             context['atributo_formset'] = ProductoAtributoFormSet(self.request.POST)
         else:
-            context['atributo_formset'] = ProductoAtributoFormSet()
+            context['atributo_formset'] = ProductoAtributoFormSet(queryset=ProductoAtributo.objects.none())
+
+        # Obtener todos los atributos con sus opciones
+        atributos = Atributo.objects.prefetch_related('opciones').all()
+        opciones_data = []
+        atributo_opciones_dict = {}
+
+        for atributo in atributos:
+            opciones = list(atributo.opciones.all())
+            atributo_opciones_dict[atributo.id] = opciones
+            for opcion in opciones:
+                opciones_data.append({
+                    'id': opcion.id,
+                    'atributo_id': atributo.id,
+                    'valor': opcion.valor,
+                })
+
+        context['atributos'] = atributos
+        context['atributo_opciones_dict'] = atributo_opciones_dict
+        context['opciones_json'] = json.dumps(opciones_data)
+
+        return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        atributo_formset = context['atributo_formset']
+
+        # Verifica si el formset es válido antes de guardarlo
+        if atributo_formset.is_valid():
+            self.object = form.save()
+            for atributo_form in atributo_formset:
+                if atributo_form.cleaned_data:  # Evita errores con formularios vacíos
+                    atributo = atributo_form.save(commit=False)
+                    atributo.producto = self.object  # Asocia el producto
+                    atributo.save()
+            return super().form_valid(form)
+
+        else:
+            # Mostrar los errores en consola o en el HTML
+            print(atributo_formset.errors)  # Depuración: imprimir errores del formset
+            return self.render_to_response(self.get_context_data(form=form, atributo_formset=atributo_formset))
+
+
+class ProductoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'control.change_producto'
+    model = Producto
+    form_class = ProductoForm
+    template_name = 'stock/producto_create.html'
+    success_url = reverse_lazy('stock:producto_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Creamos el formset fuera del condicional para que siempre esté disponible
+        ProductoAtributoFormSet = forms.inlineformset_factory(
+            Producto,
+            ProductoAtributo,
+            form=ProductoAtributoForm,
+            extra=0,  # No queremos formularios vacíos al editar
+            can_delete=True
+        )
+        if self.request.POST:
+            # Si hay datos POST, significa que el formulario se ha enviado,
+            # así que inicializamos el formset con esos datos y la instancia del producto.
+            context['atributo_formset'] = ProductoAtributoFormSet(self.request.POST, instance=self.object)
+        else:
+            # Si no hay datos POST, significa que estamos cargando la página de edición por primera vez.
+            # Inicializamos el formset con la instancia del producto para mostrar los atributos existentes.
+            context['atributo_formset'] = ProductoAtributoFormSet(instance=self.object)
         return context
 
     def form_valid(self, form):
@@ -202,46 +240,11 @@ class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
         atributo_formset = context['atributo_formset']
         if atributo_formset.is_valid():
             self.object = form.save()
-            atributo_formset.instance = self.object
+            atributo_formset.instance = self.object  # Asocia el formset al producto guardado
             atributo_formset.save()
             return super().form_valid(form)
         else:
-            return self.form_invalid(form)
-
-
-class ProductoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    """
-    Vista para editar un producto existente. Requiere login y utiliza un formulario.
-    """
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.rol not in ['admin', 'ventas']:
-            return render(request, 'stock/403.html',
-                          {'message': "No tienes permisos para acceder a esta página."},
-                          status=403)
-        return super().dispatch(request, *args, **kwargs)
-
-    permission_required = 'control.change_producto'
-    model = Producto
-    form_class = ProductoForm  # Formulario para la edición del producto.
-    template_name = 'stock/producto_create.html'  # Utiliza la misma plantilla que la creación.
-    success_url = reverse_lazy('stock:producto_list')  # URL a la que se redirige tras la edición exitosa.
-
-    def form_valid(self, form):
-        """
-        Muestra un mensaje de éxito tras la actualización.
-        """
-        messages.success(self.request, 'Producto actualizado correctamente.')
-        return super().form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        """
-        Añade al contexto los campos del formulario para la plantilla.
-        """
-        context = super().get_context_data(**kwargs)
-        context['fields'] = ['codigo', 'nombre', 'precio_compra', 'precio_venta']
-        return context
-
+            return self.render_to_response(self.get_context_data(form=form, atributo_formset=atributo_formset))
 
 class MovimientoStockCreateView(LoginRequiredMixin, CreateView):
     """
@@ -646,16 +649,42 @@ class AtributoDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'stock/atributo_confirm_delete.html'
     success_url = reverse_lazy('stock:atributo_list')
 
+
+class OpcionAtributoForm(forms.ModelForm):
+    productos = forms.ModelMultipleChoiceField(
+        queryset=Producto.objects.all(),
+        widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
+        required=False
+    )
+
+    class Meta:
+        model = OpcionAtributo
+        fields = ['atributo', 'valor', 'orden', 'productos']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.pk:
+            self.fields['productos'].initial = self.instance.productos.all()
+
+    def save(self, commit=True):
+        instance = super().save(commit=commit)
+        if commit:
+            instance.productos.set(self.cleaned_data['productos'])
+        return instance
+
+
 class OpcionAtributoCreateView(LoginRequiredMixin, CreateView):
     model = OpcionAtributo
-    fields = ['atributo', 'nombre']
+    form_class = OpcionAtributoForm
     template_name = 'stock/opcionatributo_form.html'
     success_url = reverse_lazy('stock:atributo_list')
 
-ProductoAtributoFormSet = inlineformset_factory(
-    Producto,
-    ProductoAtributo,
-    form=ProductoAtributoForm,
-    extra=1,
-    can_delete=True
-)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['productos'] = Producto.objects.all()  # Añade esto
+        return context
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        form.save_m2m()  # Necesario para guardar relaciones many-to-many
+        return response

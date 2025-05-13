@@ -1,6 +1,8 @@
 from django import forms  # Importa el módulo de formularios de Django.
+from django.forms import inlineformset_factory
+
 from .models import MovimientoStock, Producto, Ubicacion, \
-    ProductoAtributo  # Importa los modelos relacionados con los formularios.
+    ProductoAtributo, Atributo, OpcionAtributo  # Importa los modelos relacionados con los formularios.
 
 
 class MovimientoStockForm(forms.ModelForm):
@@ -75,40 +77,36 @@ class MovimientoStockForm(forms.ModelForm):
 class ProductoAtributoForm(forms.ModelForm):
     class Meta:
         model = ProductoAtributo
-        fields = ['opcion_atributo', 'stock']
+        fields = ['atributo']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Puedes personalizar el queryset aquí si necesitas filtrar las opciones
 
+        if 'atributo' in self.data:
+            try:
+                atributo_id = int(self.data.get('atributo'))
+            except (ValueError, TypeError):
+                pass
 
+ProductoAtributoFormSet = forms.inlineformset_factory(
+    Producto,
+    ProductoAtributo,
+    form=ProductoAtributoForm,
+    extra=1,
+    can_delete=True
+)
 class ProductoForm(forms.ModelForm):
     class Meta:
         model = Producto
         fields = [
-            'codigo_barras',
-            'nombre',
-            'categoria',
-            'descripcion',
-            'precio_compra',
-            'precio_venta',
-            'stock_actual',
-            'stock_minimo',
-            'imagen',
-            'ubicacion'
-
+            'codigo_barras', 'nombre', 'categoria', 'precio_compra',
+            'precio_venta', 'stock_actual', 'stock_minimo', 'descripcion',
+            'imagen'
         ]
-        # Elimina el atributo 'required' de codigo_barras
-        widgets = {
-            'nombre': forms.TextInput(attrs={'required': True}),
-            'categoria': forms.Select(attrs={'required': True}),
-        }
 
-    # Hacer que codigo_barras NO sea obligatorio en el formulario
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['codigo_barras'].required = False  # ¡Importante!
-
+        self.fields['codigo_barras'].required = False  # No obligatorio
 class ReporteErrorForm(forms.Form):
     """
     Formulario para que los usuarios reporten errores o problemas.
@@ -127,3 +125,4 @@ class ReporteErrorForm(forms.Form):
         'class': 'form-control',
         'placeholder': 'tu@correo.com'
     }))  # Campo opcional para el correo electrónico del reportante, con un widget EmailInput y atributos HTML.
+
