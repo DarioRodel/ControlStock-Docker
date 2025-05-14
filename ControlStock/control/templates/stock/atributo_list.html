@@ -95,11 +95,16 @@
                     <h5 class="metric-title">{{ atributo.nombre }}</h5>
                     <p class="text-muted">{{ atributo.descripcion|default:"Sin descripción" }}</p>
                     <!-- Ícono para eliminar -->
-                    <div class="d-flex justify-content-end">
+                    <!-- Botones de acción -->
+                    <div class="d-flex justify-content-end gap-2 mt-3">
+                        <a href="{% url 'stock:atributo_update' atributo.pk %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-edit me-1"></i> Editar
+                        </a>
                         <a href="{% url 'stock:atributo_delete' atributo.pk %}" class="btn btn-danger btn-sm">
-                            <i class="fas fa-trash-alt"></i> Eliminar
+                            <i class="fas fa-trash-alt me-1"></i> Eliminar
                         </a>
                     </div>
+
                 </div>
             </div>
         {% empty %}
