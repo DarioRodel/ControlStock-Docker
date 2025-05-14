@@ -722,12 +722,11 @@ class AtributoCreateView(LoginRequiredMixin, CreateView):
         return inlineformset_factory(
             Atributo,
             OpcionAtributo,
-            fields=('valor', 'orden'),
+            fields=('valor',),  # Solo se incluye el campo 'valor', eliminando 'orden'
             extra=1,
             can_delete=True,
             widgets={
                 'valor': forms.TextInput(attrs={'class': 'form-control'}),
-                'orden': forms.NumberInput(attrs={'class': 'form-control'}),
             }
         )
 

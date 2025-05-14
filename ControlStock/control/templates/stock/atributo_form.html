@@ -47,18 +47,11 @@
             {% for form in opcion_formset %}
                 <div class="opcion-form mb-3 row g-3">
                     {{ form.id }}
-                    <div class="col-md-8">
+                    <div class="col-md-10">
                         <label class="form-label">Valor</label>
                         {{ form.valor|add_class:"form-control" }}
                         {% if form.valor.errors %}
                             <div class="text-danger">{{ form.valor.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Orden</label>
-                        {{ form.orden|add_class:"form-control" }}
-                        {% if form.orden.errors %}
-                            <div class="text-danger">{{ form.orden.errors }}</div>
                         {% endif %}
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
@@ -104,11 +97,8 @@
             const newForm = document.createElement('div');
             newForm.className = 'opcion-form mb-3 row g-3';
             newForm.innerHTML = `
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <input type="text" name="opcion_set-${formIdx}-valor" class="form-control" placeholder="Valor de la opción" required>
-            </div>
-            <div class="col-md-2">
-                <input type="number" name="opcion_set-${formIdx}-orden" class="form-control" placeholder="Orden" value="${formIdx + 1}" required>
             </div>
             <div class="col-md-2 d-flex align-items-end">
                 <button type="button" class="btn btn-danger remove-opcion">
