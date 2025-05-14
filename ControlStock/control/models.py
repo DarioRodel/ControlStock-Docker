@@ -58,7 +58,6 @@ class OpcionAtributo(models.Model):
     atributo = models.ForeignKey(Atributo, on_delete=models.CASCADE, related_name='opciones')
     valor = models.CharField(max_length=50)
     orden = models.PositiveIntegerField(default=0)
-  # Añade esta línea
 
     class Meta:
         verbose_name = 'Opción de Atributo'
@@ -68,7 +67,6 @@ class OpcionAtributo(models.Model):
 
     def __str__(self):
         return f"{self.atributo}: {self.valor}"
-# Modelo principal que representa productos
 class Producto(models.Model):
     # Opciones de estado del stock
     ESTADO_STOCK = (
@@ -222,6 +220,7 @@ class UsuarioPersonalizado(AbstractUser):
 class ProductoAtributo(models.Model):
     producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
     atributo = models.ForeignKey('Atributo', on_delete=models.CASCADE)
+    opcion = models.ForeignKey('OpcionAtributo', on_delete=models.CASCADE, null=True, blank=True)
     valor = models.CharField(max_length=100, default='N/A')
     class Meta:
         unique_together = ('producto', 'atributo')

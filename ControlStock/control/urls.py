@@ -59,10 +59,13 @@ urlpatterns = [
     path('productos/exportar/csv/', export_productos_csv, name='export_productos_csv'),
     path('productos/exportar/excel/', export_productos_excel, name='export_productos_excel'),
     path('productos/exportar/pdf/', export_productos_pdf, name='export_productos_pdf'),
-path('atributos/', AtributoListView.as_view(), name='atributo_list'),
+    path('atributos/', AtributoListView.as_view(), name='atributo_list'),
     path('atributos/nuevo/', AtributoCreateView.as_view(), name='atributo_create'),
-    path('atributos/<int:pk>/editar/', AtributoUpdateView.as_view(), name='atributo_edit'),
+    path('atributo/editar/<int:pk>/', AtributoUpdateView.as_view(), name='atributo_update'),
     path('atributos/<int:pk>/eliminar/', AtributoDeleteView.as_view(), name='atributo_delete'),
+    path('atributo/nuevo/', AtributoCreateView.as_view(), name='atributo_create'),
+    path('atributo/editar/<int:pk>/', AtributoUpdateView.as_view(), name='atributo_update'),
+    path('opciones/crear/ajax/', views.opcion_create_ajax, name='opcion_create_ajax'),
 ]
 
 # Esta configuración solo aplica si el entorno está en modo desarrollo.

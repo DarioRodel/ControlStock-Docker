@@ -1,3 +1,4 @@
+# En tu archivo custom_filters.py (crea uno si no existe)
 from django import template
 
 register = template.Library()

@@ -1,239 +1,147 @@
 {% load widget_tweaks %}
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-{% block content %}
-    <div class="container mt-5">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="container mt-5">
     <div class="form-check form-switch ms-auto mb-2">
         <input class="form-check-input" type="checkbox" id="darkModeToggle">
         <label class="form-check-label" for="darkModeToggle">
             <i class="fas fa-moon me-1"></i>Modo oscuro
         </label>
     </div>
-        <h2>{{ view.object.pk|yesno:"Editar Atributo,Nuevo Atributo" }}</h2>
 
-        <form method="post" novalidate class="card">
-            {% csrf_token %}
-            {{ form.non_field_errors }}
+    <h2>{{ view.object.pk|yesno:"Editar Atributo,Nuevo Atributo" }}</h2>
 
-            <div class="mb-3">
-                <label for="{{ form.nombre.id_for_label }}" class="form-label">Nombre</label>
-                {{ form.nombre|add_class:"form-control" }}
-                {% if form.nombre.errors %}
-                    <div class="text-danger">{{ form.nombre.errors }}</div>
-                {% endif %}
-            </div>
-
-            <div class="mb-3">
-                <label for="{{ form.descripcion.id_for_label }}" class="form-label">Descripción</label>
-                {{ form.descripcion|add_class:"form-control" }}
-                {% if form.descripcion.errors %}
-                    <div class="text-danger">{{ form.descripcion.errors }}</div>
-                {% endif %}
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-action">Guardar</button>
-        </form>
-        <div class="button-group mt-4">
-            <a href="{% url 'stock:atributo_list' %}" class="btn btn-secondary btn-action">
-                <i class="material-icons">tune</i> Ver atributos disponibles
-            </a>
-            <a href="{% url 'stock:producto_list' %}" class="btn btn-secondary btn-action">
-                <i class="fas fa-box me-1"></i> Volver a lista de productos
-            </a>
-            <a href="{% url 'stock:producto_create' %}" class="btn btn-secondary btn-action">
-                <i class="fas fa-box me-1"></i> Volver a crear productos
-            </a>
+    <form method="post" novalidate class="card p-4">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div style="display: none;">
+            {{ opcion_formset.management_form }}
         </div>
 
-    </div>
-{% endblock %}
+        <div class="mb-3">
+            <label for="{{ form.nombre.id_for_label }}" class="form-label">Nombre</label>
+            {{ form.nombre|add_class:"form-control" }}
+            {% if form.nombre.errors %}
+                <div class="text-danger">{{ form.nombre.errors }}</div>
+            {% endif %}
+        </div>
 
-<style>
-    :root {
-        --primary-color: #4CAF50;
-        --primary-hover: #45a049;
-        --secondary-color: #2196F3;
-        --secondary-hover: #1976d2;
-        --danger-color: #ef4444;
-        --background-color: #f4f7fb;
-        --card-bg: #ffffff;
-        --text-color: #2d3748;
-        --input-bg: #ffffff;
-        --input-border: #e2e8f0;
-        --placeholder-color: #94a3b8;
-        --card-radius: 0.75rem;
-        --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        --transition: 0.3s ease-in-out;
-    }
+        <div class="mb-3">
+            <label for="{{ form.descripcion.id_for_label }}" class="form-label">Descripción</label>
+            {{ form.descripcion|add_class:"form-control" }}
+            {% if form.descripcion.errors %}
+                <div class="text-danger">{{ form.descripcion.errors }}</div>
+            {% endif %}
+        </div>
 
-    body[data-theme="dark"] {
-        --background-color: #121212;
-        --card-bg: #1e1e2f;
-        --text-color: #e0e0e0;
-        --input-bg: #2d2d2d;
-        --input-border: #3d3d3d;
-        --placeholder-color: #a0aec0;
-        --shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
-    }
+        <h4 class="mt-4">Opciones del Atributo</h4>
+        <div style="display: none;">
+            {{ opcion_formset.management_form }}
+        </div>
 
-    body {
-        background-color: var(--background-color);
-        color: var(--text-color);
-        font-family: 'Inter', sans-serif;
-        font-size: 1rem;
-        line-height: 1.6;
-        transition: var(--transition);
-        padding: 2rem 1rem;
-    }
+        <div id="opciones-container">
+            {% for form in opcion_formset %}
+                <div class="opcion-form mb-3 row g-3">
+                    {{ form.id }}
+                    <div class="col-md-8">
+                        <label class="form-label">Valor</label>
+                        {{ form.valor|add_class:"form-control" }}
+                        {% if form.valor.errors %}
+                            <div class="text-danger">{{ form.valor.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Orden</label>
+                        {{ form.orden|add_class:"form-control" }}
+                        {% if form.orden.errors %}
+                            <div class="text-danger">{{ form.orden.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        {% if form.instance.pk %}
+                            {{ form.DELETE|add_class:"form-check-input" }}
+                            <label class="form-check-label ms-2">Eliminar</label>
+                        {% else %}
+                            <button type="button" class="btn btn-danger remove-opcion">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
 
-    .container {
-        max-width: 720px;
-        margin: 0 auto;
-        padding: 1.5rem;
-    }
+        <button type="button" id="add-opcion" class="btn btn-outline-primary mt-2 mb-4">
+            <i class="fas fa-plus"></i> Agregar Opción
+        </button>
 
-    h2 {
-        font-size: 1.875rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        margin-bottom: 1.5rem;
-    }
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-1"></i> Guardar
+            </button>
+            <a href="{% url 'stock:producto_list' %}" class="btn btn-outline-secondary btn-custom">
+                <i class="fas fa-arrow-left me-2"></i>Volver a productos
+            </a>
+            <a href="{% url 'stock:atributo_list' %}" class="btn btn-secondary">
+                <i class="fas fa-list me-1"></i> Ver todos los atributos
+            </a>
+        </div>
+    </form>
+</div>
 
-    form.card {
-        background-color: var(--card-bg);
-        border-radius: var(--card-radius);
-        padding: 2rem;
-        box-shadow: var(--shadow);
-        transition: var(--transition);
-    }
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Añadir nueva opción
+        document.getElementById('add-opcion').addEventListener('click', function () {
+            const totalForms = document.getElementById('id_opcion_set-TOTAL_FORMS');
+            const formIdx = parseInt(totalForms.value);
+            const container = document.getElementById('opciones-container');
 
-    form.card:hover {
-        transform: translateY(-2px);
-    }
+            const newForm = document.createElement('div');
+            newForm.className = 'opcion-form mb-3 row g-3';
+            newForm.innerHTML = `
+            <div class="col-md-8">
+                <input type="text" name="opcion_set-${formIdx}-valor" class="form-control" placeholder="Valor de la opción" required>
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="opcion_set-${formIdx}-orden" class="form-control" placeholder="Orden" value="${formIdx + 1}" required>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-danger remove-opcion">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <input type="hidden" name="opcion_set-${formIdx}-id" id="id_opcion_set-${formIdx}-id">
+            <input type="hidden" name="opcion_set-${formIdx}-DELETE" id="id_opcion_set-${formIdx}-DELETE">
+        `;
 
-    label.form-label {
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        display: block;
-    }
+            container.appendChild(newForm);
+            totalForms.value = formIdx + 1;
 
-    input.form-control,
-    textarea.form-control,
-    select.form-control {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        background-color: var(--input-bg);
-        color: var(--text-color);
-        border: 1px solid var(--input-border);
-        border-radius: var(--card-radius);
-        font-size: 1rem;
-        transition: var(--transition);
-    }
+            // Configurar evento para eliminar
+            newForm.querySelector('.remove-opcion').addEventListener('click', function () {
+                const deleteInput = newForm.querySelector('[id$="-DELETE"]');
+                if (deleteInput) {
+                    deleteInput.value = 'on'; // Marcar para eliminar
+                }
+                newForm.style.display = 'none'; // Ocultar en lugar de eliminar
+            });
+        });
 
-    .button-group {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        margin-top: 2rem;
-    }
-
-    .button-group .btn {
-        margin: 0; /* anula márgenes individuales */
-        flex-shrink: 0;
-    }
-
-    @media (max-width: 768px) {
-        .button-group {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .button-group .btn {
-            width: 100%;
-        }
-    }
-
-    input:focus,
-    textarea:focus,
-    select:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
-        outline: none;
-    }
-
-    .form-control::placeholder {
-        color: var(--placeholder-color);
-    }
-
-    .text-danger {
-        color: var(--danger-color);
-        font-size: 0.875rem;
-        margin-top: 0.25rem;
-    }
-
-    .btn {
-        display: inline-block;
-        padding: 0.65rem 1.25rem;
-        border-radius: 999px;
-        font-weight: 600;
-        text-align: center;
-        font-size: 1rem;
-        transition: var(--transition);
-        border: none;
-        cursor: pointer;
-        margin-top: 1rem;
-        margin-right: 0.75rem;
-        text-decoration: none;
-    }
-
-    .btn-action {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-    }
-
-    .btn-primary {
-        background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
-        color: #fff;
-    }
-
-    .btn-primary:hover {
-        background: var(--primary-hover);
-        transform: translateY(-2px);
-    }
-
-    .btn-secondary {
-        background-color: var(--secondary-color);
-        color: #fff;
-    }
-
-    .btn-secondary:hover {
-        background-color: var(--secondary-hover);
-        transform: translateY(-2px);
-    }
-
-    @media (max-width: 768px) {
-        .container {
-            padding: 1rem;
-        }
-
-        form.card {
-            padding: 1.25rem;
-        }
-
-        .btn {
-            width: 100%;
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
-            padding: 0.75rem;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-        }
-    }
-</style>
+        // Eliminar opción
+        document.addEventListener('click', function (e) {
+            if (e.target.closest('.remove-opcion')) {
+                const form = e.target.closest('.opcion-form');
+                const deleteInput = form.querySelector('[id$="-DELETE"]');
+                if (deleteInput) {
+                    deleteInput.value = 'on'; // Marcar para eliminar
+                }
+                form.style.display = 'none'; // Ocultar en lugar de eliminar
+            }
+        });
+    });
+</script>

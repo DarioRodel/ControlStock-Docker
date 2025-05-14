@@ -3,21 +3,15 @@
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="{% static 'dark/js/darkmode.js' %}" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
 <div class="container-fluid py-4">
-    <!-- Modo oscuro -->
-    <div class="form-check form-switch ms-auto mb-2">
+    <div class="form-check form-switch ms-auto mb-3">
         <input class="form-check-input" type="checkbox" id="darkModeToggle">
-        <label class="form-check-label" for="darkModeToggle">
-            <i class="fas fa-moon me-1"></i>Modo oscuro
-        </label>
+        <label class="form-check-label" for="darkModeToggle"><i class="fas fa-moon me-2"></i>Modo oscuro</label>
     </div>
 
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
@@ -34,7 +28,7 @@
                 <i class="fas fa-plus-circle me-2"></i> Nuevo Producto
             </a>
             <a href="{% url 'stock:atributo_create' %}" class="btn btn-success shadow-sm">
-                <i class="fas fa-plus-circle me-2"></i> Agregar Atributo
+                <i class="fas fa-tag me-2"></i> Agregar Atributo
             </a>
         </div>
     </div>
@@ -44,15 +38,15 @@
         <div class="card-body">
             <form method="get" class="row g-3 align-items-end">
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold fs-4">Buscar</label>
+                    <label class="form-label fw-semibold fs-4"><i class="fas fa-search me-2"></i>Buscar</label>
                     <input type="text" name="search" class="form-control form-control-lg fs-5"
                            placeholder="Nombre o código..." value="{{ request.GET.search }}">
                 </div>
 
                 <div class="col-md-3">
-                    <label class="form-label fw-semibold fs-4">Categoría</label>
+                    <label class="form-label fw-semibold fs-4"><i class="fas fa-folder me-2"></i>Categoría</label>
                     <select name="categoria" class="form-select form-select-lg fs-5">
-                        <option value="">Todas</option>
+                        <option value=""><i class="fas fa-list me-2"></i>Todas</option>
                         {% for cat in categorias %}
                             <option value="{{ cat.id }}"
                                     {% if request.GET.categoria == cat.id|stringformat:"s" %}selected{% endif %}>
@@ -63,9 +57,9 @@
                 </div>
 
                 <div class="col-md-3">
-                    <label class="form-label fw-semibold fs-4">Estado</label>
+                    <label class="form-label fw-semibold fs-4"><i class="fas fa-filter me-2"></i>Estado</label>
                     <select name="estado" class="form-select form-select-lg fs-5">
-                        <option value="">Todos</option>
+                        <option value=""><i class="fas fa-check-double me-2"></i>Todos</option>
                         {% for valor, nombre in estados %}
                             <option value="{{ valor }}" {% if request.GET.estado == valor %}selected{% endif %}>
                                 {{ nombre }}
@@ -88,14 +82,14 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light text-uppercase small text-muted">
                 <tr>
-                    <th class="text-center fs-5">Imagen</th>
-                    <th class="text-center fs-5">Código</th>
-                    <th class="text-center fs-5">Nombre</th>
-                    <th class="text-center fs-5">Categoría</th>
-                    <th class="text-center fs-5">Atributos</th>
-                    <th class="text-center fs-5">Stock</th>
-                    <th class="text-center fs-5">Estado</th>
-                    <th class="text-center fs-5">Acciones</th>
+                    <th class="text-center fs-5"><i class="fas fa-image me-2"></i>Imagen</th>
+                    <th class="text-center fs-5"><i class="fas fa-barcode me-2"></i>Código</th>
+                    <th class="text-center fs-5"><i class="fas fa-signature me-2"></i>Nombre</th>
+                    <th class="text-center fs-5"><i class="fas fa-folder-open me-2"></i>Categoría</th>
+                    <th class="text-center fs-5"><i class="fas fa-tags me-2"></i>Atributos</th>
+                    <th class="text-center fs-5"><i class="fas fa-cubes me-2"></i>Stock</th>
+                    <th class="text-center fs-5"><i class="fas fa-shield-alt me-2"></i>Estado</th>
+                    <th class="text-center fs-5"><i class="fas fa-cogs me-2"></i>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -121,16 +115,16 @@
                         </td>
                         <td data-label="Atributos" class="text-center">
                             {% for pa in producto.productoatributo_set.all %}
-                                <span class="badge  bg-light text-dark fs-5 text-center mb-1">
-                    {{ pa.atributo.nombre }}
-                </span>
+                                <span class="badge bg-light text-dark fs-5 text-center mb-1">
+        <i class="fas fa-tag me-1"></i>{{ pa.atributo.nombre }}: {{ pa.opcion.valor }}
+    </span>
                             {% empty %}
-                                <span class="text-muted">Sin atributos</span>
+                                <span class="text-muted"><i class="fas fa-tag me-1"></i>Sin atributos</span>
                             {% endfor %}
                         </td>
                         <td class="text-center" data-label="Stock">
                             <span class="badge bg-light text-dark fs-5 dark-mode-badge ">
-                                {{ producto.stock_actual }}
+                                <i class="fas fa-cube me-1"></i>{{ producto.stock_actual }}
                             </span>
                         </td>
                         <td class="text-center" data-label="Estado">
@@ -214,9 +208,12 @@
             <i class="fas fa-file-export me-2"></i>Exportar Productos
         </button>
         <ul class="dropdown-menu" aria-labelledby="exportDropdown">
-            <li><a class="dropdown-item" href="{% url 'stock:export_productos_csv' %}">CSV</a></li>
-            <li><a class="dropdown-item" href="{% url 'stock:export_productos_excel' %}">Excel</a></li>
-            <li><a class="dropdown-item" href="{% url 'stock:export_productos_pdf' %}">PDF</a></li>
+            <li><a class="dropdown-item" href="{% url 'stock:export_productos_csv' %}"><i
+                    class="fas fa-file-csv me-2"></i>CSV</a></li>
+            <li><a class="dropdown-item" href="{% url 'stock:export_productos_excel' %}"><i
+                    class="fas fa-file-excel me-2"></i>Excel</a></li>
+            <li><a class="dropdown-item" href="{% url 'stock:export_productos_pdf' %}"><i
+                    class="fas fa-file-pdf me-2"></i>PDF</a></li>
         </ul>
     </div>
 </div>
@@ -337,7 +334,7 @@
         /* Aumentamos el tamaño de los inputs en el formulario */
         .form-control, .form-select {
             font-size: 1.25rem; /* Aumentamos el tamaño de la fuente */
-            padding: 0.75rem 1rem; /* Aumentamos el padding */
+            padding: 0.75rem /* Aumentamos el padding */
         }
 
         /* Aumentamos el tamaño del botón de filtro */
