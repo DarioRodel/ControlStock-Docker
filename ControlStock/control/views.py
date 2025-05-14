@@ -711,9 +711,16 @@ class AtributoCreateView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
 
         if self.request.POST:
-            context['opcion_formset'] = self.OpcionFormSet(self.request.POST)
+            context['opcion_formset'] = self.OpcionFormSet(
+                self.request.POST,
+                instance=self.object if hasattr(self, 'object') else None,
+                prefix='opcion_set'
+            )
         else:
-            context['opcion_formset'] = self.OpcionFormSet()
+            context['opcion_formset'] = self.OpcionFormSet(
+                instance=self.object if hasattr(self, 'object') else None,
+                prefix='opcion_set'
+            )
 
         return context
 
@@ -755,11 +762,13 @@ class AtributoUpdateView(LoginRequiredMixin, UpdateView):
         if self.request.POST:
             context['opcion_formset'] = self.OpcionFormSet(
                 self.request.POST,
-                instance=self.object
+                instance=self.object if hasattr(self, 'object') else None,
+                prefix='opcion_set'
             )
         else:
             context['opcion_formset'] = self.OpcionFormSet(
-                instance=self.object
+                instance=self.object if hasattr(self, 'object') else None,
+                prefix='opcion_set'
             )
 
         return context
@@ -770,7 +779,7 @@ class AtributoUpdateView(LoginRequiredMixin, UpdateView):
             Atributo,
             OpcionAtributo,
             fields=('valor', 'orden'),
-            extra=1,
+            extra=0,
             can_delete=True,
             widgets={
                 'valor': forms.TextInput(attrs={'class': 'form-control'}),

@@ -18,6 +18,8 @@
     <form method="post" novalidate class="card p-4">
         {% csrf_token %}
         {{ form.non_field_errors }}
+
+        <!-- Solo UNA VEZ el management_form -->
         <div style="display: none;">
             {{ opcion_formset.management_form }}
         </div>
@@ -39,9 +41,6 @@
         </div>
 
         <h4 class="mt-4">Opciones del Atributo</h4>
-        <div style="display: none;">
-            {{ opcion_formset.management_form }}
-        </div>
 
         <div id="opciones-container">
             {% for form in opcion_formset %}
@@ -88,49 +87,53 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Añadir nueva opción
+        const totalForms = document.getElementById('id_opcion_set-TOTAL_FORMS');
+        if (!totalForms) {
+            console.error("ERROR: No se encontró 'id_opcion_set-TOTAL_FORMS'. Verifica que el formset esté incluido correctamente.");
+            return;
+        }
+
         document.getElementById('add-opcion').addEventListener('click', function () {
-            const totalForms = document.getElementById('id_opcion_set-TOTAL_FORMS');
             const formIdx = parseInt(totalForms.value);
             const container = document.getElementById('opciones-container');
 
             const newForm = document.createElement('div');
             newForm.className = 'opcion-form mb-3 row g-3';
             newForm.innerHTML = `
-            <div class="col-md-10">
-                <input type="text" name="opcion_set-${formIdx}-valor" class="form-control" placeholder="Valor de la opción" required>
-            </div>
-            <div class="col-md-2 d-flex align-items-end">
-                <button type="button" class="btn btn-danger remove-opcion">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-            <input type="hidden" name="opcion_set-${formIdx}-id" id="id_opcion_set-${formIdx}-id">
-            <input type="hidden" name="opcion_set-${formIdx}-DELETE" id="id_opcion_set-${formIdx}-DELETE">
-        `;
+                <div class="col-md-10">
+                    <label class="form-label">Valor</label>
+                    <input type="text" name="opcion_set-${formIdx}-valor" class="form-control" required>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger remove-opcion">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <input type="hidden" name="opcion_set-${formIdx}-id" id="id_opcion_set-${formIdx}-id">
+                <input type="hidden" name="opcion_set-${formIdx}-DELETE" id="id_opcion_set-${formIdx}-DELETE">
+            `;
 
             container.appendChild(newForm);
             totalForms.value = formIdx + 1;
 
-            // Configurar evento para eliminar
             newForm.querySelector('.remove-opcion').addEventListener('click', function () {
                 const deleteInput = newForm.querySelector('[id$="-DELETE"]');
                 if (deleteInput) {
-                    deleteInput.value = 'on'; // Marcar para eliminar
+                    deleteInput.value = 'on';
                 }
-                newForm.style.display = 'none'; // Ocultar en lugar de eliminar
+                newForm.style.display = 'none';
             });
         });
 
-        // Eliminar opción
+        // Eliminar opción existente
         document.addEventListener('click', function (e) {
             if (e.target.closest('.remove-opcion')) {
                 const form = e.target.closest('.opcion-form');
                 const deleteInput = form.querySelector('[id$="-DELETE"]');
                 if (deleteInput) {
-                    deleteInput.value = 'on'; // Marcar para eliminar
+                    deleteInput.value = 'on';
                 }
-                form.style.display = 'none'; // Ocultar en lugar de eliminar
+                form.style.display = 'none';
             }
         });
     });
