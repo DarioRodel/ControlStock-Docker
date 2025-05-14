@@ -445,13 +445,18 @@
 <body>
 
 <div class="container py-5">
-    <div class="form-check form-switch ms-auto mb-2">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="form-check form-switch">
         <input class="form-check-input" type="checkbox" id="darkModeToggle">
         <label class="form-check-label" for="darkModeToggle">
             <i class="fas fa-moon me-1"></i>Modo oscuro
         </label>
     </div>
 
+    <a href="{% url 'stock:producto_list' %}" class="btn btn-outline-secondary ps me-5">
+        <i class="fas fa-arrow-left me-1"></i> Volver a productos
+    </a>
+</div>
     <div class="card mx-auto" style="max-width: 900px;">
         <div class="card-header">
             <h3 class="mb-0">
@@ -652,9 +657,7 @@
                                     {% endfor %}
 
                                     <div class="d-flex justify-content-between mt-4">
-                                        <a href="{% url 'stock:producto_list' %}" class="btn btn-outline-secondary">
-                                            <i class="fas fa-arrow-left me-1"></i> Volver a la lista de productos
-                                        </a>
+
                                         <button type="submit" class="btn btn-primary">
                                             <i class="fas fa-save me-1"></i> Guardar Producto
                                         </button>
@@ -699,29 +702,26 @@
             }
         }
 
+        // Manejar cambios en los selects existentes
         document.querySelectorAll('.atributo-select').forEach(select => {
-            const hiddenAtributoInput = select.closest('.atributo-form').querySelector('[id$="-atributo"]');
             const opcionSelect = select.closest('.atributo-form').querySelector('.opcion-select');
             const hiddenOpcionInput = select.closest('.atributo-form').querySelector('[id$="-opcion"]');
 
-            // Actualizar al cargar
-            hiddenAtributoInput.value = select.value;
+            // Actualizar al cargar la página
             actualizarOpciones(select, opcionSelect);
 
+            // Manejar cambios
             select.addEventListener('change', function () {
-                hiddenAtributoInput.value = this.value;
-                actualizarOpciones(this, opcionSelect);
-                hiddenOpcionInput.value = '';
+                actualizarOpciones(select, opcionSelect);
+                hiddenOpcionInput.value = ''; // Limpiar el valor oculto al cambiar el atributo
             });
-        });
 
-        document.querySelectorAll('.opcion-select').forEach(select => {
-            const hiddenOpcionInput = select.closest('.atributo-form').querySelector('[id$="-opcion"]');
-
-            select.addEventListener('change', function () {
+            // Actualizar el campo oculto cuando se selecciona una opción
+            opcionSelect.addEventListener('change', function () {
                 hiddenOpcionInput.value = this.value;
             });
         });
+
         // Agregar nuevo atributo
         document.getElementById('add-atributo').addEventListener('click', function () {
             const totalForms = document.getElementById('id_productoatributo_set-TOTAL_FORMS');
