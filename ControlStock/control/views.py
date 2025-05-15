@@ -2,6 +2,7 @@ import json
 
 import openpyxl
 from django.core.mail import send_mail
+from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import redirect, render  # Importa la función redirect para redireccionar a otras URLs.
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -247,10 +248,10 @@ class ProductoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
 
         context['atributos'] = atributos
         context['atributo_opciones_dict'] = atributo_opciones_dict
-        context['opciones_json'] = json.dumps(opciones_data)
+        context['opciones_json'] = json.dumps(opciones_data, cls=DjangoJSONEncoder)
 
         # Creamos el formset fuera del condicional para que siempre esté disponible
-        ProductoAtributoFormSet = forms.inlineformset_factory(
+        ProductoAtributoFormSet = inlineformset_factory(
             Producto,
             ProductoAtributo,
             form=ProductoAtributoForm,
@@ -284,8 +285,6 @@ class ProductoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
             return super().form_valid(form)
         else:
             return self.render_to_response(self.get_context_data(form=form, atributo_formset=atributo_formset))
-
-
 class MovimientoStockCreateView(LoginRequiredMixin, CreateView):
     """
     Vista para crear un nuevo movimiento de stock. Requiere login.
