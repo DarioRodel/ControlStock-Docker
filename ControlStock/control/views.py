@@ -22,7 +22,7 @@ from django.db.models import Sum, F
 from django.views.generic import TemplateView
 from rest_framework.views import APIView
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.utils import timezone
 import csv
 from reportlab.pdfgen import canvas
@@ -177,6 +177,7 @@ class ProductoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
 
         return context
 
+
 class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'control.add_producto'
     model = Producto
@@ -201,17 +202,21 @@ class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
             ProductoAtributo,
             form=ProductoAtributoForm,
             extra=1,
-            can_delete=True
+            can_delete=True,
+            min_num=0,  # Permite formularios vacíos
+            validate_min=False  # No validar el mínimo
         )
 
         if self.request.POST:
             context['atributo_formset'] = ProductoAtributoFormSet(
                 self.request.POST,
-                instance=self.object if self.object else None
+                instance=self.object if self.object else None,
+                prefix='productoatributo_set'
             )
         else:
             context['atributo_formset'] = ProductoAtributoFormSet(
-                instance=self.object if self.object else None
+                instance=self.object if self.object else None,
+                prefix='productoatributo_set'
             )
 
         return context
@@ -220,13 +225,17 @@ class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
         context = self.get_context_data()
         atributo_formset = context['atributo_formset']
 
+        # Guardar el producto primero
+        self.object = form.save()
+
         if atributo_formset.is_valid():
-            self.object = form.save()
             instances = atributo_formset.save(commit=False)
 
             for instance in instances:
-                instance.producto = self.object
-                instance.save()
+                # Solo guardar si tiene atributo y opción seleccionados
+                if instance.atributo and instance.opcion:
+                    instance.producto = self.object
+                    instance.save()
 
             # Eliminar elementos marcados para borrar
             for form in atributo_formset.deleted_forms:
@@ -235,7 +244,8 @@ class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
 
             return super().form_valid(form)
         else:
-            return self.render_to_response(self.get_context_data(form=form, atributo_formset=atributo_formset))
+            # Si hay errores en el formset, volver a mostrar el formulario
+            return self.render_to_response(self.get_context_data(form=form))
 
 
 class ProductoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
@@ -247,61 +257,65 @@ class ProductoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Obtener todos los atributos con sus opciones
-        atributos = Atributo.objects.prefetch_related('opciones').all()
-        opciones_data = []
+        context['atributos'] = Atributo.objects.all().prefetch_related('opciones')
+
+        # Crear un diccionario de atributo_id -> opciones
         atributo_opciones_dict = {}
+        for atributo in context['atributos']:
+            atributo_opciones_dict[atributo.id] = list(atributo.opciones.all())
 
-        for atributo in atributos:
-            opciones = list(atributo.opciones.all())
-            atributo_opciones_dict[atributo.id] = opciones
-            for opcion in opciones:
-                opciones_data.append({
-                    'id': opcion.id,
-                    'atributo_id': atributo.id,
-                    'atributo_nombre': atributo.nombre,  # Nuevo campo
-                    'valor': opcion.valor,
-                })
-
-        context['atributos'] = atributos
         context['atributo_opciones_dict'] = atributo_opciones_dict
-        context['opciones_json'] = json.dumps(opciones_data, cls=DjangoJSONEncoder)
 
-        # Creamos el formset fuera del condicional para que siempre esté disponible
-        ProductoAtributoFormSet = inlineformset_factory(
+        # Configurar el formset
+        ProductoAtributoFormSet = forms.inlineformset_factory(
             Producto,
             ProductoAtributo,
             form=ProductoAtributoForm,
-            extra=0,  # No queremos formularios vacíos al editar
-            can_delete=True
+            extra=1,
+            can_delete=True,
+            min_num=0,  # Permite formularios vacíos
+            validate_min=False  # No validar el mínimo
         )
+
         if self.request.POST:
-            # Si hay datos POST, significa que el formulario se ha enviado,
-            # así que inicializamos el formset con esos datos y la instancia del producto.
-            context['atributo_formset'] = ProductoAtributoFormSet(self.request.POST, instance=self.object)
+            context['atributo_formset'] = ProductoAtributoFormSet(
+                self.request.POST,
+                instance=self.object,
+                prefix='productoatributo_set'
+            )
         else:
-            # Si no hay datos POST, significa que estamos cargando la página de edición por primera vez.
-            # Inicializamos el formset con la instancia del producto para mostrar los atributos existentes.
-            context['atributo_formset'] = ProductoAtributoFormSet(instance=self.object)
+            context['atributo_formset'] = ProductoAtributoFormSet(
+                instance=self.object,
+                prefix='productoatributo_set'
+            )
+
         return context
 
     def form_valid(self, form):
         context = self.get_context_data()
         atributo_formset = context['atributo_formset']
+
+        # Guardar el producto primero
+        self.object = form.save()
+
         if atributo_formset.is_valid():
-            self.object = form.save()
-            for form_atributo in atributo_formset:
-                # Omitir formularios vacíos o marcados para eliminar
-                if form_atributo.cleaned_data.get('DELETE'):
-                    continue
-                if not form_atributo.cleaned_data.get('atributo'):
-                    continue
-                atributo = form_atributo.save(commit=False)
-                atributo.producto = self.object
-                atributo.save()
+            instances = atributo_formset.save(commit=False)
+
+            for instance in instances:
+                # Solo guardar si tiene atributo y opción seleccionados
+                if instance.atributo and instance.opcion:
+                    instance.producto = self.object
+                    instance.save()
+
+            # Eliminar elementos marcados para borrar
+            for form in atributo_formset.deleted_forms:
+                if form.instance.pk:
+                    form.instance.delete()
+
             return super().form_valid(form)
         else:
-            return self.render_to_response(self.get_context_data(form=form, atributo_formset=atributo_formset))
+            # Si hay errores en el formset, volver a mostrar el formulario
+            return self.render_to_response(self.get_context_data(form=form))
 class MovimientoStockCreateView(LoginRequiredMixin, CreateView):
     """
     Vista para crear un nuevo movimiento de stock. Requiere login.
@@ -778,15 +792,14 @@ class AtributoUpdateView(LoginRequiredMixin, UpdateView):
         if self.request.POST:
             context['opcion_formset'] = self.OpcionFormSet(
                 self.request.POST,
-                instance=self.object if hasattr(self, 'object') else None,
+                instance=self.object,
                 prefix='opcion_set'
             )
         else:
             context['opcion_formset'] = self.OpcionFormSet(
-                instance=self.object if hasattr(self, 'object') else None,
+                instance=self.object,
                 prefix='opcion_set'
             )
-
         return context
 
     @property
@@ -807,15 +820,15 @@ class AtributoUpdateView(LoginRequiredMixin, UpdateView):
         context = self.get_context_data()
         opcion_formset = context['opcion_formset']
 
-        if opcion_formset.is_valid():
-            self.object = form.save()
-            opcion_formset.instance = self.object
-            opcion_formset.save()
-            return super().form_valid(form)
-        else:
+        if not opcion_formset.is_valid():
             return self.render_to_response(self.get_context_data(form=form))
 
+        self.object = form.save()
+        opcion_formset.instance = self.object
+        opcion_formset.save()
 
+        # Redirección explícita para asegurar
+        return HttpResponseRedirect(self.get_success_url())
 # AtributoDeleteView ya está bien configurada, no se requieren cambios
 class AtributoDeleteView(LoginRequiredMixin, DeleteView):
     model = Atributo
