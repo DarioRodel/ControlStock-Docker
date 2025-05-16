@@ -271,7 +271,7 @@ class ProductoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
             Producto,
             ProductoAtributo,
             form=ProductoAtributoForm,
-            extra=1,
+            extra=0,
             can_delete=True,
             min_num=0,  # Permite formularios vacíos
             validate_min=False  # No validar el mínimo
