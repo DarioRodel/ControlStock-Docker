@@ -784,11 +784,10 @@ class AtributoUpdateView(LoginRequiredMixin, UpdateView):
     model = Atributo
     fields = ['nombre', 'descripcion']
     template_name = 'stock/atributo_form.html'
-    success_url = reverse_lazy('stock:atributo_list')
+    success_url = reverse_lazy('stock:atributo_list')  # ✅ ESTA LÍNEA ES CLAVE
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         if self.request.POST:
             context['opcion_formset'] = self.OpcionFormSet(
                 self.request.POST,
@@ -807,12 +806,11 @@ class AtributoUpdateView(LoginRequiredMixin, UpdateView):
         return inlineformset_factory(
             Atributo,
             OpcionAtributo,
-            fields=('valor', 'orden'),
+            fields=('valor',),
             extra=0,
             can_delete=True,
             widgets={
                 'valor': forms.TextInput(attrs={'class': 'form-control'}),
-                'orden': forms.NumberInput(attrs={'class': 'form-control'}),
             }
         )
 
@@ -827,8 +825,7 @@ class AtributoUpdateView(LoginRequiredMixin, UpdateView):
         opcion_formset.instance = self.object
         opcion_formset.save()
 
-        # Redirección explícita para asegurar
-        return HttpResponseRedirect(self.get_success_url())
+        return redirect(self.get_success_url())
 # AtributoDeleteView ya está bien configurada, no se requieren cambios
 class AtributoDeleteView(LoginRequiredMixin, DeleteView):
     model = Atributo
