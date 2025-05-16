@@ -136,6 +136,8 @@ class ProductoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         search = self.request.GET.get('search')
         categoria = self.request.GET.get('categoria')
         estado = self.request.GET.get('estado')
+        atributo_id = self.request.GET.get('atributo')
+        opcion_id = self.request.GET.get('opcion')
 
         if search:
             queryset = queryset.filter(
@@ -147,21 +149,33 @@ class ProductoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             queryset = queryset.filter(categoria__id=categoria)
         if estado:
             queryset = queryset.filter(estado=estado)
+        if atributo_id:
+            queryset = queryset.filter(productoatributo__atributo_id=atributo_id)
+        if opcion_id:
+            queryset = queryset.filter(productoatributo__opcion_id=opcion_id)
 
         # Prefetch los atributos y opciones para optimizar las consultas
         return queryset.select_related('categoria', 'ubicacion').prefetch_related(
             'productoatributo_set__atributo',
             'productoatributo_set__opcion'
-        )
-    def get_context_data(self, **kwargs):
-        """
-        Añade al contexto las categorías y los estados de stock para los filtros.
-        """
-        context = super().get_context_data(**kwargs)
-        context['categorias'] = Categoria.objects.all()  # Obtiene todas las categorías para el filtro.
-        context['estados'] = Producto.ESTADO_STOCK  # Obtiene las opciones de estado para el filtro.
-        return context
+        ).distinct()
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categorias'] = Categoria.objects.all()
+        context['estados'] = Producto.ESTADO_STOCK
+
+        # Pasar atributos para el filtro
+        context['atributos'] = Atributo.objects.all()
+
+        atributo_id = self.request.GET.get('atributo')
+        if atributo_id:
+            # Opciones solo del atributo seleccionado para llenar el select de opciones
+            context['opciones'] = OpcionAtributo.objects.filter(atributo_id=atributo_id)
+        else:
+            context['opciones'] = None
+
+        return context
 
 class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'control.add_producto'

@@ -55,6 +55,31 @@
                         {% endfor %}
                     </select>
                 </div>
+                <div class="col-md-3">
+    <label class="form-label fw-semibold fs-4">Atributo</label>
+    <select name="atributo" class="form-select form-select-lg fs-5">
+        <option value="">Todos</option>
+        {% for atributo in atributos %}
+            <option value="{{ atributo.id }}" {% if request.GET.atributo == atributo.id|stringformat:"s" %}selected{% endif %}>
+                {{ atributo.nombre }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="col-md-3">
+    <label class="form-label fw-semibold fs-4">Opción</label>
+    <select name="opcion" class="form-select form-select-lg fs-5" {% if not request.GET.atributo %}disabled{% endif %}>
+        <option value="">Todas</option>
+        {% if opciones %}
+            {% for opcion in opciones %}
+                <option value="{{ opcion.id }}" {% if request.GET.opcion == opcion.id|stringformat:"s" %}selected{% endif %}>
+                    {{ opcion.valor }}
+                </option>
+            {% endfor %}
+        {% endif %}
+    </select>
+</div>
 
                 <div class="col-md-3">
                     <label class="form-label fw-semibold fs-4"><i class="fas fa-filter me-2"></i>Estado</label>
@@ -296,6 +321,102 @@
         width: 100%;
         overflow-x: hidden; /* evita scroll horizontal */
     }
+    /* Mejoras específicas para el formulario de filtros */
+.card-body form.row.g-3 {
+    gap: 1rem 1.5rem; /* Más espacio entre columnas */
+}
+
+.card-body form .form-label {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.card-body form input.form-control-lg,
+.card-body form select.form-select-lg {
+    font-size: 1.15rem;
+    padding: 0.65rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--input-border);
+    transition: border-color 0.3s ease;
+}
+
+.card-body form input.form-control-lg:focus,
+.card-body form select.form-select-lg:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px var(--primary-color);
+    outline: none;
+}
+
+.card-body form button.btn-lg {
+    padding: 0.7rem 1.5rem;
+    font-size: 1.15rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.card-body form button.btn-lg:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+/* Modo oscuro: mejora contraste para inputs y selects */
+body[data-theme="dark"] .card-body form input.form-control-lg,
+body[data-theme="dark"] .card-body form select.form-select-lg {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--input-border);
+}
+
+body[data-theme="dark"] .card-body form input.form-control-lg:focus,
+body[data-theme="dark"] .card-body form select.form-select-lg:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 8px var(--accent-color);
+}
+
+/* Flexbox para que los filtros se alineen mejor en pantallas pequeñas */
+@media (max-width: 991.98px) {
+    .card-body form.row.g-3 {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .card-body form > div[class^="col-"] {
+        flex: 1 1 45%;
+        min-width: 220px;
+    }
+
+    /* Botón filtro al 100% ancho en móvil */
+    .card-body form > div.col-md-2.d-grid {
+        flex: 1 1 100%;
+        min-width: auto;
+    }
+}
+
+/* Ajustes para que el select "Opción" se vea deshabilitado claramente */
+.card-body form select[disabled] {
+    background-color: #e9ecef !important;
+    cursor: not-allowed;
+    opacity: 0.7;
+    color: #6c757d !important;
+}
+
+/* Espacio extra para iconos en labels */
+.form-label i {
+    color: var(--primary-color);
+    margin-right: 0.4rem;
+}
+
+/* Ajustes generales para accesibilidad y espaciado */
+.form-check.form-switch {
+    justify-content: flex-end;
+}
+
+/* Mejorar el dropdown exportar para que no quede muy pegado */
+.dropdown.mb-3 {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
 
     body {
         font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -488,7 +609,114 @@
             align-items: center;
         }
     }
+/* Filtros - Versión Escritorio */
+@media (min-width: 992px) {
+    .card-body form.row.g-3 {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 1.5rem;
+    }
 
+    .card-body form > div[class^="col-"] {
+        flex: 1 1 auto;
+        min-width: 180px;
+        max-width: 280px;
+    }
+
+    .card-body form > div.col-md-2.d-grid {
+        flex: 0 0 auto;
+        width: auto;
+    }
+
+    /* Mejoras en los inputs */
+    .card-body form input.form-control-lg,
+    .card-body form select.form-select-lg {
+        font-size: 1.05rem;
+        padding: 0.65rem 0.75rem;
+        border-radius: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .card-body form input.form-control-lg:focus,
+    .card-body form select.form-select-lg:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+    }
+
+    /* Estilo para los labels */
+    .card-body form .form-label {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Botón de filtro */
+    .card-body form button.btn-lg {
+        padding: 0.65rem 1.25rem;
+        font-size: 1.05rem;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 120px;
+    }
+
+    /* Select de atributo y opción - alineación mejorada */
+    .card-body form select[name="atributo"],
+    .card-body form select[name="opcion"] {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 16px 12px;
+        padding-right: 2.5rem;
+    }
+
+    body[data-theme="dark"] .card-body form select[name="atributo"],
+    body[data-theme="dark"] .card-body form select[name="opcion"] {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e2e8f0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    }
+
+    /* Estado deshabilitado más claro */
+    .card-body form select[disabled] {
+        opacity: 0.7;
+        background-color: #f8f9fa;
+    }
+
+    body[data-theme="dark"] .card-body form select[disabled] {
+        background-color: #2d3748;
+        color: #a0aec0;
+    }
+
+    /* Iconos en los inputs */
+    .card-body form .input-group-text {
+        background-color: #f8f9fa;
+        border-right: none;
+    }
+
+    body[data-theme="dark"] .card-body form .input-group-text {
+        background-color: #2d3748;
+        border-color: #4a5568;
+    }
+}
+
+/* Versión pantallas grandes (>= 1200px) */
+@media (min-width: 1200px) {
+    .card-body form.row.g-3 {
+        gap: 2rem;
+    }
+
+    .card-body form > div[class^="col-"] {
+        min-width: 200px;
+    }
+
+    .card-body form button.btn-lg {
+        min-width: 140px;
+    }
+}
 
 </style>
 
