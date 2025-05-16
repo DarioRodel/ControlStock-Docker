@@ -114,14 +114,14 @@
                             </span>
                         </td>
                         <td data-label="Atributos" class="text-center">
-    {% for pa in producto.productoatributo_set.all %}
-        <span class="badge bg-light text-dark fs-5 text-center mb-1 d-block">
+                            {% for pa in producto.productoatributo_set.all %}
+                                <span class="badge bg-light text-dark fs-5 text-center mb-1 d-block">
             <i class="fas fa-tag me-1"></i>{{ pa.atributo.nombre }}: {{ pa.opcion.valor }}
         </span>
-    {% empty %}
-        <span class="text-muted"><i class="fas fa-tag me-1"></i>Sin atributos</span>
-    {% endfor %}
-</td>
+                            {% empty %}
+                                <span class="text-muted"><i class="fas fa-tag me-1"></i>Sin atributos</span>
+                            {% endfor %}
+                        </td>
                         <td class="text-center" data-label="Stock">
                             <span class="badge bg-light text-dark fs-5 dark-mode-badge ">
                                 <i class="fas fa-cube me-1"></i>{{ producto.stock_actual }}

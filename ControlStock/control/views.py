@@ -148,8 +148,11 @@ class ProductoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         if estado:
             queryset = queryset.filter(estado=estado)
 
-        return queryset.select_related('categoria', 'ubicacion')
-
+        # Prefetch los atributos y opciones para optimizar las consultas
+        return queryset.select_related('categoria', 'ubicacion').prefetch_related(
+            'productoatributo_set__atributo',
+            'productoatributo_set__opcion'
+        )
     def get_context_data(self, **kwargs):
         """
         Añade al contexto las categorías y los estados de stock para los filtros.
