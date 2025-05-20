@@ -6,72 +6,72 @@ from .models import MovimientoStock, Producto, Ubicacion, \
 
 
 class MovimientoStockForm(forms.ModelForm):
-    """
-    Formulario para registrar movimientos de stock.
-    Hereda de forms.ModelForm y está asociado al modelo MovimientoStock.
-    """
-    class Meta:
-        model = MovimientoStock  # Especifica el modelo al que este formulario está asociado.
-        fields = ['producto', 'tipo', 'cantidad', 'ubicacion_origen', 'ubicacion_destino', 'observaciones']  # Define los campos del modelo que se incluirán en el formulario.
-        widgets = {
-            'observaciones': forms.Textarea(attrs={'rows': 3}),  # Utiliza un widget Textarea para el campo de observaciones con 3 filas.
-        }
-
-    def __init__(self, *args, **kwargs):
         """
-        Método de inicialización del formulario.
-        Se utiliza para personalizar los campos del formulario.
+        Formulario para registrar movimientos de stock.
+        Hereda de forms.ModelForm y está asociado al modelo MovimientoStock.
         """
-        super().__init__(*args, **kwargs)  # Llama al método __init__ de la clase padre.
+        class Meta:
+            model = MovimientoStock  # Especifica el modelo al que este formulario está asociado.
+            fields = ['producto', 'tipo', 'cantidad', 'ubicacion_origen', 'ubicacion_destino', 'observaciones']  # Define los campos del modelo que se incluirán en el formulario.
+            widgets = {
+                'observaciones': forms.Textarea(attrs={'rows': 3}),  # Utiliza un widget Textarea para el campo de observaciones con 3 filas.
+            }
 
-        # Filtramos productos activos para el campo 'producto'
-        self.fields['producto'].queryset = Producto.objects.filter(activo=True)
+        def __init__(self, *args, **kwargs):
+            """
+            Método de inicialización del formulario.
+            Se utiliza para personalizar los campos del formulario.
+            """
+            super().__init__(*args, **kwargs)  # Llama al método __init__ de la clase padre.
 
-        # Filtramos todas las ubicaciones para los campos de origen y destino
-        self.fields['ubicacion_origen'].queryset = Ubicacion.objects.all()
-        self.fields['ubicacion_destino'].queryset = Ubicacion.objects.all()
+            # Filtramos productos activos para el campo 'producto'
+            self.fields['producto'].queryset = Producto.objects.filter(activo=True)
 
-        # Los campos de ubicación no son requeridos por defecto, se validan condicionalmente en el método clean.
-        self.fields['ubicacion_origen'].required = False
-        self.fields['ubicacion_destino'].required = False
+            # Filtramos todas las ubicaciones para los campos de origen y destino
+            self.fields['ubicacion_origen'].queryset = Ubicacion.objects.all()
+            self.fields['ubicacion_destino'].queryset = Ubicacion.objects.all()
 
-        # Añadir la clase CSS 'form-control' a todos los campos del formulario para estilos de Bootstrap.
-        for field in self.fields.values():
-            field.widget.attrs['class'] = 'form-control'
+            # Los campos de ubicación no son requeridos por defecto, se validan condicionalmente en el método clean.
+            self.fields['ubicacion_origen'].required = False
+            self.fields['ubicacion_destino'].required = False
 
-    def clean(self):
-        """
-        Método para realizar validaciones personalizadas en los datos del formulario.
-        Se llama después de la validación de los campos individuales.
-        """
-        cleaned_data = super().clean()  # Obtiene los datos limpios del formulario.
-        tipo = cleaned_data.get('tipo')  # Obtiene el valor del campo 'tipo'.
-        cantidad = cleaned_data.get('cantidad')  # Obtiene el valor del campo 'cantidad'.
-        producto = cleaned_data.get('producto')  # Obtiene el objeto Producto seleccionado.
-        ubicacion_origen = cleaned_data.get('ubicacion_origen')  # Obtiene la ubicación de origen.
-        ubicacion_destino = cleaned_data.get('ubicacion_destino')  # Obtiene la ubicación de destino.
+            # Añadir la clase CSS 'form-control' a todos los campos del formulario para estilos de Bootstrap.
+            for field in self.fields.values():
+                field.widget.attrs['class'] = 'form-control'
 
-        # Validación específica para el tipo de movimiento 'SALIDA'
-        if tipo == 'SALIDA':
-            if producto and cantidad is not None and producto.stock_actual < cantidad:
-                # Si la cantidad a dar de salida es mayor que el stock actual, levanta un error de validación.
-                raise forms.ValidationError(
-                    f"No hay suficiente stock. Stock actual: {producto.stock_actual}"
-                )
-            if not ubicacion_origen:
-                # Si el tipo es 'SALIDA' y no se ha seleccionado una ubicación de origen, levanta un error.
-                raise forms.ValidationError("Debe seleccionar una ubicación de origen para las salidas")
+        def clean(self):
+            """
+            Método para realizar validaciones personalizadas en los datos del formulario.
+            Se llama después de la validación de los campos individuales.
+            """
+            cleaned_data = super().clean()  # Obtiene los datos limpios del formulario.
+            tipo = cleaned_data.get('tipo')  # Obtiene el valor del campo 'tipo'.
+            cantidad = cleaned_data.get('cantidad')  # Obtiene el valor del campo 'cantidad'.
+            producto = cleaned_data.get('producto')  # Obtiene el objeto Producto seleccionado.
+            ubicacion_origen = cleaned_data.get('ubicacion_origen')  # Obtiene la ubicación de origen.
+            ubicacion_destino = cleaned_data.get('ubicacion_destino')  # Obtiene la ubicación de destino.
 
-        # Validación específica para el tipo de movimiento 'TRASPASO'
-        if tipo == 'TRASPASO':
-            if not ubicacion_origen or not ubicacion_destino:
-                # Si el tipo es 'TRASPASO' y falta alguna de las ubicaciones, levanta un error.
-                raise forms.ValidationError("Debe seleccionar ambas ubicaciones para traspasos")
-            if ubicacion_origen == ubicacion_destino:
-                # Si las ubicaciones de origen y destino son la misma, levanta un error.
-                raise forms.ValidationError("Las ubicaciones de origen y destino deben ser diferentes")
+            # Validación específica para el tipo de movimiento 'SALIDA'
+            if tipo == 'SALIDA':
+                if producto and cantidad is not None and producto.stock_actual < cantidad:
+                    # Si la cantidad a dar de salida es mayor que el stock actual, levanta un error de validación.
+                    raise forms.ValidationError(
+                        f"No hay suficiente stock. Stock actual: {producto.stock_actual}"
+                    )
+                if not ubicacion_origen:
+                    # Si el tipo es 'SALIDA' y no se ha seleccionado una ubicación de origen, levanta un error.
+                    raise forms.ValidationError("Debe seleccionar una ubicación de origen para las salidas")
 
-        return cleaned_data  # Devuelve los datos limpios, incluyendo las validaciones personalizadas.
+            # Validación específica para el tipo de movimiento 'TRASPASO'
+            if tipo == 'TRASPASO':
+                if not ubicacion_origen or not ubicacion_destino:
+                    # Si el tipo es 'TRASPASO' y falta alguna de las ubicaciones, levanta un error.
+                    raise forms.ValidationError("Debe seleccionar ambas ubicaciones para traspasos")
+                if ubicacion_origen == ubicacion_destino:
+                    # Si las ubicaciones de origen y destino son la misma, levanta un error.
+                    raise forms.ValidationError("Las ubicaciones de origen y destino deben ser diferentes")
+
+            return cleaned_data  # Devuelve los datos limpios, incluyendo las validaciones personalizadas.
 
 
 class ProductoAtributoForm(forms.ModelForm):
@@ -81,8 +81,13 @@ class ProductoAtributoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['atributo'].widget = forms.HiddenInput()
-        self.fields['opcion'].widget = forms.HiddenInput()
+        # Quitar los HiddenInput y usar selects normales
+        self.fields['atributo'].queryset = Atributo.objects.all()
+        self.fields['opcion'].queryset = OpcionAtributo.objects.none()
+
+        # Agregar clases CSS
+        self.fields['atributo'].widget.attrs.update({'class': 'form-select atributo-select'})
+        self.fields['opcion'].widget.attrs.update({'class': 'form-select opcion-select'})
 
 ProductoAtributoFormSet = forms.inlineformset_factory(
     Producto,
