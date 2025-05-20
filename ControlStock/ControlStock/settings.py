@@ -126,7 +126,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-STATIC_URL = '/static/'
+
 STATICFILES_DIRS = [BASE_DIR / "control/static"]  # Si usas una carpeta static global
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -134,6 +134,8 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 MEDIA_URL = '/media/'
+FORCE_SCRIPT_NAME = '/'
+STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

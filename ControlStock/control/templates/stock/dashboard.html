@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -422,7 +422,7 @@
                 gap: 1rem;
             }
 
-            #main-na  {
+            #main-na {
                 flex-wrap: wrap;
                 gap: 0.75rem !important;
             }
@@ -537,10 +537,10 @@
                             <tr>
                                 <td data-label="Producto">{{ movimiento.producto.nombre|truncatechars:15 }}</td>
                                 <td data-label="Tipo">
-                                    <span class="badge bg-{{ movimiento.tipo|lower }} text-black">
-                                        <i class="fas fa-{% if movimiento.tipo == 'ENTRADA' %}arrow-down{% else %}arrow-up{% endif %} me-1"></i>
-                                        {{ movimiento.get_tipo_display }}
-                                    </span>
+                    <span class="badge bg-{{ movimiento.tipo|lower }} text-black">
+                        <i class="fas fa-{% if movimiento.tipo == 'ENTRADA' %}arrow-down{% else %}arrow-up{% endif %} me-1"></i>
+                        {{ movimiento.get_tipo_display }}
+                    </span>
                                 </td>
                                 <td data-label="Cantidad">{{ movimiento.cantidad }}</td>
                                 <td data-label="Fecha">{{ movimiento.fecha|date:"d/m H:i" }}</td>
@@ -584,7 +584,8 @@
                         {% empty %}
                             <tr>
                                 <td colspan="2" class="text-center py-2 text-muted">
-                                    <i class="far fa-check-circle me-1"></i>No hay productos con stock bajo en este momento.
+                                    <i class="far fa-check-circle me-1"></i>No hay productos con stock bajo en este
+                                    momento.
                                 </td>
                             </tr>
                         {% endfor %}

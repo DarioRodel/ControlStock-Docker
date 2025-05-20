@@ -13,7 +13,8 @@ from django.contrib import messages  # Importa el sistema de mensajes de Django 
 from rest_framework.response import Response
 
 from django import forms
-from .forms import ProductoForm, ReporteErrorForm, ProductoAtributoFormSet  # Importa los formularios de la aplicación.
+from .forms import ProductoForm, ReporteErrorForm, ProductoAtributoFormSet, \
+    MovimientoStockForm  # Importa los formularios de la aplicación.
 from django.views.generic.edit import FormView  # Importa la vista genérica para manejar formularios.
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -47,8 +48,10 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         productos = Producto.objects.all()
 
         # Obtener los últimos 10 movimientos de stock
-        movimientos = MovimientoStock.objects.select_related('producto', 'usuario').order_by('-fecha')[:10]
-
+        movimientos = MovimientoStock.objects.select_related(
+            'producto', 'usuario', 'ubicacion_origen', 'ubicacion_destino'
+        ).order_by('-fecha')[:10]
+        context['movimientos'] = movimientos
         # Contar total de productos y categorías
         total_productos = productos.count()
         total_categorias = Categoria.objects.count()
@@ -60,17 +63,25 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
         # Obtener productos con stock bajo
         productos_bajo_stock = Producto.objects.filter(stock_actual__lt=10)
-
+        productos = Producto.objects.all()
+        context['total_productos'] = productos.count()
+        context['total_categorias'] = Categoria.objects.count()
+        context['valor_inventario'] = productos.aggregate(
+            total=Sum(F('precio_compra') * F('stock_actual'))
+        )['total'] or 0
+        context['productos_bajo_stock'] = Producto.objects.filter(stock_actual__lt=10)
         # Datos para el gráfico
         categorias = Categoria.objects.all()
-        categorias_data = []  # Lista de datos para el gráfico
+        categorias_data = []
 
         for categoria in categorias:
-            total_stock = productos.filter(categoria=categoria).aggregate(total=Sum('stock_actual'))['total'] or 0
+            total_stock = productos.filter(categoria=categoria).aggregate(
+                total=Sum('stock_actual')
+            )['total'] or 0
             categorias_data.append({
                 'nombre': categoria.nombre,
                 'total_stock': total_stock,
-                'color': categoria.color or '#4F46E5'  # Usar color predeterminado si no hay color
+                'color': categoria.color or '#4F46E5'
             })
 
         categorias_nombres = [categoria['nombre'] for categoria in categorias_data]
@@ -83,9 +94,9 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             'valor_inventario': valor_total_inventario,
             'productos_bajo_stock': productos_bajo_stock,
             'movimientos': movimientos,
-            'categorias_nombres': categorias_nombres,
-            'categorias_stock': categorias_stock,
-            'categorias_colores': categorias_colores,
+            'categorias_nombres': json.dumps([c['nombre'] for c in categorias_data]),
+            'categorias_stock': json.dumps([c['total_stock'] for c in categorias_data]),
+            'categorias_colores': json.dumps([c['color'] for c in categorias_data]),
         })
         estados = dict(Producto.ESTADO_STOCK)
         estado_counts = {
@@ -95,9 +106,10 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         }
 
         context.update({
-            'stock_estados_labels': [estados['NORMAL'], estados['BAJO'], estados['AGOTADO']],
-            'stock_estados_data': [estado_counts['NORMAL'], estado_counts['BAJO'], estado_counts['AGOTADO']],
-            'stock_estados_colors': ['#4CAF50', '#FF9800', '#F44336'],  # verde, naranja, rojo
+            'stock_estados_labels': json.dumps([estados['NORMAL'], estados['BAJO'], estados['AGOTADO']]),
+            'stock_estados_data': json.dumps(
+                [estado_counts['NORMAL'], estado_counts['BAJO'], estado_counts['AGOTADO']]),
+            'stock_estados_colors': json.dumps(['#4CAF50', '#FF9800', '#F44336']),
         })
         return context
 
@@ -178,6 +190,16 @@ class ProductoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         return context
 
 
+def registrar_movimiento(request):
+    if request.method == 'POST':
+        form = MovimientoStockForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_movimientos')  # Cambia esto por tu URL correcta
+    else:
+        form = MovimientoStockForm()
+
+    return render(request, 'stock/movimiento_form.html', {'form': form})
 class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'control.add_producto'
     model = Producto
