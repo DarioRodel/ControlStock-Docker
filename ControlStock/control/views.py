@@ -176,13 +176,22 @@ class ProductoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['categorias'] = Categoria.objects.all()
         context['estados'] = Producto.ESTADO_STOCK
-
-        # Pasar atributos para el filtro
         context['atributos'] = Atributo.objects.all()
+
+        # Configurar columnas disponibles
+        context['available_columns'] = [
+            {'key': 'imagen', 'label': 'Imagen'},
+            {'key': 'codigo', 'label': 'Código'},
+            {'key': 'nombre', 'label': 'Nombre'},
+            {'key': 'categoria', 'label': 'Categoría'},
+            {'key': 'atributos', 'label': 'Atributos'},
+            {'key': 'stock', 'label': 'Stock'},
+            {'key': 'estado', 'label': 'Estado'},
+            {'key': 'acciones', 'label': 'Acciones'},
+        ]
 
         atributo_id = self.request.GET.get('atributo')
         if atributo_id:
-            # Opciones solo del atributo seleccionado para llenar el select de opciones
             context['opciones'] = OpcionAtributo.objects.filter(atributo_id=atributo_id)
         else:
             context['opciones'] = None
