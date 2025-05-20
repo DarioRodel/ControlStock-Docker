@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-91^2v6g2m8i&k&q9zt51e&=$zn-oeysi9%p_udc-)n!rto+q!@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['46.202.131.81','127.0.0.1','localhost','paratugym.es','csd-controlstockdocker-juhjnz-8baeab-46-202-131-81.traefik.me']
 
