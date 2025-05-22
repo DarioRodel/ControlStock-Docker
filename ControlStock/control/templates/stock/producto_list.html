@@ -30,13 +30,13 @@
                 <ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="columnSelector"
                     id="columnSelectorMenu" style="min-width: 220px;">
                     {% for col in available_columns %}
-                    <li class="form-check">
-                        <input class="form-check-input column-toggle" type="checkbox"
-                               value="{{ col.key }}" id="col-{{ col.key }}" data-column="{{ col.key }}" checked>
-                        <label class="form-check-label" for="col-{{ col.key }}">
-                            {{ col.label }}
-                        </label>
-                    </li>
+                        <li class="form-check">
+                            <input class="form-check-input column-toggle" type="checkbox"
+                                   value="{{ col.key }}" id="col-{{ col.key }}" data-column="{{ col.key }}" checked>
+                            <label class="form-check-label" for="col-{{ col.key }}">
+                                {{ col.label }}
+                            </label>
+                        </li>
                     {% endfor %}
                 </ul>
             </div>
@@ -58,92 +58,92 @@
         <div class="card-body">
             <form method="get" class="row g-3 align-items-end">
 
-            <!-- Buscar -->
-            <div class="col-md-4">
-                <label class="form-label fw-semibold fs-4">
-                    <i class="fas fa-search me-2"></i>Buscar
-                </label>
-                <input type="text" name="search" class="form-control form-control-lg fs-5"
-                       placeholder="Nombre o código..." value="{{ request.GET.search }}">
-            </div>
+                <!-- Buscar -->
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold fs-4">
+                        <i class="fas fa-search me-2"></i>Buscar
+                    </label>
+                    <input type="text" name="search" class="form-control form-control-lg fs-5"
+                           placeholder="Nombre o código..." value="{{ request.GET.search }}">
+                </div>
 
-            <!-- Categoría -->
-            <div class="col-md-3">
-                <label class="form-label fw-semibold fs-4">
-                    <i class="fas fa-layer-group me-2"></i>Categoría
-                </label>
-                <select name="categoria" class="form-select form-select-lg fs-5">
-                    <option value="">
-                        <i class="fas fa-list me-2"></i>Todas
-                    </option>
-                    {% for cat in categorias %}
-                        <option value="{{ cat.id }}"
-                                {% if request.GET.categoria == cat.id|stringformat:"s" %}selected{% endif %}>
-                            {{ cat.nombre }}
+                <!-- Categoría -->
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold fs-4">
+                        <i class="fas fa-layer-group me-2"></i>Categoría
+                    </label>
+                    <select name="categoria" class="form-select form-select-lg fs-5">
+                        <option value="">
+                            <i class="fas fa-list me-2"></i>Todas
                         </option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <!-- Atributo -->
-            <div class="col-md-3">
-                <label class="form-label fw-semibold fs-4">
-                    <i class="fas fa-tags me-2"></i>Atributo
-                </label>
-                <select name="atributo" class="form-select form-select-lg fs-5">
-                    <option value="">Todos</option>
-                    {% for atributo in atributos %}
-                        <option value="{{ atributo.id }}"
-                                {% if request.GET.atributo == atributo.id|stringformat:"s" %}selected{% endif %}>
-                            {{ atributo.nombre }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <!-- Opción -->
-            <div class="col-md-3">
-                <label class="form-label fw-semibold fs-4">
-                    <i class="fas fa-sliders-h me-2"></i>Opción
-                </label>
-                <select name="opcion" class="form-select form-select-lg fs-5"
-                        {% if not request.GET.atributo %}disabled{% endif %}>
-                    <option value="">Todas</option>
-                    {% if opciones %}
-                        {% for opcion in opciones %}
-                            <option value="{{ opcion.id }}"
-                                    {% if request.GET.opcion == opcion.id|stringformat:"s" %}selected{% endif %}>
-                                {{ opcion.valor }}
+                        {% for cat in categorias %}
+                            <option value="{{ cat.id }}"
+                                    {% if request.GET.categoria == cat.id|stringformat:"s" %}selected{% endif %}>
+                                {{ cat.nombre }}
                             </option>
                         {% endfor %}
-                    {% endif %}
-                </select>
-            </div>
+                    </select>
+                </div>
 
-            <!-- Estado -->
-            <div class="col-md-3">
-                <label class="form-label fw-semibold fs-4">
-                    <i class="fas fa-toggle-on me-2"></i>Estado
-                </label>
-                <select name="estado" class="form-select form-select-lg fs-5">
-                    <option value="">
-                        <i class="fas fa-check-double me-2"></i>Todos
-                    </option>
-                    {% for valor, nombre in estados %}
-                        <option value="{{ valor }}"
-                                {% if request.GET.estado == valor %}selected{% endif %}>
-                            {{ nombre }}
+                <!-- Atributo -->
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold fs-4">
+                        <i class="fas fa-tags me-2"></i>Atributo
+                    </label>
+                    <select name="atributo" class="form-select form-select-lg fs-5">
+                        <option value="">Todos</option>
+                        {% for atributo in atributos %}
+                            <option value="{{ atributo.id }}"
+                                    {% if request.GET.atributo == atributo.id|stringformat:"s" %}selected{% endif %}>
+                                {{ atributo.nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Opción -->
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold fs-4">
+                        <i class="fas fa-sliders-h me-2"></i>Opción
+                    </label>
+                    <select name="opcion" class="form-select form-select-lg fs-5"
+                            {% if not request.GET.atributo %}disabled{% endif %}>
+                        <option value="">Todas</option>
+                        {% if opciones %}
+                            {% for opcion in opciones %}
+                                <option value="{{ opcion.id }}"
+                                        {% if request.GET.opcion == opcion.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ opcion.valor }}
+                                </option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+
+                <!-- Estado -->
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold fs-4">
+                        <i class="fas fa-toggle-on me-2"></i>Estado
+                    </label>
+                    <select name="estado" class="form-select form-select-lg fs-5">
+                        <option value="">
+                            <i class="fas fa-check-double me-2"></i>Todos
                         </option>
-                    {% endfor %}
-                </select>
-            </div>
+                        {% for valor, nombre in estados %}
+                            <option value="{{ valor }}"
+                                    {% if request.GET.estado == valor %}selected{% endif %}>
+                                {{ nombre }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-            <!-- Botón -->
-            <div class="col-md-2 d-grid">
-                <button type="submit" class="btn btn-primary btn-lg fs-4">
-                    <i class="fas fa-filter me-2"></i> Filtrar
-                </button>
-            </div>
+                <!-- Botón -->
+                <div class="col-md-2 d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg fs-4">
+                        <i class="fas fa-filter me-2"></i> Filtrar
+                    </button>
+                </div>
 
             </form>
         </div>
@@ -154,19 +154,20 @@
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light text-uppercase small text-muted">
-                    <tr>
-                        <th class="text-center fs-5" data-column="imagen"><i class="fas fa-image me-2"></i>Imagen</th>
-                        <th class="text-center fs-5" data-column="codigo"><i class="fas fa-barcode me-2"></i>Código</th>
-                        <th class="text-center fs-5" data-column="nombre"><i class="fas fa-signature me-2"></i>Nombre</th>
-                        <th class="text-center fs-5" data-column="categoria"><i class="fas fa-folder-open me-2"></i>Categoría</th>
-                        <th class="text-center fs-5" data-column="atributos"><i class="fas fa-tags me-2"></i>Atributos</th>
-                        <th class="text-center fs-5" data-column="stock"><i class="fas fa-cubes me-2"></i>Stock</th>
-                        <th class="text-center fs-5" data-column="estado"><i class="fas fa-shield-alt me-2"></i>Estado</th>
-                        <th class="text-center fs-5" data-column="acciones"><i class="fas fa-cogs me-2"></i>Acciones</th>
-                    </tr>
+                <tr>
+                    <th class="text-center fs-5" data-column="imagen"><i class="fas fa-image me-2"></i>Imagen</th>
+                    <th class="text-center fs-5" data-column="codigo"><i class="fas fa-barcode me-2"></i>Código</th>
+                    <th class="text-center fs-5" data-column="nombre"><i class="fas fa-signature me-2"></i>Nombre</th>
+                    <th class="text-center fs-5" data-column="categoria"><i class="fas fa-folder-open me-2"></i>Categoría
+                    </th>
+                    <th class="text-center fs-5" data-column="atributos"><i class="fas fa-tags me-2"></i>Atributos</th>
+                    <th class="text-center fs-5" data-column="stock"><i class="fas fa-cubes me-2"></i>Stock</th>
+                    <th class="text-center fs-5" data-column="estado"><i class="fas fa-shield-alt me-2"></i>Estado</th>
+                    <th class="text-center fs-5" data-column="acciones"><i class="fas fa-cogs me-2"></i>Acciones</th>
+                </tr>
                 </thead>
                 <tbody>
-                    {% for producto in productos %}
+                {% for producto in productos %}
                     <tr class="hover-highlight fs-5 text-center">
                         <!-- Imagen -->
                         <td class="text-center" data-column="imagen" data-label="Imagen">
@@ -196,13 +197,17 @@
 
                         <!-- Atributos -->
                         <td data-column="atributos" data-label="Atributos" class="text-center">
-                            {% for pa in producto.productoatributo_set.all %}
-                                <span class="badge bg-light text-dark fs-5 text-center mb-1 d-block">
-                                    <i class="fas fa-tag me-1"></i>{{ pa.atributo.nombre }}: {{ pa.opcion.valor }}
-                                </span>
-                            {% empty %}
-                                <span class="text-muted"><i class="fas fa-tag me-1"></i>Sin atributos</span>
-                            {% endfor %}
+                            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                {% for pa in producto.productoatributo_set.all %}
+                                    <span class="badge bg-primary bg-opacity-10 text-primary fs-5 py-2 px-3 rounded-pill">
+            <i class="fas fa-tag me-1"></i>
+            <span class="fw-semibold">{{ pa.atributo.nombre }}:</span>
+            {{ pa.opcion.valor }}
+        </span>
+                                {% empty %}
+                                    <span class="text-muted small"><i class="fas fa-tag me-1"></i>Sin atributos</span>
+                                {% endfor %}
+                            </div>
                         </td>
 
                         <!-- Stock -->
@@ -384,102 +389,103 @@
         width: 100%;
         overflow-x: hidden; /* evita scroll horizontal */
     }
+
     /* Mejoras específicas para el formulario de filtros */
-.card-body form.row.g-3 {
-    gap: 1rem 1.5rem; /* Más espacio entre columnas */
-}
-
-.card-body form .form-label {
-    font-weight: 600;
-    color: var(--text-color);
-}
-
-.card-body form input.form-control-lg,
-.card-body form select.form-select-lg {
-    font-size: 1.15rem;
-    padding: 0.65rem 0.75rem;
-    border-radius: 0.5rem;
-    border: 1px solid var(--input-border);
-    transition: border-color 0.3s ease;
-}
-
-.card-body form input.form-control-lg:focus,
-.card-body form select.form-select-lg:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 8px var(--primary-color);
-    outline: none;
-}
-
-.card-body form button.btn-lg {
-    padding: 0.7rem 1.5rem;
-    font-size: 1.15rem;
-    border-radius: 0.5rem;
-    transition: background-color 0.3s ease;
-}
-
-.card-body form button.btn-lg:hover {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
-}
-
-/* Modo oscuro: mejora contraste para inputs y selects */
-body[data-theme="dark"] .card-body form input.form-control-lg,
-body[data-theme="dark"] .card-body form select.form-select-lg {
-    background-color: var(--card-bg);
-    color: var(--text-color);
-    border-color: var(--input-border);
-}
-
-body[data-theme="dark"] .card-body form input.form-control-lg:focus,
-body[data-theme="dark"] .card-body form select.form-select-lg:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 8px var(--accent-color);
-}
-
-/* Flexbox para que los filtros se alineen mejor en pantallas pequeñas */
-@media (max-width: 991.98px) {
     .card-body form.row.g-3 {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
+        gap: 1rem 1.5rem; /* Más espacio entre columnas */
     }
 
-    .card-body form > div[class^="col-"] {
-        flex: 1 1 45%;
-        min-width: 220px;
+    .card-body form .form-label {
+        font-weight: 600;
+        color: var(--text-color);
     }
 
-    /* Botón filtro al 100% ancho en móvil */
-    .card-body form > div.col-md-2.d-grid {
-        flex: 1 1 100%;
-        min-width: auto;
+    .card-body form input.form-control-lg,
+    .card-body form select.form-select-lg {
+        font-size: 1.15rem;
+        padding: 0.65rem 0.75rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--input-border);
+        transition: border-color 0.3s ease;
     }
-}
 
-/* Ajustes para que el select "Opción" se vea deshabilitado claramente */
-.card-body form select[disabled] {
-    background-color: #e9ecef !important;
-    cursor: not-allowed;
-    opacity: 0.7;
-    color: #6c757d !important;
-}
+    .card-body form input.form-control-lg:focus,
+    .card-body form select.form-select-lg:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 8px var(--primary-color);
+        outline: none;
+    }
 
-/* Espacio extra para iconos en labels */
-.form-label i {
-    color: var(--primary-color);
-    margin-right: 0.4rem;
-}
+    .card-body form button.btn-lg {
+        padding: 0.7rem 1.5rem;
+        font-size: 1.15rem;
+        border-radius: 0.5rem;
+        transition: background-color 0.3s ease;
+    }
 
-/* Ajustes generales para accesibilidad y espaciado */
-.form-check.form-switch {
-    justify-content: flex-end;
-}
+    .card-body form button.btn-lg:hover {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+    }
 
-/* Mejorar el dropdown exportar para que no quede muy pegado */
-.dropdown.mb-3 {
-    margin-top: 1rem;
-    margin-bottom: 2rem;
-}
+    /* Modo oscuro: mejora contraste para inputs y selects */
+    body[data-theme="dark"] .card-body form input.form-control-lg,
+    body[data-theme="dark"] .card-body form select.form-select-lg {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        border-color: var(--input-border);
+    }
+
+    body[data-theme="dark"] .card-body form input.form-control-lg:focus,
+    body[data-theme="dark"] .card-body form select.form-select-lg:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 8px var(--accent-color);
+    }
+
+    /* Flexbox para que los filtros se alineen mejor en pantallas pequeñas */
+    @media (max-width: 991.98px) {
+        .card-body form.row.g-3 {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .card-body form > div[class^="col-"] {
+            flex: 1 1 45%;
+            min-width: 220px;
+        }
+
+        /* Botón filtro al 100% ancho en móvil */
+        .card-body form > div.col-md-2.d-grid {
+            flex: 1 1 100%;
+            min-width: auto;
+        }
+    }
+
+    /* Ajustes para que el select "Opción" se vea deshabilitado claramente */
+    .card-body form select[disabled] {
+        background-color: #e9ecef !important;
+        cursor: not-allowed;
+        opacity: 0.7;
+        color: #6c757d !important;
+    }
+
+    /* Espacio extra para iconos en labels */
+    .form-label i {
+        color: var(--primary-color);
+        margin-right: 0.4rem;
+    }
+
+    /* Ajustes generales para accesibilidad y espaciado */
+    .form-check.form-switch {
+        justify-content: flex-end;
+    }
+
+    /* Mejorar el dropdown exportar para que no quede muy pegado */
+    .dropdown.mb-3 {
+        margin-top: 1rem;
+        margin-bottom: 2rem;
+    }
 
     body {
         font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -672,114 +678,116 @@ body[data-theme="dark"] .card-body form select.form-select-lg:focus {
             align-items: center;
         }
     }
-/* Filtros - Versión Escritorio */
-@media (min-width: 992px) {
-    .card-body form.row.g-3 {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: flex-end;
-        gap: 1.5rem;
+
+    /* Filtros - Versión Escritorio */
+    @media (min-width: 992px) {
+        .card-body form.row.g-3 {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: 1.5rem;
+        }
+
+        .card-body form > div[class^="col-"] {
+            flex: 1 1 auto;
+            min-width: 180px;
+            max-width: 280px;
+        }
+
+        .card-body form > div.col-md-2.d-grid {
+            flex: 0 0 auto;
+            width: auto;
+        }
+
+        /* Mejoras en los inputs */
+        .card-body form input.form-control-lg,
+        .card-body form select.form-select-lg {
+            font-size: 1.05rem;
+            padding: 0.65rem 0.75rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .card-body form input.form-control-lg:focus,
+        .card-body form select.form-select-lg:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+        }
+
+        /* Estilo para los labels */
+        .card-body form .form-label {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Botón de filtro */
+        .card-body form button.btn-lg {
+            padding: 0.65rem 1.25rem;
+            font-size: 1.05rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+        }
+
+        /* Select de atributo y opción - alineación mejorada */
+        .card-body form select[name="atributo"],
+        .card-body form select[name="opcion"] {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+            padding-right: 2.5rem;
+        }
+
+        body[data-theme="dark"] .card-body form select[name="atributo"],
+        body[data-theme="dark"] .card-body form select[name="opcion"] {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e2e8f0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+        }
+
+        /* Estado deshabilitado más claro */
+        .card-body form select[disabled] {
+            opacity: 0.7;
+            background-color: #f8f9fa;
+        }
+
+        body[data-theme="dark"] .card-body form select[disabled] {
+            background-color: #2d3748;
+            color: #a0aec0;
+        }
+
+        /* Iconos en los inputs */
+        .card-body form .input-group-text {
+            background-color: #f8f9fa;
+            border-right: none;
+        }
+
+        body[data-theme="dark"] .card-body form .input-group-text {
+            background-color: #2d3748;
+            border-color: #4a5568;
+        }
     }
 
-    .card-body form > div[class^="col-"] {
-        flex: 1 1 auto;
-        min-width: 180px;
-        max-width: 280px;
+    /* Versión pantallas grandes (>= 1200px) */
+    @media (min-width: 1200px) {
+        .card-body form.row.g-3 {
+            gap: 2rem;
+        }
+
+        .card-body form > div[class^="col-"] {
+            min-width: 200px;
+        }
+
+        .card-body form button.btn-lg {
+            min-width: 140px;
+        }
     }
 
-    .card-body form > div.col-md-2.d-grid {
-        flex: 0 0 auto;
-        width: auto;
-    }
-
-    /* Mejoras en los inputs */
-    .card-body form input.form-control-lg,
-    .card-body form select.form-select-lg {
-        font-size: 1.05rem;
-        padding: 0.65rem 0.75rem;
-        border-radius: 0.5rem;
-        transition: all 0.2s ease;
-    }
-
-    .card-body form input.form-control-lg:focus,
-    .card-body form select.form-select-lg:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
-    }
-
-    /* Estilo para los labels */
-    .card-body form .form-label {
-        font-size: 1rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-    }
-
-    /* Botón de filtro */
-    .card-body form button.btn-lg {
-        padding: 0.65rem 1.25rem;
-        font-size: 1.05rem;
-        border-radius: 0.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 120px;
-    }
-
-    /* Select de atributo y opción - alineación mejorada */
-    .card-body form select[name="atributo"],
-    .card-body form select[name="opcion"] {
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: right 0.75rem center;
-        background-size: 16px 12px;
-        padding-right: 2.5rem;
-    }
-
-    body[data-theme="dark"] .card-body form select[name="atributo"],
-    body[data-theme="dark"] .card-body form select[name="opcion"] {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e2e8f0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
-    }
-
-    /* Estado deshabilitado más claro */
-    .card-body form select[disabled] {
-        opacity: 0.7;
-        background-color: #f8f9fa;
-    }
-
-    body[data-theme="dark"] .card-body form select[disabled] {
-        background-color: #2d3748;
-        color: #a0aec0;
-    }
-
-    /* Iconos en los inputs */
-    .card-body form .input-group-text {
-        background-color: #f8f9fa;
-        border-right: none;
-    }
-
-    body[data-theme="dark"] .card-body form .input-group-text {
-        background-color: #2d3748;
-        border-color: #4a5568;
-    }
-}
-
-/* Versión pantallas grandes (>= 1200px) */
-@media (min-width: 1200px) {
-    .card-body form.row.g-3 {
-        gap: 2rem;
-    }
-
-    .card-body form > div[class^="col-"] {
-        min-width: 200px;
-    }
-
-    .card-body form button.btn-lg {
-        min-width: 140px;
-    }
-}
     /* Estilos para el selector de columnas */
     #columnSelectorMenu {
         background-color: var(--card-bg);
@@ -808,7 +816,7 @@ body[data-theme="dark"] .card-body form select.form-select-lg:focus {
 </style>
 
 <script>
-// Dark Mode Toggle
+    // Dark Mode Toggle
     const toggle = document.getElementById('darkModeToggle');
     const currentTheme = localStorage.getItem('theme');
 
@@ -828,7 +836,7 @@ body[data-theme="dark"] .card-body form select.form-select-lg:focus {
     });
 
     // Selector de Columnas
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Cargar preferencias
         const savedColumns = JSON.parse(localStorage.getItem('visibleColumns')) || {};
 
@@ -840,7 +848,7 @@ body[data-theme="dark"] .card-body form select.form-select-lg:focus {
             checkbox.checked = isVisible;
             toggleColumn(columnKey, isVisible);
 
-            checkbox.addEventListener('change', function() {
+            checkbox.addEventListener('change', function () {
                 toggleColumn(columnKey, this.checked);
                 saveColumnPreferences();
             });

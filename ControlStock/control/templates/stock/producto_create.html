@@ -575,94 +575,56 @@
 
                     <div class="col-md-12">
                         <div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">Atributos del Producto</h4>
-        <a type="button" id="add-atributo"
-           class="btn btn-sm btn-primary">
-            <i class="fas fa-plus"></i> Agregar Atributo
-        </a>
-    </div>
-    <div class="card-body">
-        <div id="atributos-container">
-            {{ atributo_formset.management_form }}
-            {% for form in atributo_formset %}
-                <div class="atributo-form mb-3">
-                    {{ form.id }}
-                    <div class="row g-3">
-                        <div class="col-md-5">
-                            <label class="form-label" for="{{ form.atributo.id_for_label }}">Atributo</label>
-                            <select class="form-select atributo-select"
-                                    name="{{ form.atributo.html_name }}"
-                                    id="{{ form.atributo.id_for_label }}">
-                                <option value="">Seleccionar atributo...</option>
-                                {% for atributo in atributos %}
-                                    <option value="{{ atributo.id }}"
-                                            {% if form.atributo.value|stringformat:"s" == atributo.id|stringformat:"s" %}selected{% endif %}>
-                                        {{ atributo.nombre }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                            {% if form.atributo.errors %}
-                                <div class="text-danger mt-1 small">
-                                    {{ form.atributo.errors.as_text }}
-                                </div>
-                            {% endif %}
-                        </div>
-                        <div class="col-md-5">
-                            <label class="form-label" for="{{ form.opcion.id_for_label }}">Opción</label>
-                            <select class="form-select opcion-select"
-                                    name="{{ form.opcion.html_name }}"
-                                    id="{{ form.opcion.id_for_label }}">
-                                <option value="">Seleccionar opción...</option>
-                                {% if form.atributo.value %}
-                                    {% for opcion in atributo_opciones_dict|get_item:form.atributo.value %}
-                                        <option value="{{ opcion.id }}"
-                                                {% if form.opcion.value|stringformat:"s" == opcion.id|stringformat:"s" %}selected{% endif %}>
-                                            {{ opcion.valor }}
-                                        </option>
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0">Atributos del Producto</h4>
+                                <a type="button" id="add-atributo"
+                                   class="btn btn-sm btn-primary">
+                                    <i class="fas fa-plus"></i> Agregar Atributo
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <div id="atributos-container">
+                                    {{ atributo_formset.management_form }}
+                                    {% for form in atributo_formset %}
+                                        <div class="atributo-form mb-3">
+                                            {{ form.id }}
+                                            <div class="row g-3">
+                                                <div class="col-md-5">
+                                                    <label class="form-label" for="{{ form.atributo.id_for_label }}">Atributo</label>
+                                                    {{ form.atributo|add_class:"form-select atributo-select" }}
+                                                    {% if form.atributo.errors %}
+                                                        <div class="text-danger mt-1 small">
+                                                            {{ form.atributo.errors.as_text }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <label class="form-label" for="{{ form.opcion.id_for_label }}">Opción</label>
+                                                    {{ form.opcion|add_class:"form-select opcion-select" }}
+                                                    {% if form.opcion.errors %}
+                                                        <div class="text-danger mt-1 small">
+                                                            {{ form.opcion.errors.as_text }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-md-2 d-flex align-items-end">
+                                                    {{ form.DELETE|add_class:"d-none" }}
+                                                    <button type="button" class="btn btn-danger remove-atributo">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     {% endfor %}
-                                {% endif %}
-                            </select>
-                            {% if form.opcion.errors %}
-                                <div class="text-danger mt-1 small">
-                                    {{ form.opcion.errors.as_text }}
                                 </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            {% empty %}
-                <div class="atributo-form mb-3">
-                    <div class="row g-3">
-                        <div class="col-md-5">
-                            <label class="form-label">Atributo</label>
-                            <select class="form-select atributo-select"
-                                    name="{{ atributo_formset.empty_form.atributo.html_name }}"
-                                    id="{{ atributo_formset.empty_form.atributo.id_for_label }}">
-                                <option value="">Seleccionar atributo...</option>
-                                {% for atributo in atributos %}
-                                    <option value="{{ atributo.id }}">{{ atributo.nombre }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-5">
-                            <label class="form-label">Opción</label>
-                            <select class="form-select opcion-select" disabled>
-                                <option value="">Seleccionar opción...</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
 
-        <div class="d-flex justify-content-between mt-4">
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save me-1"></i> Guardar Producto
-            </button>
-        </div>
-    </div>
-</div>
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-1"></i> Guardar Producto
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
 
             </form>
         </div>
@@ -731,50 +693,51 @@
             const newForm = document.createElement('div');
             newForm.className = 'atributo-form mb-3';
             newForm.innerHTML = `
-    <div class="row g-3">
-        <div class="col-md-5">
-            <label class="form-label">Atributo</label>
-            <select class="form-select atributo-select" name="productoatributo_set-${formIdx}-atributo">
-                <option value="">Seleccionar atributo...</option>
-                {% for atributo in atributos %}
-                    <option value="{{ atributo.id }}">{{ atributo.nombre }}</option>
-                {% endfor %}
-            </select>
-            <input type="hidden" name="productoatributo_set-${formIdx}-atributo" id="id_productoatributo_set-${formIdx}-atributo">
+        <div class="row g-3">
+            <div class="col-md-5">
+                <label class="form-label">Atributo</label>
+                <select class="form-select atributo-select"
+                        name="productoatributo_set-${formIdx}-atributo"
+                        id="id_productoatributo_set-${formIdx}-atributo">
+                    <option value="">Seleccionar atributo...</option>
+                    {% for atributo in atributos %}
+                        <option value="{{ atributo.id }}">{{ atributo.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label">Opción</label>
+                <select class="form-select opcion-select"
+                        name="productoatributo_set-${formIdx}-opcion"
+                        id="id_productoatributo_set-${formIdx}-opcion" disabled>
+                    <option value="">Seleccionar opción...</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-danger remove-atributo">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
         </div>
-        <div class="col-md-5">
-            <label class="form-label">Opción</label>
-            <select class="form-select opcion-select" name="productoatributo_set-${formIdx}-opcion" disabled>
-                <option value="">Seleccionar opción...</option>
-            </select>
-            <input type="hidden" name="productoatributo_set-${formIdx}-opcion" id="id_productoatributo_set-${formIdx}-opcion">
-        </div>
-        <div class="col-md-2 d-flex align-items-end">
-            <button type="button" class="btn btn-danger remove-atributo">
-                <i class="fas fa-trash"></i>
-            </button>
-        </div>
-    </div>
-`;
+        <input type="hidden" name="productoatributo_set-${formIdx}-id" id="id_productoatributo_set-${formIdx}-id">
+        <input type="hidden" name="productoatributo_set-${formIdx}-DELETE" id="id_productoatributo_set-${formIdx}-DELETE">
+    `;
+
             container.appendChild(newForm);
             totalForms.value = formIdx + 1;
 
             // Configurar eventos para el nuevo formulario
             const atributoSelect = newForm.querySelector('.atributo-select');
             const opcionSelect = newForm.querySelector('.opcion-select');
-            const hiddenOpcionInput = newForm.querySelector('[id$="-opcion"]');
 
             atributoSelect.addEventListener('change', function () {
                 actualizarOpciones(atributoSelect, opcionSelect);
-                hiddenOpcionInput.value = '';
-            });
-
-            opcionSelect.addEventListener('change', function () {
-                hiddenOpcionInput.value = this.value;
             });
 
             newForm.querySelector('.remove-atributo').addEventListener('click', function () {
-                newForm.remove();
+                const deleteInput = newForm.querySelector('[id$="-DELETE"]');
+                deleteInput.value = 'on';
+                newForm.style.display = 'none';
             });
         });
 
@@ -851,7 +814,7 @@
         {% for atributo in atributos %}
             "{{ atributo.id }}": [
                 {% for opcion in atributo_opciones_dict|get_item:atributo.id %}
-                { id: "{{ opcion.id }}", valor: "{{ opcion.valor }}" },
+                    {id: "{{ opcion.id }}", valor: "{{ opcion.valor }}"},
                 {% endfor %}
             ],
         {% endfor %}

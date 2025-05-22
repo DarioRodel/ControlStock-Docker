@@ -78,17 +78,40 @@ class ProductoAtributoForm(forms.ModelForm):
     class Meta:
         model = ProductoAtributo
         fields = ['atributo', 'opcion']
+        widgets = {
+            'atributo': forms.Select(attrs={'class': 'form-select atributo-select'}),
+            'opcion': forms.Select(attrs={'class': 'form-select opcion-select'}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Quitar los HiddenInput y usar selects normales
-        self.fields['atributo'].queryset = Atributo.objects.all()
-        self.fields['opcion'].queryset = OpcionAtributo.objects.none()
 
-        # Agregar clases CSS
-        self.fields['atributo'].widget.attrs.update({'class': 'form-select atributo-select'})
-        self.fields['opcion'].widget.attrs.update({'class': 'form-select opcion-select'})
+        # Si ya tenemos una instancia, limitar las opciones al atributo seleccionado
+        if self.instance and self.instance.pk and self.instance.atributo:
+            self.fields['opcion'].queryset = self.instance.atributo.opciones.all()
+        else:
+            self.fields['opcion'].queryset = OpcionAtributo.objects.none()
+            self.fields['opcion'].disabled = True
 
+        # Si estamos recibiendo datos en el POST, actualizar las opciones
+        if 'atributo' in self.data:
+            try:
+                atributo_id = int(self.data.get('atributo'))
+                self.fields['opcion'].queryset = OpcionAtributo.objects.filter(atributo_id=atributo_id)
+                self.fields['opcion'].disabled = False
+            except (ValueError, TypeError):
+                pass
+
+    def clean(self):
+        cleaned_data = super().clean()
+        atributo = cleaned_data.get('atributo')
+        opcion = cleaned_data.get('opcion')
+
+        if atributo and opcion:
+            if opcion.atributo != atributo:
+                self.add_error('opcion', 'La opción seleccionada no pertenece al atributo')
+
+        return cleaned_data
 ProductoAtributoFormSet = forms.inlineformset_factory(
     Producto,
     ProductoAtributo,
