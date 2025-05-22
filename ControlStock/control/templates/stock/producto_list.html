@@ -199,7 +199,7 @@
                         <td data-column="atributos" data-label="Atributos" class="text-center">
                             <div class="d-flex flex-wrap gap-2 justify-content-center">
                                 {% for pa in producto.productoatributo_set.all %}
-                                    <span class="badge bg-primary bg-opacity-10 text-primary fs-5 py-2 px-3 rounded-pill">
+                                    <span class="badge bg-light bg-opacity-10 text-dark fs-5 py-2 px-3 rounded-pill">
             <i class="fas fa-tag me-1"></i>
             <span class="fw-semibold">{{ pa.atributo.nombre }}:</span>
             {{ pa.opcion.valor }}
