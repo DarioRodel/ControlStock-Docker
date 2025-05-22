@@ -216,14 +216,14 @@ class UsuarioPersonalizado(AbstractUser):
 
     def __str__(self):
         return f"{self.get_full_name()} ({self.rol})"
-
 class ProductoAtributo(models.Model):
     producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
     atributo = models.ForeignKey('Atributo', on_delete=models.CASCADE)
     opcion = models.ForeignKey('OpcionAtributo', on_delete=models.CASCADE, null=True, blank=True)
     valor = models.CharField(max_length=100, default='N/A')
+
     class Meta:
-        unique_together = ('producto', 'atributo')
+        ordering = ['atributo__nombre']  # ✅ Solo ordenar, sin unique_together
 
-
-
+    def __str__(self):
+        return f"{self.producto} - {self.atributo}: {self.opcion}"

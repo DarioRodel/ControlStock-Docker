@@ -54,6 +54,13 @@
         font-weight: 500;
         margin-bottom: 1.5rem;
     }
+    .remove-opcion {
+    font-size: 0; /* Esto oculta el texto */
+}
+
+.remove-opcion i {
+    font-size: 1rem; /* Solo el icono será visible */
+}
 </style>
 
 <div class="container mt-4">
@@ -133,7 +140,7 @@
                         <div class="col-md-2 d-flex align-items-end">
                             {{ form.DELETE|add_class:"delete-checkbox" }}
                             <button type="button" class="btn btn-danger remove-opcion w-100">
-                                <i class="fas fa-trash"></i> Eliminar
+                                <i class="fas fa-trash"></i>
                             </button>
                         </div>
                     </div>
@@ -163,79 +170,59 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const totalForms = document.getElementById('id_opcion_set-TOTAL_FORMS');
+    const totalForms = document.getElementById('id_opcion_set-TOTAL_FORMS');
+    const opcionesContainer = document.getElementById('opciones-container');
+    const emptyFormTemplate = document.getElementById('empty-form').innerHTML;
 
-        function createForm(index) {
-            const form = document.createElement('div');
-            form.className = 'opcion-form mb-3';
-            form.innerHTML = `
-                <div class="row align-items-center g-2">
-                    <div class="col-md-10">
-                        <label class="form-label">Valor</label>
-                        <input type="text" name="opcion_set-${index}-valor"
-                               class="form-control" required>
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button type="button" class="btn btn-danger remove-opcion w-100">
-                            <i class="fas fa-trash"></i> Eliminar
-                        </button>
-                        <input type="hidden" name="opcion_set-${index}-id"
-                               id="id_opcion_set-${index}-id">
-                        <input type="hidden" name="opcion_set-${index}-DELETE"
-                               id="id_opcion_set-${index}-DELETE">
-                    </div>
-                </div>
-            `;
-            return form;
-        }
-
-        document.getElementById('add-opcion').addEventListener('click', function () {
-            const formIdx = parseInt(totalForms.value);
-            const newForm = createForm(formIdx);
-            document.getElementById('opciones-container').appendChild(newForm);
-            totalForms.value = formIdx + 1;
-
-            newForm.querySelector('.remove-opcion').addEventListener('click', function () {
-                const deleteInput = newForm.querySelector('[id$="-DELETE"]');
-                if (deleteInput) {
-                    deleteInput.value = 'on';
-                }
-                newForm.style.display = 'none';
-            });
-        });
-
-        document.addEventListener('click', function (e) {
-            if (e.target.closest('.remove-opcion')) {
-                const form = e.target.closest('.opcion-form');
-                const deleteInput = form.querySelector('[id$="-DELETE"]');
-                if (deleteInput) {
-                    deleteInput.value = 'on';
-                }
-                form.style.display = 'none';
-            }
-        });
-    });
     function createForm(index) {
-    const template = document.getElementById('empty-form').innerHTML.replace(/__prefix__/g, index);
+    let template = emptyFormTemplate.replace(/__prefix__/g, index);
     const wrapper = document.createElement('div');
     wrapper.className = 'opcion-form mb-3';
     wrapper.innerHTML = template;
 
-    // Agregar botón de eliminar
+    // Ocultar el checkbox DELETE para nuevas opciones (ya oculto en CSS, pero por si acaso)
+    const deleteCheckbox = wrapper.querySelector('[id$="-DELETE"]');
+    if (deleteCheckbox) {
+        deleteCheckbox.style.display = 'none';
+    }
+
     const deleteButton = document.createElement('button');
     deleteButton.type = 'button';
     deleteButton.className = 'btn btn-danger remove-opcion w-100 mt-2';
-    deleteButton.innerHTML = '<i class="fas fa-trash"></i> Eliminar';
+
     deleteButton.addEventListener('click', () => {
-        const deleteInput = wrapper.querySelector('[id$="-DELETE"]');
-        if (deleteInput) {
-            deleteInput.value = 'on';
+        if (deleteCheckbox) {
+            deleteCheckbox.checked = true;
         }
         wrapper.style.display = 'none';
     });
 
-    wrapper.querySelector('.form-label')?.after(deleteButton);
+    // Insertar botón después del campo valor
+    const valorInput = wrapper.querySelector('input[name$="-valor"]');
+    if (valorInput) {
+        valorInput.parentNode.appendChild(deleteButton);
+    }
+
     return wrapper;
 }
+
+    document.getElementById('add-opcion').addEventListener('click', function () {
+        const formIdx = parseInt(totalForms.value);
+        const newForm = createForm(formIdx);
+        opcionesContainer.appendChild(newForm);
+        totalForms.value = formIdx + 1;
+    });
+
+    opcionesContainer.addEventListener('click', function (e) {
+        if (e.target.closest('.remove-opcion')) {
+            const form = e.target.closest('.opcion-form');
+            const deleteInput = form.querySelector('[id$="-DELETE"]');
+            if (deleteInput) {
+                deleteInput.checked = true;
+            }
+            form.style.display = 'none';
+        }
+    });
+});
 
 </script>

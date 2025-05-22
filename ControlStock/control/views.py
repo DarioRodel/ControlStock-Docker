@@ -14,7 +14,7 @@ from rest_framework.response import Response
 
 from django import forms
 from .forms import ProductoForm, ReporteErrorForm, ProductoAtributoFormSet, \
-    MovimientoStockForm  # Importa los formularios de la aplicación.
+    MovimientoStockForm, ProductoAtributoBaseFormSet  # Importa los formularios de la aplicación.
 from django.views.generic.edit import FormView  # Importa la vista genérica para manejar formularios.
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -222,10 +222,12 @@ class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
             Producto,
             ProductoAtributo,
             form=ProductoAtributoForm,
+            formset=ProductoAtributoBaseFormSet,  # ← esto es lo que faltaba
             extra=1,
             can_delete=True,
             min_num=0,
-            validate_min=False
+            validate_min=False,
+            validate_max=False
         )
 
         if self.request.POST:
@@ -258,24 +260,23 @@ class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
         context = self.get_context_data()
         atributo_formset = context['atributo_formset']
 
-        # Asignar la instancia del producto al formset
         self.object = form.save()
 
         if atributo_formset.is_valid():
             instances = atributo_formset.save(commit=False)
 
+            # Guardar todas las instancias, incluso si tienen el mismo atributo
             for instance in instances:
                 instance.producto = self.object
                 instance.save()
 
-            # Manejar los objetos marcados para borrar
+            # Manejar objetos a borrar
             for obj in atributo_formset.deleted_objects:
                 if obj.pk:
                     obj.delete()
 
             return super().form_valid(form)
         else:
-            # Si el formset no es válido, volver a mostrar el formulario con errores
             return self.form_invalid(form)
 
 class ProductoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):

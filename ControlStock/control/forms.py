@@ -3,7 +3,7 @@ from django.forms import inlineformset_factory
 
 from .models import MovimientoStock, Producto, Ubicacion, \
     ProductoAtributo, Atributo, OpcionAtributo  # Importa los modelos relacionados con los formularios.
-
+from django.forms import BaseInlineFormSet, ValidationError
 
 class MovimientoStockForm(forms.ModelForm):
         """
@@ -74,6 +74,11 @@ class MovimientoStockForm(forms.ModelForm):
             return cleaned_data  # Devuelve los datos limpios, incluyendo las validaciones personalizadas.
 
 
+
+class ProductoAtributoBaseFormSet(BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+
 class ProductoAtributoForm(forms.ModelForm):
     class Meta:
         model = ProductoAtributo
@@ -86,14 +91,14 @@ class ProductoAtributoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Si ya tenemos una instancia, limitar las opciones al atributo seleccionado
+        # Siempre cargar todas las opciones para el atributo seleccionado
         if self.instance and self.instance.pk and self.instance.atributo:
             self.fields['opcion'].queryset = self.instance.atributo.opciones.all()
         else:
             self.fields['opcion'].queryset = OpcionAtributo.objects.none()
             self.fields['opcion'].disabled = True
 
-        # Si estamos recibiendo datos en el POST, actualizar las opciones
+        # Manejar datos POST
         if 'atributo' in self.data:
             try:
                 atributo_id = int(self.data.get('atributo'))
