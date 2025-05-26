@@ -476,9 +476,12 @@
                 {% if form.errors %}
                     <div class="alert alert-danger">
                         <ul>
-                            {% for error in form.errors %}
-                                <li>{{ error }}</li>
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <li><strong>{{ field|capfirst }}:</strong> {{ error }}</li>
+                                {% endfor %}
                             {% endfor %}
+
                         </ul>
                     </div>
                 {% endif %}
@@ -561,16 +564,22 @@
                         </div>
 
                         <!-- Imagen del Producto -->
-                        <div class="mb-3">
-                            <label for="{{ form.imagen.id_for_label }}" class="form-label">Imagen del Producto</label>
-                            <div class="image-upload-container">
-                                <label for="{{ form.imagen.id_for_label }}" class="btn btn-outline-primary">
-                                    <i class="fas fa-upload me-2"></i> Agregar Imagen
-                                </label>
-                                <input type="file" name="{{ form.imagen.name }}" id="{{ form.imagen.id_for_label }}"
-                                       class="form-control-file" accept="image/*" style="display:none;">
-                            </div>
-                        </div>
+                        <div class="image-upload-container">
+    <label for="{{ form.imagen.id_for_label }}" class="btn btn-outline-primary">
+        <i class="fas fa-upload me-2"></i> Agregar Imagen
+    </label>
+    <input type="file" name="{{ form.imagen.name }}" id="{{ form.imagen.id_for_label }}"
+           class="form-control-file" accept="image/*" style="display:none;" onchange="previewImage(this)">
+    <div id="preview-container" class="mt-3 text-center">
+
+        {% if form.instance.imagen %}
+            <img id="preview-img" src="{{ form.instance.imagen.url }}" class="img-thumbnail" style="max-width: 150px;">
+        {% else %}
+            <img id="preview-img" class="img-thumbnail" style="max-width: 150px; display: none;">
+        {% endif %}
+    </div>
+</div>
+
                     </div> <!-- Cierre de la columna derecha -->
 
                     <div class="col-md-12">
@@ -582,69 +591,85 @@
                                     <i class="fas fa-plus"></i> Agregar Atributo
                                 </a>
                             </div>
+
                             <div class="card-body">
-                                <div id="atributos-container">
-                                    {{ atributo_formset.management_form }}
-                                    {% for form in atributo_formset %}
-                                        <div class="atributo-form mb-3">
-                                            {{ form.id }}
-                                            <div class="row g-3">
-                                                <div class="col-md-5">
-                                                    <label class="form-label">Atributo</label>
-                                                    {{ form.atributo|add_class:"form-select atributo-select" }}
+                                <form method="post" novalidate enctype="multipart/form-data">
+                                    {% csrf_token %}
+
+                                    <!-- Errores del formulario principal -->
+                                    {% if form.errors %}
+                                        <div class="alert alert-danger">...</div>
+                                    {% endif %}
+
+                                    <!-- Nuevo: Errores del formset de atributos -->
+                                    {% if atributo_formset.errors %}
+                                        <div class="alert alert-danger">
+                                            <h5>Errores en los atributos:</h5>
+                                            {% for form in atributo_formset.forms %}
+                                                {% if form.errors %}
+                                                    <div class="mb-2">
+                                                        Atributo {{ forloop.counter }}:
+                                                        <ul>
+                                                            {% for field, errors in form.errors.items %}
+                                                                {% for error in errors %}
+                                                                    <li>{{ field|capfirst }}: {{ error }}</li>
+                                                                {% endfor %}
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% if atributo_formset.non_form_errors %}
+                                                <div class="mb-2">
+                                                    Errores generales:
+                                                    <ul>
+                                                        {% for error in atributo_formset.non_form_errors %}
+                                                            <li>{{ error }}</li>
+                                                        {% endfor %}
+                                                    </ul>
                                                 </div>
-                                                <div class="col-md-5">
-                                                    <label class="form-label">Opción</label>
-                                                    {{ form.opcion|add_class:"form-select opcion-select" }}
-                                                </div>
-                                                <div class="col-md-2 d-flex align-items-end">
-                                                    {{ form.DELETE|add_class:"d-none" }}
-                                                    <button type="button" class="btn btn-danger remove-atributo">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                    <div id="atributos-container">
+                                        {{ atributo_formset.management_form }}
+
+                                        {% for form in atributo_formset.forms %}
+                                            <div class="atributo-form mb-3">
+                                                {{ form.id }}
+                                                <div class="row g-3">
+                                                    <div class="col-md-5">
+                                                        <label class="form-label">Atributo</label>
+                                                        {{ form.atributo|add_class:"form-select atributo-select" }}
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <label class="form-label">Opción</label>
+                                                        {{ form.opcion|add_class:"form-select opcion-select" }}
+                                                    </div>
+                                                    <div class="col-md-2 d-flex align-items-end">
+                                                        <input type="hidden" name="{{ form.DELETE.html_name }}"
+                                                               id="{{ form.DELETE.id_for_label }}">
+                                                        <button type="button" class="btn btn-danger remove-atributo">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    {% endfor %}
-                                </div>
 
-                                <div class="d-flex justify-content-between mt-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save me-1"></i> Guardar Producto
-                                    </button>
-                                </div>
+                                        {% endfor %}
+
+                                    </div>
+
+                                    <div class="d-flex justify-content-between mt-4">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save me-1"></i> Guardar Producto
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-            <!-- producto_create.html -->
-<form method="post" novalidate enctype="multipart/form-data">
-    {% csrf_token %}
 
-    <!-- Mostrar errores del formulario principal -->
-    {% if form.errors %}
-        <div class="alert alert-danger">
-            <ul>
-                {% for error in form.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
-
-    {% if atributo_formset.errors %}
-    <div class="alert alert-danger">
-        <ul>
-            {% for form in atributo_formset %}
-                {% for field, errors in form.errors.items %}
-                    {% for error in errors %}
-                        <li><strong>{{ field|capfirst }}:</strong> {{ error }}</li>
-                    {% endfor %}
-                {% endfor %}
-            {% endfor %}
-        </ul>
-    </div>
-{% endif %}
-
-</form>
             </form>
         </div>
     </div>
@@ -652,6 +677,21 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".remove-atributo").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                const formDiv = btn.closest(".atributo-form");
+                const deleteCheckbox = formDiv.querySelector("input[type='checkbox'][name$='-DELETE']");
+                if (deleteCheckbox) {
+                    deleteCheckbox.checked = true;
+                    formDiv.style.display = "none";  // Oculta visualmente el form eliminado
+                }
+            });
+        });
+    });
+
+
     document.addEventListener('DOMContentLoaded', function () {
         // Mapeo de atributos a opciones
         const atributosOpciones = {};
@@ -665,21 +705,62 @@
 
         // Función para actualizar las opciones cuando se selecciona un atributo
         // Actualizar la función actualizarOpciones
-function actualizarOpciones(atributoSelect, opcionSelect) {
-    const atributoId = atributoSelect.value;
-    opcionSelect.innerHTML = '<option value="">Seleccionar opción...</option>';
-    opcionSelect.disabled = !atributoId;
+        function actualizarOpciones(atributoSelect, opcionSelect) {
+            const atributoId = atributoSelect.value;
+            // Guardar el valor seleccionado actual antes de limpiar
+            const valorSeleccionado = opcionSelect.value;
 
-    if (atributoId) {
-        const opciones = atributosOpciones[atributoId] || [];
-        opciones.forEach(opcion => {
-            const option = document.createElement('option');
-            option.value = opcion.id;
-            option.textContent = opcion.valor;
-            opcionSelect.appendChild(option);
+            opcionSelect.innerHTML = '<option value="">Seleccionar opción...</option>';
+            opcionSelect.disabled = !atributoId;
+
+            if (atributoId) {
+                const opciones = atributosOpciones[atributoId] || [];
+                opciones.forEach(opcion => {
+                    const option = document.createElement('option');
+                    option.value = opcion.id;
+                    option.textContent = opcion.valor;
+                    // Seleccionar la opción que estaba previamente seleccionada
+                    if (opcion.id.toString() === valorSeleccionado) {
+                        option.selected = true;
+                    }
+                    opcionSelect.appendChild(option);
+                });
+            }
+        }
+
+        document.querySelector('form').addEventListener('submit', function (event) {
+            // Obtener los campos requeridos
+            const codigoBarras = document.getElementById('{{ form.codigo_barras.id_for_label }}');
+            const nombre = document.getElementById('{{ form.nombre.id_for_label }}');
+            const categoria = document.getElementById('{{ form.categoria.id_for_label }}');
+
+            // Array para guardar los nombres de campos vacíos
+            let camposFaltantes = [];
+
+            if (!codigoBarras.value.trim()) {
+                camposFaltantes.push('Código de Barras o Referencia');
+            }
+            if (!nombre.value.trim()) {
+                camposFaltantes.push('Nombre');
+            }
+            if (!categoria.value.trim()) {
+                camposFaltantes.push('Categoría');
+            }
+
+            if (camposFaltantes.length > 0) {
+                event.preventDefault();  // Evitar que se envíe el formulario
+                alert('Por favor, completa los siguientes campos requeridos:\n- ' + camposFaltantes.join('\n- '));
+                // Opcional: poner foco en el primer campo vacío
+                if (!codigoBarras.value.trim()) {
+                    codigoBarras.focus();
+                } else if (!nombre.value.trim()) {
+                    nombre.focus();
+                } else if (!categoria.value.trim()) {
+                    categoria.focus();
+                }
+            }
         });
-    }
-}
+
 
         document.querySelectorAll('.atributo-select').forEach(select => {
             const opcionSelect = select.closest('.atributo-form').querySelector('.opcion-select');
@@ -753,7 +834,12 @@ function actualizarOpciones(atributoSelect, opcionSelect) {
         // Eliminar atributo
         document.addEventListener('click', function (e) {
             if (e.target.closest('.remove-atributo')) {
-                e.target.closest('.atributo-form').remove();
+                const atributoForm = e.target.closest('.atributo-form');
+                const deleteInput = atributoForm.querySelector('input[name$="-DELETE"]');
+                if (deleteInput) {
+                    deleteInput.value = 'on';  // Marcar para borrar
+                    atributoForm.style.display = 'none'; // Ocultar el formulario
+                }
             }
         });
     });
@@ -828,6 +914,22 @@ function actualizarOpciones(atributoSelect, opcionSelect) {
             ],
         {% endfor %}
     };
+    function previewImage(input) {
+        const file = input.files[0];
+        const previewImg = document.getElementById('preview-img');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            previewImg.src = '';
+            previewImg.style.display = 'none';
+        }
+    }
 </script>
 </body>
 

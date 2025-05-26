@@ -87,6 +87,23 @@ class ProductoAtributoForm(forms.ModelForm):
             'opcion': forms.Select(attrs={'class': 'form-select opcion-select'}),
         }
 
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Si el formulario está marcado para borrar, omitir validación
+        if self.cleaned_data.get('DELETE'):
+            return cleaned_data
+
+        atributo = cleaned_data.get('atributo')
+        opcion = cleaned_data.get('opcion')
+
+        if atributo and not opcion:
+            self.add_error('opcion', 'Debe seleccionar una opción para el atributo.')
+        elif opcion and opcion.atributo != atributo:
+            self.add_error('opcion', 'La opción seleccionada no pertenece al atributo.')
+
+        return cleaned_data
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['opcion'].queryset = OpcionAtributo.objects.none()

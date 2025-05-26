@@ -298,30 +298,16 @@ class ProductoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['atributos'] = Atributo.objects.all().prefetch_related('opciones')
-
-        # Crear un diccionario de atributo_id -> opciones serializables
-        atributo_opciones_dict = {}
-        for atributo in context['atributos']:
-            atributo_opciones_dict[atributo.id] = [
-                {
-                    'id': opcion.id,
-                    'valor': opcion.valor  # Ajusta según tus campos reales
-                }
-                for opcion in atributo.opciones.all()
-            ]
-
-        context['atributo_opciones_dict'] = atributo_opciones_dict
-
-        # Configurar el formset
-        ProductoAtributoFormSet = forms.inlineformset_factory(
+        ProductoAtributoFormSet = inlineformset_factory(
             Producto,
             ProductoAtributo,
             form=ProductoAtributoForm,
+            formset=ProductoAtributoBaseFormSet,
             extra=0,
             can_delete=True,
             min_num=0,
-            validate_min=False
+            validate_min=False,
+            validate_max=False
         )
 
         if self.request.POST:
@@ -330,39 +316,76 @@ class ProductoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
                 instance=self.object,
                 prefix='productoatributo_set'
             )
+            # Ajustar queryset para cada subform según atributo seleccionado
+            for subform in context['atributo_formset'].forms:
+                atributo_id = subform.data.get(f'{subform.prefix}-atributo')
+                if atributo_id:
+                    subform.fields['opcion'].queryset = OpcionAtributo.objects.filter(atributo_id=atributo_id)
         else:
             context['atributo_formset'] = ProductoAtributoFormSet(
                 instance=self.object,
                 prefix='productoatributo_set'
             )
+            # En GET, iniciar queryset vacío para 'opcion' o podrías mantener el queryset real para mostrar opciones ya seleccionadas
+            for subform in context['atributo_formset'].forms:
+                if subform.instance.atributo_id:
+                    subform.fields['opcion'].queryset = OpcionAtributo.objects.filter(atributo_id=subform.instance.atributo_id)
+                else:
+                    subform.fields['opcion'].queryset = OpcionAtributo.objects.none()
+
+        # Agregar datos para el template (atributos y opciones)
+        context['atributos'] = Atributo.objects.prefetch_related('opciones')
+        context['atributo_opciones_dict'] = {
+            atributo.id: [
+                {
+                    'id': opcion.id,
+                    'valor': opcion.valor
+                }
+                for opcion in atributo.opciones.all()
+            ]
+            for atributo in context['atributos']
+        }
 
         return context
 
     def form_valid(self, form):
-        context = self.get_context_data()
-        atributo_formset = context['atributo_formset']
-
-        # Guardar el producto primero
         self.object = form.save()
 
+        ProductoAtributoFormSet = inlineformset_factory(
+            Producto,
+            ProductoAtributo,
+            form=ProductoAtributoForm,
+            formset=ProductoAtributoBaseFormSet,
+            extra=0,
+            can_delete=True,
+        )
+
+        atributo_formset = ProductoAtributoFormSet(
+            self.request.POST,
+            instance=self.object,
+            prefix='productoatributo_set'
+        )
+
+        # 💡 Asigna correctamente el queryset del campo 'opcion' según el 'atributo' enviado
+        for subform in atributo_formset.forms:
+            atributo_id = subform.data.get(f'{subform.prefix}-atributo')
+            if atributo_id:
+                try:
+                    subform.fields['opcion'].queryset = OpcionAtributo.objects.filter(atributo_id=atributo_id)
+                except (ValueError, TypeError):
+                    subform.fields['opcion'].queryset = OpcionAtributo.objects.none()
+            else:
+                subform.fields['opcion'].queryset = OpcionAtributo.objects.none()
+
         if atributo_formset.is_valid():
-            instances = atributo_formset.save(commit=False)
-
-            for instance in instances:
-                # Solo guardar si tiene atributo y opción seleccionados
-                if instance.atributo and instance.opcion:
-                    instance.producto = self.object
-                    instance.save()
-
-            # Eliminar elementos marcados para borrar
-            for form in atributo_formset.deleted_forms:
-                if form.instance.pk:
-                    form.instance.delete()
-
+            atributo_formset.save()
             return super().form_valid(form)
         else:
-            # Si hay errores en el formset, volver a mostrar el formulario
-            return self.render_to_response(self.get_context_data(form=form))
+            context = self.get_context_data(form=form)
+            context['atributo_formset'] = atributo_formset
+            return self.render_to_response(context)
+
+
 class MovimientoStockCreateView(LoginRequiredMixin, CreateView):
     """
     Vista para crear un nuevo movimiento de stock. Requiere login.
