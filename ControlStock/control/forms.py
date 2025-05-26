@@ -73,12 +73,11 @@ class MovimientoStockForm(forms.ModelForm):
 
             return cleaned_data  # Devuelve los datos limpios, incluyendo las validaciones personalizadas.
 
-
-
 class ProductoAtributoBaseFormSet(BaseInlineFormSet):
     def clean(self):
         super().clean()
 
+# forms.py
 class ProductoAtributoForm(forms.ModelForm):
     class Meta:
         model = ProductoAtributo
@@ -90,33 +89,29 @@ class ProductoAtributoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['opcion'].queryset = OpcionAtributo.objects.none()
+        self.fields['opcion'].required = True  # Asegurar que el campo sea requerido
 
-        # Siempre cargar todas las opciones para el atributo seleccionado
-        if self.instance and self.instance.pk and self.instance.atributo:
-            self.fields['opcion'].queryset = self.instance.atributo.opciones.all()
-        else:
-            self.fields['opcion'].queryset = OpcionAtributo.objects.none()
-            self.fields['opcion'].disabled = True
-
-        # Manejar datos POST
         if 'atributo' in self.data:
             try:
                 atributo_id = int(self.data.get('atributo'))
                 self.fields['opcion'].queryset = OpcionAtributo.objects.filter(atributo_id=atributo_id)
-                self.fields['opcion'].disabled = False
+                self.fields['opcion'].required = True
             except (ValueError, TypeError):
                 pass
+        elif self.instance.pk and self.instance.atributo:
+            self.fields['opcion'].queryset = self.instance.atributo.opciones.all()
+            self.fields['opcion'].required = True
 
     def clean(self):
         cleaned_data = super().clean()
         atributo = cleaned_data.get('atributo')
         opcion = cleaned_data.get('opcion')
 
-        if atributo and opcion:
-            if opcion.atributo != atributo:
-                self.add_error('opcion', 'La opción seleccionada no pertenece al atributo')
-
-        return cleaned_data
+        if atributo and not opcion:
+            self.add_error('opcion', 'Debe seleccionar una opción para el atributo.')
+        elif opcion and opcion.atributo != atributo:
+            self.add_error('opcion', 'La opción seleccionada no pertenece al atributo.')
 ProductoAtributoFormSet = forms.inlineformset_factory(
     Producto,
     ProductoAtributo,

@@ -197,18 +197,6 @@ class ProductoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             context['opciones'] = None
 
         return context
-
-
-def registrar_movimiento(request):
-    if request.method == 'POST':
-        form = MovimientoStockForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('lista_movimientos')  # Cambia esto por tu URL correcta
-    else:
-        form = MovimientoStockForm()
-
-    return render(request, 'stock/movimiento_form.html', {'form': form})
 class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'control.add_producto'
     model = Producto
@@ -222,7 +210,7 @@ class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
             Producto,
             ProductoAtributo,
             form=ProductoAtributoForm,
-            formset=ProductoAtributoBaseFormSet,  # ← esto es lo que faltaba
+            formset=ProductoAtributoBaseFormSet,
             extra=1,
             can_delete=True,
             min_num=0,
@@ -236,11 +224,21 @@ class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
                 instance=self.object,
                 prefix='productoatributo_set'
             )
+            # Aquí ajustamos el queryset para cada subform del formset
+            for subform in context['atributo_formset'].forms:
+                atributo_id = subform.data.get(f'{subform.prefix}-atributo')
+                if atributo_id:
+                    subform.fields['opcion'].queryset = OpcionAtributo.objects.filter(atributo_id=atributo_id)
         else:
             context['atributo_formset'] = ProductoAtributoFormSet(
                 instance=self.object,
+                queryset=ProductoAtributo.objects.none(),
                 prefix='productoatributo_set'
             )
+            # Para el caso GET, normalmente no hay valores en data,
+            # pero si quieres, podrías inicializar el queryset vacío o con algún valor predeterminado
+            for subform in context['atributo_formset'].forms:
+                subform.fields['opcion'].queryset = OpcionAtributo.objects.none()
 
         # Agregar datos necesarios para el template
         context['atributos'] = Atributo.objects.prefetch_related('opciones')
@@ -278,6 +276,18 @@ class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
             return super().form_valid(form)
         else:
             return self.form_invalid(form)
+
+def registrar_movimiento(request):
+    if request.method == 'POST':
+        form = MovimientoStockForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_movimientos')  # Cambia esto por tu URL correcta
+    else:
+        form = MovimientoStockForm()
+
+    return render(request, 'stock/movimiento_form.html', {'form': form})
+
 
 class ProductoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'control.change_producto'

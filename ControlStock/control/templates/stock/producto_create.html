@@ -590,22 +590,12 @@
                                             {{ form.id }}
                                             <div class="row g-3">
                                                 <div class="col-md-5">
-                                                    <label class="form-label" for="{{ form.atributo.id_for_label }}">Atributo</label>
+                                                    <label class="form-label">Atributo</label>
                                                     {{ form.atributo|add_class:"form-select atributo-select" }}
-                                                    {% if form.atributo.errors %}
-                                                        <div class="text-danger mt-1 small">
-                                                            {{ form.atributo.errors.as_text }}
-                                                        </div>
-                                                    {% endif %}
                                                 </div>
                                                 <div class="col-md-5">
-                                                    <label class="form-label" for="{{ form.opcion.id_for_label }}">Opción</label>
+                                                    <label class="form-label">Opción</label>
                                                     {{ form.opcion|add_class:"form-select opcion-select" }}
-                                                    {% if form.opcion.errors %}
-                                                        <div class="text-danger mt-1 small">
-                                                            {{ form.opcion.errors.as_text }}
-                                                        </div>
-                                                    {% endif %}
                                                 </div>
                                                 <div class="col-md-2 d-flex align-items-end">
                                                     {{ form.DELETE|add_class:"d-none" }}
@@ -625,7 +615,36 @@
                                 </div>
                             </div>
                         </div>
+            <!-- producto_create.html -->
+<form method="post" novalidate enctype="multipart/form-data">
+    {% csrf_token %}
 
+    <!-- Mostrar errores del formulario principal -->
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for error in form.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {% if atributo_formset.errors %}
+    <div class="alert alert-danger">
+        <ul>
+            {% for form in atributo_formset %}
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li><strong>{{ field|capfirst }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+</form>
             </form>
         </div>
     </div>
@@ -645,54 +664,44 @@
         {% endfor %}
 
         // Función para actualizar las opciones cuando se selecciona un atributo
-        function actualizarOpciones(atributoSelect, opcionSelect) {
-            const atributoId = atributoSelect.value;
-            opcionSelect.innerHTML = '<option value="">Seleccionar opción...</option>';
+        // Actualizar la función actualizarOpciones
+function actualizarOpciones(atributoSelect, opcionSelect) {
+    const atributoId = atributoSelect.value;
+    opcionSelect.innerHTML = '<option value="">Seleccionar opción...</option>';
+    opcionSelect.disabled = !atributoId;
 
-            if (atributoId) {
-                opcionSelect.disabled = false;
-                const opciones = atributosOpciones[atributoId] || [];
+    if (atributoId) {
+        const opciones = atributosOpciones[atributoId] || [];
+        opciones.forEach(opcion => {
+            const option = document.createElement('option');
+            option.value = opcion.id;
+            option.textContent = opcion.valor;
+            opcionSelect.appendChild(option);
+        });
+    }
+}
 
-                opciones.forEach(opcion => {
-                    const option = document.createElement('option');
-                    option.value = opcion.id;
-                    option.textContent = opcion.valor;
-                    opcionSelect.appendChild(option);
-                });
-            } else {
-                opcionSelect.disabled = true;
-            }
-        }
-
-        // Manejar cambios en los selects existentes
         document.querySelectorAll('.atributo-select').forEach(select => {
             const opcionSelect = select.closest('.atributo-form').querySelector('.opcion-select');
-            const hiddenOpcionInput = select.closest('.atributo-form').querySelector('[id$="-opcion"]');
-
-            // Actualizar al cargar la página
-            actualizarOpciones(select, opcionSelect);
-
-            // Manejar cambios
-            // Modificar el event listener para actualizar ambos campos
             select.addEventListener('change', function () {
-                actualizarOpciones(select, opcionSelect);
-                // Actualizar el campo oculto de atributo
-                const hiddenAtributoInput = select.closest('.atributo-form').querySelector('[id$="-atributo"]');
-                hiddenAtributoInput.value = this.value;
-                hiddenOpcionInput.value = ''; // Limpiar el valor de opción
+                actualizarOpciones(this, opcionSelect);
             });
+            // Actualizar al cargar si ya hay un valor
+            if (select.value) {
+                actualizarOpciones(select, opcionSelect);
+            }
         });
 
         // Agregar nuevo atributo
         // En la función que agrega nuevos atributos
-document.getElementById('add-atributo').addEventListener('click', function () {
-    const totalForms = document.getElementById('id_productoatributo_set-TOTAL_FORMS');
-    const formIdx = parseInt(totalForms.value);
-    const container = document.getElementById('atributos-container');
+        document.getElementById('add-atributo').addEventListener('click', function () {
+            const totalForms = document.getElementById('id_productoatributo_set-TOTAL_FORMS');
+            const formIdx = parseInt(totalForms.value);
+            const container = document.getElementById('atributos-container');
 
-    const newForm = document.createElement('div');
-    newForm.className = 'atributo-form mb-3';
-    newForm.innerHTML = `
+            const newForm = document.createElement('div');
+            newForm.className = 'atributo-form mb-3';
+            newForm.innerHTML = `
         <div class="row g-3">
             <div class="col-md-5">
                 <label class="form-label">Atributo</label>
@@ -723,23 +732,23 @@ document.getElementById('add-atributo').addEventListener('click', function () {
         <input type="hidden" name="productoatributo_set-${formIdx}-DELETE" id="id_productoatributo_set-${formIdx}-DELETE">
     `;
 
-    container.appendChild(newForm);
-    totalForms.value = formIdx + 1;
+            container.appendChild(newForm);
+            totalForms.value = formIdx + 1;
 
-    // Configurar eventos
-    const atributoSelect = newForm.querySelector('.atributo-select');
-    const opcionSelect = newForm.querySelector('.opcion-select');
+            // Configurar eventos
+            const atributoSelect = newForm.querySelector('.atributo-select');
+            const opcionSelect = newForm.querySelector('.opcion-select');
 
-    atributoSelect.addEventListener('change', function() {
-        actualizarOpciones(atributoSelect, opcionSelect);
-    });
+            atributoSelect.addEventListener('change', function () {
+                actualizarOpciones(atributoSelect, opcionSelect);
+            });
 
-    newForm.querySelector('.remove-atributo').addEventListener('click', function() {
-        const deleteInput = newForm.querySelector('[id$="-DELETE"]');
-        deleteInput.value = 'on';
-        newForm.style.display = 'none';
-    });
-});
+            newForm.querySelector('.remove-atributo').addEventListener('click', function () {
+                const deleteInput = newForm.querySelector('[id$="-DELETE"]');
+                deleteInput.value = 'on';
+                newForm.style.display = 'none';
+            });
+        });
 
         // Eliminar atributo
         document.addEventListener('click', function (e) {
