@@ -308,7 +308,70 @@
         </ul>
     </div>
 </div>
+<script>
+    // Dark Mode Toggle
+    const toggle = document.getElementById('darkModeToggle');
+    const currentTheme = localStorage.getItem('theme');
 
+    if (currentTheme === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        toggle.checked = true;
+    }
+
+    toggle.addEventListener('change', () => {
+        if (toggle.checked) {
+            document.body.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.body.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'light');
+        }
+    });
+
+    // Selector de Columnas
+    document.addEventListener('DOMContentLoaded', function () {
+        // Cargar preferencias
+        const savedColumns = JSON.parse(localStorage.getItem('visibleColumns')) || {};
+
+        // Inicializar columnas
+        document.querySelectorAll('.column-toggle').forEach(checkbox => {
+            const columnKey = checkbox.dataset.column;
+            const isVisible = savedColumns[columnKey] ?? true;
+
+            checkbox.checked = isVisible;
+            toggleColumn(columnKey, isVisible);
+
+            checkbox.addEventListener('change', function () {
+                toggleColumn(columnKey, this.checked);
+                saveColumnPreferences();
+            });
+        });
+
+        function toggleColumn(columnKey, show) {
+            const selector = `th[data-column="${columnKey}"], td[data-column="${columnKey}"]`;
+            document.querySelectorAll(selector).forEach(el => {
+                el.style.display = show ? '' : 'none';
+            });
+        }
+
+        function saveColumnPreferences() {
+            const columns = {};
+            document.querySelectorAll('.column-toggle').forEach(checkbox => {
+                columns[checkbox.dataset.column] = checkbox.checked;
+            });
+            localStorage.setItem('visibleColumns', JSON.stringify(columns));
+        }
+    });
+
+    // Inicializar tooltips
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+    // Generar códigos de barras
+    window.addEventListener('DOMContentLoaded', () => {
+        JsBarcode(".barcode").init();
+    });
+</script>
 <style>
     /* Variables actualizadas para mejor contraste */
     :root {
@@ -813,67 +876,3 @@
     }
 </style>
 
-<script>
-    // Dark Mode Toggle
-    const toggle = document.getElementById('darkModeToggle');
-    const currentTheme = localStorage.getItem('theme');
-
-    if (currentTheme === 'dark') {
-        document.body.setAttribute('data-theme', 'dark');
-        toggle.checked = true;
-    }
-
-    toggle.addEventListener('change', () => {
-        if (toggle.checked) {
-            document.body.setAttribute('data-theme', 'dark');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            document.body.removeAttribute('data-theme');
-            localStorage.setItem('theme', 'light');
-        }
-    });
-
-    // Selector de Columnas
-    document.addEventListener('DOMContentLoaded', function () {
-        // Cargar preferencias
-        const savedColumns = JSON.parse(localStorage.getItem('visibleColumns')) || {};
-
-        // Inicializar columnas
-        document.querySelectorAll('.column-toggle').forEach(checkbox => {
-            const columnKey = checkbox.dataset.column;
-            const isVisible = savedColumns[columnKey] ?? true;
-
-            checkbox.checked = isVisible;
-            toggleColumn(columnKey, isVisible);
-
-            checkbox.addEventListener('change', function () {
-                toggleColumn(columnKey, this.checked);
-                saveColumnPreferences();
-            });
-        });
-
-        function toggleColumn(columnKey, show) {
-            const selector = `th[data-column="${columnKey}"], td[data-column="${columnKey}"]`;
-            document.querySelectorAll(selector).forEach(el => {
-                el.style.display = show ? '' : 'none';
-            });
-        }
-
-        function saveColumnPreferences() {
-            const columns = {};
-            document.querySelectorAll('.column-toggle').forEach(checkbox => {
-                columns[checkbox.dataset.column] = checkbox.checked;
-            });
-            localStorage.setItem('visibleColumns', JSON.stringify(columns));
-        }
-    });
-
-    // Inicializar tooltips
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-
-    // Generar códigos de barras
-    window.addEventListener('DOMContentLoaded', () => {
-        JsBarcode(".barcode").init();
-    });
-</script>
