@@ -169,6 +169,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+
     document.addEventListener('DOMContentLoaded', function () {
     const totalForms = document.getElementById('id_opcion_set-TOTAL_FORMS');
     const opcionesContainer = document.getElementById('opciones-container');
@@ -187,15 +188,17 @@
     }
 
     const deleteButton = document.createElement('button');
-    deleteButton.type = 'button';
-    deleteButton.className = 'btn btn-danger remove-opcion w-100 mt-2';
+deleteButton.type = 'button';
+deleteButton.className = 'btn btn-danger remove-opcion w-100';
+deleteButton.innerHTML = '<i class="fas fa-trash"></i>';
 
-    deleteButton.addEventListener('click', () => {
-        if (deleteCheckbox) {
-            deleteCheckbox.checked = true;
-        }
-        wrapper.style.display = 'none';
-    });
+deleteButton.addEventListener('click', () => {
+    if (deleteCheckbox) {
+        deleteCheckbox.checked = true;
+    }
+    wrapper.style.display = 'none';
+});
+
 
     // Insertar botón después del campo valor
     const valorInput = wrapper.querySelector('input[name$="-valor"]');
