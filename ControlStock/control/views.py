@@ -829,11 +829,12 @@ class AtributoCreateView(LoginRequiredMixin, CreateView):
         return inlineformset_factory(
             Atributo,
             OpcionAtributo,
-            fields=('valor',),  # Solo se incluye el campo 'valor', eliminando 'orden'
-            extra=1,
+            fields=('valor', 'color'),
+            extra=0,
             can_delete=True,
             widgets={
                 'valor': forms.TextInput(attrs={'class': 'form-control'}),
+                'color': forms.TextInput(attrs={'type': 'color', 'class': 'form-control form-control-color'}),
             }
         )
 
@@ -876,11 +877,12 @@ class AtributoUpdateView(LoginRequiredMixin, UpdateView):
         return inlineformset_factory(
             Atributo,
             OpcionAtributo,
-            fields=('valor',),
+            fields=('valor','color'),
             extra=0,
             can_delete=True,
             widgets={
                 'valor': forms.TextInput(attrs={'class': 'form-control'}),
+                'color': forms.TextInput(attrs={'type': 'color', 'class': 'form-control form-control-color'}),
             }
         )
 

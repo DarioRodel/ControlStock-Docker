@@ -58,6 +58,7 @@ class OpcionAtributo(models.Model):
     atributo = models.ForeignKey(Atributo, on_delete=models.CASCADE, related_name='opciones')
     valor = models.CharField(max_length=50)
     orden = models.PositiveIntegerField(default=0)
+    color = models.CharField(max_length=7, default='#4e73df')
 
     class Meta:
         verbose_name = 'Opción de Atributo'
