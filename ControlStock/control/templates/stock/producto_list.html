@@ -55,143 +55,147 @@
 
     <!-- Filtros -->
 
-<div class="card border-0 shadow-lg mb-4">
-    <div class="card-body p-4">
-        <form method="get">
-            <div class="row g-4">
-                <!-- Fila Principal de Filtros -->
-                <div class="col-12">
-                    <div class="d-flex flex-wrap gap-3 align-items-end">
-                        <!-- Buscador -->
-                        <div class="flex-grow-1" style="min-width: 280px;">
-                            <label class="form-label fw-medium text-muted mb-2">Buscar producto</label>
-                            <div class="input-group input-group-lg shadow-sm">
+    <div class="card border-0 shadow-lg mb-4">
+        <div class="card-body p-4">
+            <form method="get">
+                <div class="row g-4">
+                    <!-- Fila Principal de Filtros -->
+                    <div class="col-12">
+                        <div class="d-flex flex-wrap gap-3 align-items-end">
+                            <!-- Buscador -->
+                            <div class="flex-grow-1" style="min-width: 280px;">
+                                <label class="form-label fw-medium text-muted mb-2">Buscar producto</label>
+                                <div class="input-group input-group-lg shadow-sm">
                                 <span class="input-group-text bg-white border-end-0">
                                     <i class="fas fa-search text-primary"></i>
                                 </span>
-                                <input type="text" name="search" class="form-control border-start-0 ps-0"
-                                       placeholder="Nombre, código o descripción..."
-                                       value="{{ request.GET.search }}">
+                                    <input type="text" name="search" class="form-control border-start-0 ps-0"
+                                           placeholder="Nombre, código o descripción..."
+                                           value="{{ request.GET.search }}">
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Selectores -->
-                        <div class="d-flex flex-wrap gap-3">
-                            <!-- Categoría -->
-                            <div style="min-width: 200px;">
-                                <label class="form-label fw-medium text-muted mb-">Categoría</label>
-                                <div class="input-group shadow-sm">
+                            <!-- Selectores -->
+                            <div class="d-flex flex-wrap gap-3">
+                                <!-- Categoría -->
+                                <div style="min-width: 200px;">
+                                    <label class="form-label fw-medium text-muted mb-">Categoría</label>
+                                    <div class="input-group shadow-sm">
                                     <span class="input-group-text bg-white border-end-0">
                                         <i class="fas fa-layer-group text-primary"></i>
                                     </span>
-                                    <select name="categoria" class="form-select ps-0">
-                                        <option value="">Todas</option>
-                                        {% for cat in categorias %}
-                                        <option value="{{ cat.id }}" {% if request.GET.categoria == cat.id|stringformat:"s" %}selected{% endif %}>
-                                            {{ cat.nombre }}
-                                        </option>
-                                        {% endfor %}
-                                    </select>
+                                        <select name="categoria" class="form-select ps-0">
+                                            <option value="">Todas</option>
+                                            {% for cat in categorias %}
+                                                <option value="{{ cat.id }}"
+                                                        {% if request.GET.categoria == cat.id|stringformat:"s" %}selected{% endif %}>
+                                                    {{ cat.nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Estado -->
-                            <div style="min-width: 180px;">
-                                <label class="form-label fw-medium text-muted mb-2">Estado</label>
-                                <div class="input-group shadow-sm">
+                                <!-- Estado -->
+                                <div style="min-width: 180px;">
+                                    <label class="form-label fw-medium text-muted mb-2">Estado</label>
+                                    <div class="input-group shadow-sm">
                                     <span class="input-group-text bg-white border-end-0">
                                         <i class="fas fa-chart-line text-primary"></i>
                                     </span>
-                                    <select name="estado" class="form-select ps-0">
-                                        <option value="">Todos</option>
-                                        {% for valor, nombre in estados %}
-                                        <option value="{{ valor }}" {% if request.GET.estado == valor %}selected{% endif %}>
-                                            {{ nombre }}
-                                        </option>
-                                        {% endfor %}
-                                    </select>
+                                        <select name="estado" class="form-select ps-0">
+                                            <option value="">Todos</option>
+                                            {% for valor, nombre in estados %}
+                                                <option value="{{ valor }}"
+                                                        {% if request.GET.estado == valor %}selected{% endif %}>
+                                                    {{ nombre }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Botones de Acción -->
-                        <div class="d-flex gap-2 align-self-end">
-                            <button type="submit" class="btn btn-primary px-4 shadow-sm">
-                                <i class="fas fa-filter me-2"></i>Filtrar
-                            </button>
-                            <a href="{% url 'stock:producto_list' %}" class="btn btn-outline-secondary px-4">
-                                <i class="fas fa-rotate-left me-2"></i>Limpiar
-                            </a>
+                            <!-- Botones de Acción -->
+                            <div class="d-flex gap-2 align-self-end">
+                                <button type="submit" class="btn btn-primary px-4 shadow-sm">
+                                    <i class="fas fa-filter me-2"></i>Filtrar
+                                </button>
+                                <a href="{% url 'stock:producto_list' %}" class="btn btn-outline-secondary px-4">
+                                    <i class="fas fa-rotate-left me-2"></i>Limpiar
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Filtros Avanzados -->
-                <div class="col-12">
-                    <div class="accordion" id="advancedFilters">
-                        <div class="accordion-item border-0">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed bg-transparent shadow-none px-0 py-2"
-                                        type="button"
-                                        data-bs-toggle="collapse"
-                                        data-bs-target="#collapseAdvanced"
-                                        aria-expanded="false">
-                                    <i class="fas fa-sliders-h me-2 text-primary"></i>
-                                    Filtros Avanzados
-                                </button>
-                            </h2>
-                            <div id="collapseAdvanced" class="accordion-collapse collapse"
-                                 data-bs-parent="#advancedFilters">
-                                <div class="accordion-body pt-3 px-0">
-                                    <div class="row g-4">
-                                        <!-- Atributo -->
-                                        <div class="col-md-4">
-                                            <label class="form-label fw-medium text-muted mb-2">Atributo</label>
-                                            <div class="input-group shadow-sm">
+                    <!-- Filtros Avanzados -->
+                    <div class="col-12">
+                        <div class="accordion" id="advancedFilters">
+                            <div class="accordion-item border-0">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed bg-transparent shadow-none px-0 py-2"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#collapseAdvanced"
+                                            aria-expanded="false">
+                                        <i class="fas fa-sliders-h me-2 text-primary"></i>
+                                        Filtros Avanzados
+                                    </button>
+                                </h2>
+                                <div id="collapseAdvanced" class="accordion-collapse collapse"
+                                     data-bs-parent="#advancedFilters">
+                                    <div class="accordion-body pt-3 px-0">
+                                        <div class="row g-4">
+                                            <!-- Atributo -->
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-medium text-muted mb-2">Atributo</label>
+                                                <div class="input-group shadow-sm">
                                                 <span class="input-group-text bg-white border-end-0">
                                                     <i class="fas fa-tag text-primary"></i>
                                                 </span>
-                                                <select name="atributo" class="form-select ps-0"
-                                                        id="id_atributo_select">
-                                                    <option value="">Seleccionar</option>
-                                                    {% for atributo in atributos %}
-                                                    <option value="{{ atributo.id }}"
-                                                        {% if request.GET.atributo == atributo.id|stringformat:"s" %}selected{% endif %}>
-                                                        {{ atributo.nombre }}
-                                                    </option>
-                                                    {% endfor %}
-                                                </select>
+                                                    <select name="atributo" class="form-select ps-0"
+                                                            id="id_atributo_select">
+                                                        <option value="">Seleccionar</option>
+                                                        {% for atributo in atributos %}
+                                                            <option value="{{ atributo.id }}"
+                                                                    {% if request.GET.atributo == atributo.id|stringformat:"s" %}selected{% endif %}>
+                                                                {{ atributo.nombre }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <!-- Opciones -->
-                                        <div class="col-md-8">
-                                            <label class="form-label fw-medium text-muted mb-2">Opciones</label>
-                                            <div class="d-flex flex-wrap gap-2">
-                                                {% if opciones %}
-                                                    {% for opcion in opciones %}
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox"
-                                                               name="opcion" value="{{ opcion.id }}"
-                                                               id="opcion-{{ opcion.id }}"
-                                                               {% if opcion.id|stringformat:"s" in opciones_seleccionadas %}checked{% endif %}>
-                                                        <label class="form-check-label" for="opcion-{{ opcion.id }}">
+                                            <!-- Opciones -->
+                                            <div class="col-md-8">
+                                                <label class="form-label fw-medium text-muted mb-2">Opciones</label>
+                                                <div class="d-flex flex-wrap gap-2">
+                                                    {% if opciones %}
+                                                        {% for opcion in opciones %}
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="checkbox"
+                                                                       name="opcion" value="{{ opcion.id }}"
+                                                                       id="opcion-{{ opcion.id }}"
+                                                                       {% if opcion.id|stringformat:"s" in opciones_seleccionadas %}checked{% endif %}>
+                                                                <label class="form-check-label"
+                                                                       for="opcion-{{ opcion.id }}">
                                                             <span class="badge bg-primary bg-opacity-10 text-primary
                                                                       px-3 py-2 rounded-pill">
                                                                 {{ opcion.valor }}
                                                                 {% if opcion.color %}
-                                                                <span class="color-dot ms-2"
-                                                                      style="background-color: {{ opcion.color }}"></span>
+                                                                    <span class="color-dot ms-2"
+                                                                          style="background-color: {{ opcion.color }}"></span>
                                                                 {% endif %}
                                                             </span>
-                                                        </label>
-                                                    </div>
-                                                    {% endfor %}
-                                                {% else %}
-                                                    <div class="text-muted small">
-                                                        Selecciona un atributo primero
-                                                    </div>
-                                                {% endif %}
+                                                                </label>
+                                                            </div>
+                                                        {% endfor %}
+                                                    {% else %}
+                                                        <div class="text-muted small">
+                                                            Selecciona un atributo primero
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -200,10 +204,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
-</div>
 
 
     <!-- Tabla de Productos -->
@@ -247,25 +250,25 @@
 
                         <!-- Categoría -->
                         <td data-column="categoria" data-label="Categoría">
-                            <span class="badge bg-secondary-subtle text-dark px-3 py-2 rounded-pill">
-                                {{ producto.categoria.nombre|default:"-" }}
-                            </span>
-                        </td>
+    <span class="badge px-3 py-2 rounded-pill fs-5"
+          style="background-color: {{ producto.categoria.color|default:'#eee' }}; color: #fff;">
+        {{ producto.categoria.nombre|default:"-" }}
+    </span>
+</td>
 
                         <!-- Atributos -->
                         <td data-column="atributos" data-label="Atributos" class="text-center">
     <div class="d-flex flex-wrap gap-2 justify-content-center">
         {% for pa in producto.productoatributo_set.all %}
-            {% if pa.atributo.nombre == "Color" and pa.opcion.color %}
+            {% if pa.opcion.color %}
                 <span class="badge fs-5 py-2 px-3 rounded-pill"
                       style="background-color: {{ pa.opcion.color }}; color: #fff;">
-                    <span class="fw-semibold">{{ pa.atributo.nombre }}:</span>
-                    <span style="background: {{ pa.opcion.color }}; border-radius: 50%; display: inline-block; width: 18px; height: 18px; margin: 0 0.5em; border: 1px solid #fff; vertical-align: middle;"></span>
+                    <span class="fw-semibold"></span>
                     {{ pa.opcion.valor|default:"N/A" }}
                 </span>
             {% else %}
                 <span class="badge bg-light bg-opacity-10 text-dark fs-5 py-2 px-3 rounded-pill">
-                    <span class="fw-semibold">{{ pa.atributo.nombre }}:</span>
+                    <span class="fw-semibold"></span>
                     {{ pa.opcion.valor|default:"N/A" }}
                 </span>
             {% endif %}
@@ -374,7 +377,7 @@
     </div>
 </div>
 <script>
-        document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
         const btn = document.getElementById('toggleOpciones');
         const container = document.getElementById('opcionesContainer');
         btn.addEventListener('click', function () {
@@ -783,63 +786,71 @@
             font-size: 1.1rem; /* Aumentado el tamaño del texto en los formularios */
             padding: 0.75rem 1rem;
         }
+
         /* Animación suave para tarjetas y filas */
-.card, tr, .badge, .btn {
-    transition: box-shadow 0.3s, background-color 0.3s, color 0.3s;
-}
+        .card, tr, .badge, .btn {
+            transition: box-shadow 0.3s, background-color 0.3s, color 0.3s;
+        }
 
-/* Hover en filas de la tabla */
-.table-hover tbody tr:hover {
-    box-shadow: 0 4px 16px var(--shadow-color);
-    background-color: var(--table-header-bg);
-}
+        /* Hover en filas de la tabla */
+        .table-hover tbody tr:hover {
+            box-shadow: 0 4px 16px var(--shadow-color);
+            background-color: var(--table-header-bg);
+        }
 
-/* Sombra en badges */
-.badge {
-    box-shadow: 0 2px 8px rgba(59,130,246,0.07);
-}
+        /* Sombra en badges */
+        .badge {
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.07);
+        }
 
-/* Separador visual entre filtros y tabla */
-.card + .card {
-    margin-top: 2rem;
-}
+        /* Separador visual entre filtros y tabla */
+        .card + .card {
+            margin-top: 2rem;
+        }
 
-/* Placeholder de imagen con degradado animado */
-.no-image-placeholder {
-    background: linear-gradient(135deg, #f1f5f9 0%, #e0e7ef 100%);
-    animation: placeholderPulse 2s infinite alternate;
-}
-@keyframes placeholderPulse {
-    0% { opacity: 0.8; }
-    100% { opacity: 1; }
-}
+        /* Placeholder de imagen con degradado animado */
+        .no-image-placeholder {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e0e7ef 100%);
+            animation: placeholderPulse 2s infinite alternate;
+        }
 
-/* Animación acordeón */
-.accordion-collapse {
-    transition: height 0.4s cubic-bezier(0.4,0,0.2,1);
-}
+        @keyframes placeholderPulse {
+            0% {
+                opacity: 0.8;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
 
-/* Botón flotante para agregar producto */
-.fab-add-product {
-    position: fixed;
-    bottom: 2.5rem;
-    right: 2.5rem;
-    z-index: 1050;
-    background: var(--primary-color);
-    color: #fff;
-    border-radius: 50%;
-    width: 64px;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    box-shadow: 0 4px 16px var(--shadow-color);
-    transition: background 0.3s;
-}
-.fab-add-product:hover {
-    background: var(--secondary-color);
-}
+        /* Animación acordeón */
+        .accordion-collapse {
+            transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Botón flotante para agregar producto */
+        .fab-add-product {
+            position: fixed;
+            bottom: 2.5rem;
+            right: 2.5rem;
+            z-index: 1050;
+            background: var(--primary-color);
+            color: #fff;
+            border-radius: 50%;
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 4px 16px var(--shadow-color);
+            transition: background 0.3s;
+        }
+
+        .fab-add-product:hover {
+            background: var(--secondary-color);
+        }
+
         /* Badges más elegantes */
         .badge {
             font-size: 1.2rem; /* Aumentado el tamaño de las etiquetas */
@@ -965,68 +976,70 @@
             border-color: #4a5568;
         }
     }
+
     /* Estilos para los Filtros Mejorados */
-.filter-card {
-    background: var(--card-bg);
-    border-radius: 16px;
-    border: 1px solid var(--input-border);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
-}
+    .filter-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        border: 1px solid var(--input-border);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    }
 
-.input-group-text {
-    transition: all 0.3s ease;
-    border-color: var(--input-border);
-}
+    .input-group-text {
+        transition: all 0.3s ease;
+        border-color: var(--input-border);
+    }
 
-.form-control:focus, .form-select:focus {
-    border-color: var(--primary-color);
-}
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color);
+    }
 
-.accordion-button:not(.collapsed) {
-    color: var(--primary-color);
-    background-color: transparent;
-}
+    .accordion-button:not(.collapsed) {
+        color: var(--primary-color);
+        background-color: transparent;
+    }
 
-.accordion-button::after {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%236b7280'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
-}
+    .accordion-button::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%236b7280'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    }
 
-.accordion-button:not(.collapsed)::after {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%233B82F6'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
-}
+    .accordion-button:not(.collapsed)::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%233B82F6'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    }
 
-.color-dot {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    vertical-align: middle;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
+    .color-dot {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        vertical-align: middle;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
 
-/* Efectos hover para los checkboxes de opciones */
-.form-check-input:checked ~ .badge {
-    background-color: var(--primary-color) !important;
-    color: white !important;
-}
+    /* Efectos hover para los checkboxes de opciones */
+    .form-check-input:checked ~ .badge {
+        background-color: var(--primary-color) !important;
+        color: white !important;
+    }
 
-.form-check-input:checked ~ .badge .color-dot {
-    border: 2px solid white;
-}
+    .form-check-input:checked ~ .badge .color-dot {
+        border: 2px solid white;
+    }
 
-/* Transiciones suaves */
-.form-check-label, .form-check-input, .accordion-button {
-    transition: all 0.3s ease;
-}
+    /* Transiciones suaves */
+    .form-check-label, .form-check-input, .accordion-button {
+        transition: all 0.3s ease;
+    }
 
-/* Modo oscuro */
-body[data-theme="dark"] .form-check-input:checked ~ .badge {
-    background-color: var(--primary-color) !important;
-}
+    /* Modo oscuro */
+    body[data-theme="dark"] .form-check-input:checked ~ .badge {
+        background-color: var(--primary-color) !important;
+    }
 
-body[data-theme="dark"] .accordion-button::after {
-    filter: invert(1);
-}
+    body[data-theme="dark"] .accordion-button::after {
+        filter: invert(1);
+    }
+
     /* Versión pantallas grandes (>= 1200px) */
     @media (min-width: 1200px) {
         .card-body form.row.g-3 {
