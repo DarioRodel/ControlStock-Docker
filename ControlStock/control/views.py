@@ -126,15 +126,11 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
 # Vistas para Productos
 class ProductoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    """
-    Vista para listar todos los productos. Requiere que el usuario esté logueado.
-    Permite filtrar y paginar los productos.
-    """
     permission_required = 'control.view_producto'
     model = Producto
-    template_name = 'stock/producto_list.html'  # Plantilla para mostrar la lista de productos.
-    context_object_name = 'productos'  # Nombre de la variable en el contexto de la plantilla.
-    paginate_by = 20  # Cantidad de productos por página.
+    template_name = 'stock/producto_list.html'
+    context_object_name = 'productos'
+    paginate_by = 20
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.rol not in ['admin', 'ventas']:
@@ -149,7 +145,7 @@ class ProductoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         categoria = self.request.GET.get('categoria')
         estado = self.request.GET.get('estado')
         atributo_id = self.request.GET.get('atributo')
-        opcion_id = self.request.GET.get('opcion')
+        opciones_ids = self.request.GET.getlist('opcion')  # <-- Aquí
 
         if search:
             queryset = queryset.filter(
@@ -163,10 +159,9 @@ class ProductoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
             queryset = queryset.filter(estado=estado)
         if atributo_id:
             queryset = queryset.filter(productoatributo__atributo_id=atributo_id)
-        if opcion_id:
-            queryset = queryset.filter(productoatributo__opcion_id=opcion_id)
+        if opciones_ids:
+            queryset = queryset.filter(productoatributo__opcion_id__in=opciones_ids)
 
-        # Prefetch los atributos y opciones para optimizar las consultas
         return queryset.select_related('categoria', 'ubicacion').prefetch_related(
             'productoatributo_set__atributo',
             'productoatributo_set__opcion'
@@ -178,7 +173,6 @@ class ProductoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         context['estados'] = Producto.ESTADO_STOCK
         context['atributos'] = Atributo.objects.all()
 
-        # Configurar columnas disponibles
         context['available_columns'] = [
             {'key': 'imagen', 'label': 'Imagen'},
             {'key': 'codigo', 'label': 'Código'},
@@ -196,7 +190,13 @@ class ProductoListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         else:
             context['opciones'] = None
 
+        # Aquí obtenemos opciones_ids de nuevo
+        opciones_ids = self.request.GET.getlist('opcion')
+        context['opciones_seleccionadas'] = opciones_ids
+
         return context
+
+
 class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'control.add_producto'
     model = Producto
