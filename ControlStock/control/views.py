@@ -48,9 +48,8 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         productos = Producto.objects.all()
 
         # Obtener los últimos 10 movimientos de stock
-        movimientos = MovimientoStock.objects.select_related(
-            'producto', 'usuario', 'ubicacion_origen', 'ubicacion_destino'
-        ).order_by('-fecha')[:10]
+        movimientos = MovimientoStock.objects.select_related('producto').order_by('-fecha')[:10]
+
         context['movimientos'] = movimientos
         # Contar total de productos y categorías
         total_productos = productos.count()

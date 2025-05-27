@@ -533,26 +533,26 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for movimiento in movimientos %}
-                            <tr>
-                                <td data-label="Producto">{{ movimiento.producto.nombre|truncatechars:15 }}</td>
-                                <td data-label="Tipo">
-                    <span class="badge bg-{{ movimiento.tipo|lower }} text-black">
-                        <i class="fas fa-{% if movimiento.tipo == 'ENTRADA' %}arrow-down{% else %}arrow-up{% endif %} me-1"></i>
-                        {{ movimiento.get_tipo_display }}
-                    </span>
-                                </td>
-                                <td data-label="Cantidad">{{ movimiento.cantidad }}</td>
-                                <td data-label="Fecha">{{ movimiento.fecha|date:"d/m H:i" }}</td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="4" class="text-center py-2 text-muted">
-                                    <i class="far fa-folder-open me-1"></i>No hay movimientos recientes
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
+    {% for movimiento in movimientos %}
+        <tr>
+            <td data-label="Producto">{{ movimiento.producto.nombre|truncatechars:15 }}</td>
+            <td data-label="Tipo">
+                <span class="badge bg-{% if movimiento.tipo == 'ENTRADA' %}success{% else %}danger{% endif %}">
+                    <i class="fas fa-{% if movimiento.tipo == 'ENTRADA' %}arrow-down{% else %}arrow-up{% endif %} me-1"></i>
+                    {{ movimiento.get_tipo_display }}
+                </span>
+            </td>
+            <td data-label="Cantidad">{{ movimiento.cantidad }}</td>
+            <td data-label="Fecha">{{ movimiento.fecha|date:"d/m H:i" }}</td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="4" class="text-center py-2 text-muted">
+                <i class="far fa-folder-open me-1"></i>No hay movimientos recientes
+            </td>
+        </tr>
+    {% endfor %}
+</tbody>
                     </table>
                 </div>
             </div>
