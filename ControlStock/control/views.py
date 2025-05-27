@@ -38,41 +38,27 @@ from django.urls import reverse_lazy
 from .models import Atributo, OpcionAtributo  # Importa OpcionAtributo correctamente
 
 
+
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'stock/dashboard.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        # Obtener todos los productos
         productos = Producto.objects.all()
-
-        # Obtener los últimos 10 movimientos de stock
         movimientos = MovimientoStock.objects.select_related('producto').order_by('-fecha')[:10]
+        categorias = Categoria.objects.all()
 
+        # Datos básicos
         context['movimientos'] = movimientos
-        # Contar total de productos y categorías
-        total_productos = productos.count()
-        total_categorias = Categoria.objects.count()
-
-        # Calcular el valor total del inventario
-        valor_total_inventario = productos.aggregate(
-            total=Sum(F('precio_compra') * F('stock_actual'))
-        )['total'] or 0
-
-        # Obtener productos con stock bajo
-        productos_bajo_stock = Producto.objects.filter(stock_actual__lt=10)
-        productos = Producto.objects.all()
         context['total_productos'] = productos.count()
-        context['total_categorias'] = Categoria.objects.count()
+        context['total_categorias'] = categorias.count()
         context['valor_inventario'] = productos.aggregate(
             total=Sum(F('precio_compra') * F('stock_actual'))
         )['total'] or 0
-        context['productos_bajo_stock'] = Producto.objects.filter(stock_actual__lt=10)
-        # Datos para el gráfico
-        categorias = Categoria.objects.all()
-        categorias_data = []
+        context['productos_bajo_stock'] = productos.filter(stock_actual__lt=10)
 
+        # Datos para gráficos
+        categorias_data = []
         for categoria in categorias:
             total_stock = productos.filter(categoria=categoria).aggregate(
                 total=Sum('stock_actual')
@@ -83,33 +69,21 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 'color': categoria.color or '#4F46E5'
             })
 
-        categorias_nombres = [categoria['nombre'] for categoria in categorias_data]
-        categorias_stock = [categoria['total_stock'] for categoria in categorias_data]
-        categorias_colores = [categoria['color'] for categoria in categorias_data]
+        context['categorias_nombres'] = json.dumps([c['nombre'] for c in categorias_data])
+        context['categorias_stock'] = json.dumps([c['total_stock'] for c in categorias_data])
+        context['categorias_colores'] = json.dumps([c['color'] for c in categorias_data])
 
-        context.update({
-            'total_productos': total_productos,
-            'total_categorias': total_categorias,
-            'valor_inventario': valor_total_inventario,
-            'productos_bajo_stock': productos_bajo_stock,
-            'movimientos': movimientos,
-            'categorias_nombres': json.dumps([c['nombre'] for c in categorias_data]),
-            'categorias_stock': json.dumps([c['total_stock'] for c in categorias_data]),
-            'categorias_colores': json.dumps([c['color'] for c in categorias_data]),
-        })
         estados = dict(Producto.ESTADO_STOCK)
         estado_counts = {
             'NORMAL': productos.filter(estado='NORMAL').count(),
             'BAJO': productos.filter(estado='BAJO').count(),
             'AGOTADO': productos.filter(estado='AGOTADO').count(),
         }
+        context['stock_estados_labels'] = json.dumps([estados['NORMAL'], estados['BAJO'], estados['AGOTADO']])
+        context['stock_estados_data'] = json.dumps(
+            [estado_counts['NORMAL'], estado_counts['BAJO'], estado_counts['AGOTADO']])
+        context['stock_estados_colors'] = json.dumps(['#4CAF50', '#FF9800', '#F44336'])
 
-        context.update({
-            'stock_estados_labels': json.dumps([estados['NORMAL'], estados['BAJO'], estados['AGOTADO']]),
-            'stock_estados_data': json.dumps(
-                [estado_counts['NORMAL'], estado_counts['BAJO'], estado_counts['AGOTADO']]),
-            'stock_estados_colors': json.dumps(['#4CAF50', '#FF9800', '#F44336']),
-        })
         return context
 
     def _enviar_notificacion_stock_bajo(self):
@@ -121,6 +95,34 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 'admin@miempresa.com',
                 ['gerente@miempresa.com'],
             )
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        atributo_formset = context['atributo_formset']
+
+        self.object = form.save()
+
+        if atributo_formset.is_valid():
+            instances = atributo_formset.save(commit=False)
+            for instance in instances:
+                instance.producto = self.object
+                instance.save()
+            for obj in atributo_formset.deleted_objects:
+                if obj.pk:
+                    obj.delete()
+
+            # Registrar movimiento de entrada si el stock inicial es mayor a 0
+            if self.object.stock_actual > 0:
+                MovimientoStock.objects.create(
+                    producto=self.object,
+                    tipo='ENTRADA',
+                    cantidad=self.object.stock_actual,
+                    usuario=self.request.user
+                )
+
+            return super().form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 
 # Vistas para Productos
@@ -261,16 +263,22 @@ class ProductoCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView
 
         if atributo_formset.is_valid():
             instances = atributo_formset.save(commit=False)
-
-            # Guardar todas las instancias, incluso si tienen el mismo atributo
             for instance in instances:
                 instance.producto = self.object
                 instance.save()
-
-            # Manejar objetos a borrar
             for obj in atributo_formset.deleted_objects:
                 if obj.pk:
                     obj.delete()
+
+            # Registrar movimiento de entrada si el stock inicial es mayor a 0
+            if self.object.stock_actual > 0:
+                movimiento = MovimientoStock(
+                    producto=self.object,
+                    tipo='ENTRADA',
+                    cantidad=self.object.stock_actual,
+                    usuario=self.request.user
+                )
+                movimiento.save(modificar_stock=False)
 
             return super().form_valid(form)
         else:
@@ -386,49 +394,19 @@ class ProductoUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
 
 
 class MovimientoStockCreateView(LoginRequiredMixin, CreateView):
-    """
-    Vista para crear un nuevo movimiento de stock. Requiere login.
-    """
     model = MovimientoStock
-    form_class = MovimientoStock  # Formulario para crear movimientos de stock.
-    template_name = 'stock/movimiento_form.html'  # Plantilla para el formulario de movimiento.
+    form_class = MovimientoStockForm  # Usa el formulario, no el modelo
+    template_name = 'stock/movimiento_form.html'
 
     def form_valid(self, form):
-        """
-        Guarda el movimiento y actualiza el stock del producto asociado.
-        """
         movimiento = form.save(commit=False)
-        movimiento.usuario = self.request.user  # Asigna el usuario actual al movimiento.
-
-        producto = movimiento.producto
-
-        if movimiento.tipo == 'ENTRADA':
-            producto.stock_actual += movimiento.cantidad
-            if movimiento.ubicacion_destino:
-                producto.ubicacion = movimiento.ubicacion_destino
-
-        elif movimiento.tipo == 'SALIDA':
-            producto.stock_actual -= movimiento.cantidad
-
-        elif movimiento.tipo == 'TRASPASO':
-            producto.ubicacion = movimiento.ubicacion_destino
-
-        producto.save()
-        movimiento.save()
-
+        movimiento.usuario = self.request.user
+        movimiento.save()  # Aquí se actualiza el stock automáticamente por el modelo
         messages.success(
             self.request,
-            f"Movimiento registrado exitosamente. Stock actual: {producto.stock_actual}"
+            f"Movimiento registrado exitosamente. Stock actual: {movimiento.producto.stock_actual}"
         )
-
-        return redirect('stock:producto_detail', pk=producto.pk)
-
-    def get_context_data(self, **kwargs):
-        """
-        No se añaden datos adicionales específicos para esta vista en el contexto.
-        """
-        context = super().get_context_data(**kwargs)
-        return context
+        return redirect('stock:producto_detail', pk=movimiento.producto.pk)
 
 
 class ReporteErrorView(FormView):

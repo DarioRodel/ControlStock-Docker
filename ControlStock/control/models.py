@@ -157,7 +157,6 @@ class Producto(models.Model):
         return self.stock_actual * self.precio_compra
 
 
-# Modelo que registra cada movimiento de stock
 class MovimientoStock(models.Model):
     TIPO_MOVIMIENTO = (
         ('ENTRADA', 'Entrada'),
@@ -185,17 +184,21 @@ class MovimientoStock(models.Model):
     def __str__(self):
         return f"{self.get_tipo_display()} de {self.cantidad} {self.producto} - {self.fecha}"
 
-    # Actualiza el stock del producto si el movimiento es nuevo
     def save(self, *args, **kwargs):
-        if not self.pk:  # Solo si es un nuevo movimiento
+        modificar_stock = kwargs.pop('modificar_stock', True)
+
+        if not self.pk and modificar_stock:  # Solo para nuevos movimientos
             if self.tipo == 'ENTRADA':
                 self.producto.stock_actual += self.cantidad
             elif self.tipo == 'SALIDA':
-                self.producto.stock_actual -= self.cantidad
+                if self.producto.stock_actual >= self.cantidad:
+                    self.producto.stock_actual -= self.cantidad
+                else:
+                    raise ValueError("Stock insuficiente para esta salida")
+
             self.producto.save()
+
         super().save(*args, **kwargs)
-
-
 # Usuario personalizado que hereda del usuario por defecto de Django
 class UsuarioPersonalizado(AbstractUser):
     ROLES = (
