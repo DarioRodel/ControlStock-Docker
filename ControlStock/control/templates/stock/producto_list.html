@@ -254,30 +254,30 @@
           style="background-color: {{ producto.categoria.color|default:'#eee' }}; color: #fff;">
         {{ producto.categoria.nombre|default:"-" }}
     </span>
-</td>
+                        </td>
 
                         <!-- Atributos -->
                         <td data-column="atributos" data-label="Atributos" class="text-center">
-    <div class="d-flex flex-wrap gap-2 justify-content-center">
-        {% for pa in producto.productoatributo_set.all %}
-            {% if pa.opcion.color %}
-                {% with color=pa.opcion.color|stringformat:"s"|lower %}
-                    <span class="badge fs-5 py-2 px-3 rounded-pill"
-                          style="background-color: {{ pa.opcion.color }};
-                          {% if color == '#fff' or color == '#ffffff' or color == 'rgb(255,255,255)' %}color: #000;{% else %}color: #fff;{% endif %}">
+                            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                {% for pa in producto.productoatributo_set.all %}
+                                    {% if pa.opcion.color %}
+                                        {% with color=pa.opcion.color|stringformat:"s"|lower %}
+                                            <span class="badge fs-5 py-2 px-3 rounded-pill"
+                                                  style="background-color: {{ pa.opcion.color }};
+                                                          {% if color == '#fff' or color == '#ffffff' or color == 'rgb(255,255,255)' %}color: #000;{% else %}color: #fff;{% endif %}">
                         <span class="fw-semibold"></span>
                         {{ pa.opcion.valor|default:"N/A" }}
                     </span>
-                {% endwith %}
-            {% else %}
-                <span class="badge bg-light bg-opacity-10 text-dark fs-5 py-2 px-3 rounded-pill">
+                                        {% endwith %}
+                                    {% else %}
+                                        <span class="badge bg-light bg-opacity-10 text-dark fs-5 py-2 px-3 rounded-pill">
                     <span class="fw-semibold"></span>
                     {{ pa.opcion.valor|default:"N/A" }}
                 </span>
-            {% endif %}
-        {% endfor %}
-    </div>
-</td>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </td>
                         <!-- Stock -->
                         <td class="text-center" data-column="stock" data-label="Stock">
                             <span class="badge bg-light text-dark fs-5 dark-mode-badge">
